@@ -1,3 +1,4 @@
+import scoverage.ScoverageKeys
 import uk.gov.hmrc.DefaultBuildSettings.integrationTestSettings
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
 
@@ -5,7 +6,15 @@ val appName = "claim-vat-enrolment-frontend"
 
 val silencerVersion = "1.7.0"
 
+lazy val scoverageSettings = Seq(
+  ScoverageKeys.coverageExcludedPackages  := "<empty>;Reverse.*;config.*;.*(AuthService|BuildInfo|Routes).*",
+  ScoverageKeys.coverageMinimum           := 100,
+  ScoverageKeys.coverageFailOnMinimum     := false,
+  ScoverageKeys.coverageHighlighting      := true
+)
+
 lazy val microservice = Project(appName, file("."))
+  .disablePlugins(JUnitXmlReportPlugin)
   .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin)
   .settings(
     majorVersion                     := 0,
