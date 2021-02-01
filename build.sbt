@@ -1,5 +1,5 @@
 import scoverage.ScoverageKeys
-import uk.gov.hmrc.DefaultBuildSettings.integrationTestSettings
+import uk.gov.hmrc.DefaultBuildSettings.{addTestReportOption, integrationTestSettings}
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
 
 val appName = "claim-vat-enrolment-frontend"
@@ -18,7 +18,7 @@ lazy val microservice = Project(appName, file("."))
   .settings(
     majorVersion                     := 0,
     scalaVersion                     := "2.12.12",
-    libraryDependencies              ++= AppDependencies.compile ++ AppDependencies.test,
+    libraryDependencies              ++= AppDependencies.apply(),
     TwirlKeys.templateImports ++= Seq(
       "uk.gov.hmrc.claimvatenrolmentfrontend.config.AppConfig",
       "uk.gov.hmrc.govukfrontend.views.html.components._",
@@ -38,5 +38,17 @@ lazy val microservice = Project(appName, file("."))
   )
   .settings(publishingSettings: _*)
   .configs(IntegrationTest)
-  .settings(integrationTestSettings(): _*)
+  .settings(inConfig(IntegrationTest)(Defaults.itSettings): _*)
   .settings(resolvers += Resolver.jcenterRepo)
+  .disablePlugins(JUnitXmlReportPlugin)
+
+Keys.fork in Test := true
+javaOptions in Test += "-Dlogger.resource=logback-test.xml"
+parallelExecution in Test := true
+addTestReportOption(Test, "test-reports")
+
+Keys.fork in IntegrationTest := true
+unmanagedSourceDirectories in IntegrationTest := (baseDirectory in IntegrationTest) (base => Seq(base / "it")).value
+javaOptions in IntegrationTest += "-Dlogger.resource=logback-test.xml"
+addTestReportOption(IntegrationTest, "int-test-reports")
+parallelExecution in IntegrationTest := false
