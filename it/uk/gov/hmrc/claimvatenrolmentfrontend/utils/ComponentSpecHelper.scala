@@ -98,7 +98,7 @@ trait ComponentSpecHelper extends AnyWordSpec with Matchers
     )
   }
 
-  val baseUrl: String = "/sole-trader-identification"
+  val baseUrl: String = "/claim-vat-enrolment"
 
   private def buildClient(path: String): WSRequest =
     ws.url(s"http://localhost:$port$baseUrl$path").withFollowRedirects(false)

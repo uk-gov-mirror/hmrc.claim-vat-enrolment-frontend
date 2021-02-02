@@ -16,26 +16,23 @@
 
 package uk.gov.hmrc.claimvatenrolmentfrontend.controllers
 
-import javax.inject.{Inject, Singleton}
+import play.api.test.Helpers._
+import uk.gov.hmrc.claimvatenrolmentfrontend.utils.ComponentSpecHelper
+import uk.gov.hmrc.claimvatenrolmentfrontend.views.CaptureBusinessPostcodeViewTests
 
-import play.api.mvc._
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import uk.gov.hmrc.claimvatenrolmentfrontend.config.AppConfig
-import uk.gov.hmrc.claimvatenrolmentfrontend.views.html.HelloWorldPage
+class CaptureBusinessPostcodeControllerISpec extends ComponentSpecHelper with CaptureBusinessPostcodeViewTests {
 
-import scala.concurrent.Future
+  "GET /business-postcode" should {
+    "return OK" in {
+      lazy val result = get("/business-postcode")
 
-@Singleton
-class HelloWorldController @Inject()(
-  appConfig: AppConfig,
-  mcc: MessagesControllerComponents,
-  helloWorldPage: HelloWorldPage)
-    extends FrontendController(mcc) {
+      result.status mustBe OK
+    }
+    "return a view" should {
+      lazy val result = get("/business-postcode")
 
-  implicit val config: AppConfig = appConfig
-
-  val helloWorld: Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Ok(helloWorldPage()))
+      testCaptureBusinessPostcodeViewTests(result)
+    }
   }
 
 }

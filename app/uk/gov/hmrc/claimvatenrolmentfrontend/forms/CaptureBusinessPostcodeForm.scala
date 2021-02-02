@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,15 +12,21 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import uk.gov.hmrc.claimvatenrolmentfrontend.config.AppConfig
-@import uk.gov.hmrc.claimvatenrolmentfrontend.views.html.templates.govuk_template
+package uk.gov.hmrc.claimvatenrolmentfrontend.forms
 
-@this(layout: govuk_template)
+import play.api.data.Form
+import play.api.data.Forms.text
 
-@(pageTitle: String, heading: String, message: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
-@layout(pageTitle) {
-    <h1 class="govuk-heading-xl">@{Text(heading).asHtml}</h1>
-    <p class="govuk-body">@{Text(message).asHtml}</p>
+object CaptureBusinessPostcodeForm {
+
+  val businessPostcode: String = "business_postcode"
+
+  val form: Form[String] = {
+    Form(
+      businessPostcode -> text
+    )
+  }
+
 }
