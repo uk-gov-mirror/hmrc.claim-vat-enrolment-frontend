@@ -14,8 +14,12 @@
  * limitations under the License.
  *@
 
-@this()
+@this(hmrcHeader: HmrcHeader)
 
-@(msg: String)(implicit messages: Messages)
+@(showSignOut: Boolean = true)(implicit messages: Messages, appConfig: AppConfig)
 
-<h1 class="govuk-heading-l">@messages(msg)</h1>
+@hmrcHeader(uk.gov.hmrc.hmrcfrontend.views.html.components.Header(
+    serviceName = Some(messages("app.title")),
+    containerClasses = "govuk-width-container",
+    signOutHref = if (showSignOut) Some(appConfig.selfBaseUrl) else None
+))

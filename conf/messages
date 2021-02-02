@@ -1,12 +1,30 @@
-service.name = claim-vat-enrolment-frontend
-service.homePageUrl = /claim-vat-enrolment-frontend
-service.text = This is your new service
+app.govuk                                                    = GOV.UK
+app.service_name                                             = Claim VAT Enrolment
+app.title                                                    = Claim VAT Enrolment
+app.title.error_prefix                                       = Error:
+app.common.errorSummaryLabel                                 = There is a problem
+app.common.continue                                          = Continue
+app.common.back                                              = Back
+app.phaseBanner1                                             = This is a new service - your
+app.phaseBanner2                                             = feedback (opens in new tab)
+app.phaseBanner3                                             = will help us to improve it.
+app.getHelp.linkText                                         = Get help with this page (opens in new tab)
+app.date.day                                                     = Day
+app.date.month                                                   = Month
+app.date.year                                                    = Year
 
-## Base
-base.service_name                                           = Claim Vat Enrolment
-base.continue                                               = Continue
+# Errors
+error.invalid_vat_registration_date                          = Enter a date using numbers 0 to 9
+error.no_vat_registration_date_entered                       = Enter your VAT registration date
+error.vat_registration_date_future                           = VAT registration date must be in the past
 
-## Business Postcode Page
+# Capture VAT Registration Date
+vat_registration_date.title                                  = When did you become VAT registered?
+vat_registration_date.heading                                = When did you become VAT registered?
+vat_registration_date.line_1                                 = You can find this date on your VAT registration certificate.
+vat_registration_date.formhint_1                             = For example, 6 4 2017
+
+# Business Postcode Page
 capture-business-postcode.title                             = What is the UK postcode where your business is registered for VAT?
 capture-business-postcode.heading                           = What is the UK postcode where your business is registered for VAT?
 capture-business-postcode.hint                              = For example, AB1 2YZ

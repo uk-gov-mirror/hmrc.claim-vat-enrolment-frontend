@@ -5,5 +5,10 @@
 GET        /language/:lang          uk.gov.hmrc.claimvatenrolmentfrontend.controllers.LanguageSwitchController.switchToLanguage(lang: String)
 GET        /assets/*file            controllers.Assets.versioned(path = "/public", file: Asset)
 
-GET        /business-postcode       uk.gov.hmrc.claimvatenrolmentfrontend.controllers.CaptureBusinessPostcodeController.show()
-POST       /business-postcode       uk.gov.hmrc.claimvatenrolmentfrontend.controllers.CaptureBusinessPostcodeController.submit()
+#  Capture VAT Registration Date
+GET         /vat-registration-date         uk.gov.hmrc.claimvatenrolmentfrontend.controllers.CaptureVatRegistrationDateController.show
+POST        /vat-registration-date         uk.gov.hmrc.claimvatenrolmentfrontend.controllers.CaptureVatRegistrationDateController.submit
+
+#  Capture Business Postcode
+GET         /business-postcode             uk.gov.hmrc.claimvatenrolmentfrontend.controllers.CaptureBusinessPostcodeController.show()
+POST        /business-postcode             uk.gov.hmrc.claimvatenrolmentfrontend.controllers.CaptureBusinessPostcodeController.submit()

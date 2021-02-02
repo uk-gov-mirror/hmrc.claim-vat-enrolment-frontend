@@ -27,10 +27,17 @@ object MessageLookup {
   }
 
   object CaptureBusinessPostcode {
-    val title = "What is the UK postcode where your business is registered for VAT?"
+    val title = "What is the UK postcode where your business is registered for VAT? - Claim VAT Enrolment - GOV.UK"
     val heading = "What is the UK postcode where your business is registered for VAT?"
     val hint = "For example, AB1 2YZ"
     val link_text = "The business does not have a UK postcode"
+  }
+
+  object CaptureVatRegistrationDate {
+    val title = "When did you become VAT registered? - Claim VAT Enrolment - GOV.UK"
+    val heading = "When did you become VAT registered?"
+    val para = "You can find this date on your VAT registration certificate."
+    val hint = "For example, 6 4 2017"
   }
 
 }
