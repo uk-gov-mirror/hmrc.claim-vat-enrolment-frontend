@@ -1,5 +1,5 @@
 import scoverage.ScoverageKeys
-import uk.gov.hmrc.DefaultBuildSettings.{addTestReportOption, integrationTestSettings}
+import uk.gov.hmrc.DefaultBuildSettings.addTestReportOption
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
 
 val appName = "claim-vat-enrolment-frontend"
@@ -7,24 +7,28 @@ val appName = "claim-vat-enrolment-frontend"
 val silencerVersion = "1.7.0"
 
 lazy val scoverageSettings = Seq(
-  ScoverageKeys.coverageExcludedPackages  := "<empty>;Reverse.*;config.*;.*(AuthService|BuildInfo|Routes).*",
-  ScoverageKeys.coverageMinimum           := 100,
-  ScoverageKeys.coverageFailOnMinimum     := false,
-  ScoverageKeys.coverageHighlighting      := true
+  ScoverageKeys.coverageExcludedPackages := "<empty>;Reverse.*;config.*;.*(AuthService|BuildInfo|Routes).*",
+  ScoverageKeys.coverageMinimum := 100,
+  ScoverageKeys.coverageFailOnMinimum := false,
+  ScoverageKeys.coverageHighlighting := true
 )
 
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin)
   .settings(
-    majorVersion                     := 0,
-    scalaVersion                     := "2.12.12",
-    libraryDependencies              ++= AppDependencies.apply(),
+    majorVersion := 0,
+    scalaVersion := "2.12.12",
+    PlayKeys.playDefaultPort := 9936,
+    libraryDependencies ++= AppDependencies.apply(),
     TwirlKeys.templateImports ++= Seq(
       "uk.gov.hmrc.claimvatenrolmentfrontend.config.AppConfig",
       "uk.gov.hmrc.govukfrontend.views.html.components._",
       "uk.gov.hmrc.govukfrontend.views.html.helpers._",
+      "uk.gov.hmrc.govukfrontend.views.html.components.implicits._",
+      "uk.gov.hmrc.hmrcfrontend.views.html.helpers._",
       "uk.gov.hmrc.hmrcfrontend.views.html.components._",
-      "uk.gov.hmrc.hmrcfrontend.views.html.helpers._"
+      "uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._",
+      "uk.gov.hmrc.claimvatenrolmentfrontend.views.helpers.ViewUtils._"
     ),
     // ***************
     // Use the silencer plugin to suppress warnings

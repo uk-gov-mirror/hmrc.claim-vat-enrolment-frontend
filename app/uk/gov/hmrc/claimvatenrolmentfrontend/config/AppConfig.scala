@@ -29,4 +29,11 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   val cy: String            = "cy"
   val defaultLanguage: Lang = Lang(en)
 
+  lazy val selfBaseUrl: String = servicesConfig.baseUrl("self")
+  lazy val selfUrl: String = servicesConfig.getString("microservice.services.self.url")
+//TODO Set correct identifier
+  val contactFormServiceIdentifier = "cve"
+  lazy val contactHost: String = servicesConfig.getString("contact-frontend.host")
+  lazy val reportAProblemNonJSUrl = s"$contactHost/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
+
 }
