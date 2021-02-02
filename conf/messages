@@ -1,3 +1,13 @@
 service.name = claim-vat-enrolment-frontend
 service.homePageUrl = /claim-vat-enrolment-frontend
 service.text = This is your new service
+
+## Base
+base.service_name                                           = Claim Vat Enrolment
+base.continue                                               = Continue
+
+## Business Postcode Page
+capture-business-postcode.title                             = What is the UK postcode where your business is registered for VAT?
+capture-business-postcode.heading                           = What is the UK postcode where your business is registered for VAT?
+capture-business-postcode.hint                              = For example, AB1 2YZ
+capture-business-postcode.link_text                         = The business does not have a UK postcode

@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,15 +12,25 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import uk.gov.hmrc.claimvatenrolmentfrontend.config.AppConfig
+package uk.gov.hmrc.claimvatenrolmentfrontend.assets
 
-@this(layout: Layout)
+object MessageLookup {
 
-@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+  object Base {
+    val continue = "Continue"
+  }
 
-@layout(pageTitle = Some("claim-vat-enrolment-frontend")) {
-    <h1 class="govuk-heading-xl">claim-vat-enrolment-frontend</h1>
-    <p class="govuk-body">@{messages("service.text")}</p>
+  object Header {
+    val signOut = "Sign out"
+  }
+
+  object CaptureBusinessPostcode {
+    val title = "What is the UK postcode where your business is registered for VAT?"
+    val heading = "What is the UK postcode where your business is registered for VAT?"
+    val hint = "For example, AB1 2YZ"
+    val link_text = "The business does not have a UK postcode"
+  }
+
 }
