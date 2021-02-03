@@ -5,6 +5,13 @@
 GET         /language/:lang               uk.gov.hmrc.claimvatenrolmentfrontend.controllers.LanguageSwitchController.switchToLanguage(lang: String)
 GET         /assets/*file                 controllers.Assets.versioned(path = "/public", file: Asset)
 
+#  Index
+GET         /                              uk.gov.hmrc.claimvatenrolmentfrontend.controllers.IndexController.show
+
+# Session
+GET         /keep-alive                    uk.gov.hmrc.claimvatenrolmentfrontend.controllers.SignInOutController.keepAlive
+GET         /sign-out                      uk.gov.hmrc.claimvatenrolmentfrontend.controllers.SignInOutController.signOut
+
 #  Capture VAT Registration Date
 GET         /vat-registration-date        uk.gov.hmrc.claimvatenrolmentfrontend.controllers.CaptureVatRegistrationDateController.show
 POST        /vat-registration-date        uk.gov.hmrc.claimvatenrolmentfrontend.controllers.CaptureVatRegistrationDateController.submit

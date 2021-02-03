@@ -16,11 +16,13 @@
 
 @import uk.gov.hmrc.claimvatenrolmentfrontend.views.html.helpers._
 @import uk.gov.hmrc.claimvatenrolmentfrontend.views.html._
+@import uk.gov.hmrc.claimvatenrolmentfrontend.controllers.routes._
 
 @this(
     hmrcBanner: HmrcBanner,
     govukLayout: GovukLayout,
     hmrcStandardFooter: HmrcStandardFooter,
+    hmrcTimeoutDialog: HmrcTimeoutDialog,
     languageSelect: language_select,
     siteHeader: siteHeader,
     phaseBanner: phaseBanner,
@@ -37,6 +39,13 @@
     <!--[if lte IE 8]><script src='@controllers.routes.Assets.versioned("javascripts/html5shiv.min.js")'></script><![endif]-->
     <!--[if lte IE 8]><link href='@controllers.routes.Assets.versioned("stylesheets/application-ie-8.css")' rel="stylesheet" type="text/css" /><![endif]-->
     <!--[if gt IE 8]><!--><link href='@controllers.routes.Assets.versioned("stylesheets/application.css")' media="all" rel="stylesheet" type="text/css" /><!--<![endif]-->
+    @hmrcTimeoutDialog(TimeoutDialog(
+        language = Some("en"),
+        timeout = Option(appConfig.timeout),
+        countdown = Option(appConfig.countdown),
+        keepAliveUrl = Some(SignInOutController.keepAlive().url),
+        signOutUrl = Some(SignInOutController.signOut().url)
+    ))
 }
 
 @beforeContentBlock = {
