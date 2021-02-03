@@ -29,11 +29,19 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   val cy: String            = "cy"
   val defaultLanguage: Lang = Lang(en)
 
+  lazy val timeout: Int = servicesConfig.getInt("timeout.timeout")
+  lazy val countdown: Int = servicesConfig.getInt("timeout.countdown")
+
   lazy val selfBaseUrl: String = servicesConfig.baseUrl("self")
   lazy val selfUrl: String = servicesConfig.getString("microservice.services.self.url")
-//TODO Set correct identifier
-  val contactFormServiceIdentifier = "cve"
-  lazy val contactHost: String = servicesConfig.getString("contact-frontend.host")
-  lazy val reportAProblemNonJSUrl = s"$contactHost/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
+
+  lazy val exitSurveyServiceIdentifier = "MTDfB-VAT-sign-up"
+  lazy val feedbackFrontendUrl: String = servicesConfig.getString("microservice.services.feedback-frontend.url")
+  lazy val feedbackUrl = s"$feedbackFrontendUrl/feedback/$exitSurveyServiceIdentifier"
+
+  val contactFormServiceIdentifier = "MTDVAT"
+  lazy val contactFrontendUrl: String = servicesConfig.getString("microservice.services.contact-frontend.url")
+  lazy val reportAProblemNonJSUrl = s"$contactFrontendUrl/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
+  lazy val betaFeedbackUrl = s"$contactFrontendUrl/contact/beta-feedback?service=$contactFormServiceIdentifier"
 
 }
