@@ -9,9 +9,9 @@ app.phaseBanner1                                             = This is a new ser
 app.phaseBanner2                                             = feedback (opens in new tab)
 app.phaseBanner3                                             = will help us to improve it.
 app.getHelp.linkText                                         = Get help with this page (opens in new tab)
-app.date.day                                                     = Day
-app.date.month                                                   = Month
-app.date.year                                                    = Year
+app.date.day                                                 = Day
+app.date.month                                               = Month
+app.date.year                                                = Year
 
 # Errors
 error.invalid_vat_registration_date                          = Enter a date using numbers 0 to 9
@@ -29,3 +29,7 @@ capture-business-postcode.title                             = What is the UK pos
 capture-business-postcode.heading                           = What is the UK postcode where your business is registered for VAT?
 capture-business-postcode.hint                              = For example, AB1 2YZ
 capture-business-postcode.link_text                         = The business does not have a UK postcode
+
+# Submitted VAT Return Page
+capture-submitted-vat-return.title                          = Are you currently submitting VAT Returns?
+capture-submitted-vat-return.heading                        = Are you currently submitting VAT Returns?

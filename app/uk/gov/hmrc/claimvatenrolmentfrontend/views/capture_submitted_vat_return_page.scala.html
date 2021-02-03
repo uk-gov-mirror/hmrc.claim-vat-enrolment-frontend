@@ -1,0 +1,63 @@
+@*
+ * Copyright 2021 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.claimvatenrolmentfrontend.views.html.helpers._
+
+@this(
+    layout: templates.layout,
+    h1: h1,
+    formWithCSRF: FormWithCSRF,
+    govukRadios : GovukRadios,
+    govukButton: GovukButton
+)
+
+@(formAction: Call, form: Form[_])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@layout(Some(title(form, "capture-submitted-vat-return.title"))) {
+
+    @formWithCSRF(action = formAction) {
+        @govukRadios(Radios(
+            fieldset = Some(Fieldset(
+                legend = Some(Legend(
+                    content = Text(messages("capture-submitted-vat-return.heading")),
+                    classes = "govuk-fieldset__legend--l",
+                    isPageHeading = true
+                ))
+            )),
+            idPrefix = Some("vat-return"),
+            name = "vat_return",
+            items = Seq(
+                RadioItem(
+                    content = Text("Yes"),
+                    value = Some("yes")
+                ),
+                RadioItem(
+                    content = Text("No"),
+                    value = Some("no")
+                )
+            ),
+            classes = "govuk-radios--inline"
+        ))
+
+        @govukButton(Button(
+            attributes = Map("id" -> "Continue"),
+            classes = "govuk-!-margin-right-1",
+            content = Text(Messages("app.common.continue"))
+        ))
+    }
+
+}
