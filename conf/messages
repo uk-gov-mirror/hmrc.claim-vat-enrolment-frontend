@@ -33,3 +33,11 @@ capture-business-postcode.link_text                         = The business does 
 # Submitted VAT Return Page
 capture-submitted-vat-return.title                          = Are you currently submitting VAT Returns?
 capture-submitted-vat-return.heading                        = Are you currently submitting VAT Returns?
+
+## Box 5 Figure Page
+capture-box5-figure.title                                   = What is your latest VAT Return total?
+capture-box5-figure.heading                                 = What is your latest VAT Return total?
+capture-box5-figure.line_1                                  = You can find this amount in box number 5 on your latest VAT Return submitted to HMRC.
+capture-box5-figure.line_2                                  = The format of this number needs to be two decimal places, for example £123.00
+capture-box5-figure.error.message                           = Enter your latest VAT Return total or Box 5 amount
+
