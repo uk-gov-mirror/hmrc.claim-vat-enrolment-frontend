@@ -10,5 +10,9 @@ GET         /vat-registration-date         uk.gov.hmrc.claimvatenrolmentfrontend
 POST        /vat-registration-date         uk.gov.hmrc.claimvatenrolmentfrontend.controllers.CaptureVatRegistrationDateController.submit
 
 #  Capture Business Postcode
-GET         /business-postcode             uk.gov.hmrc.claimvatenrolmentfrontend.controllers.CaptureBusinessPostcodeController.show()
-POST        /business-postcode             uk.gov.hmrc.claimvatenrolmentfrontend.controllers.CaptureBusinessPostcodeController.submit()
+GET         /business-postcode             uk.gov.hmrc.claimvatenrolmentfrontend.controllers.CaptureBusinessPostcodeController.show
+POST        /business-postcode             uk.gov.hmrc.claimvatenrolmentfrontend.controllers.CaptureBusinessPostcodeController.submit
+
+#  Capture Submitted VAT Return
+GET         /submitted-vat-return          uk.gov.hmrc.claimvatenrolmentfrontend.controllers.CaptureSubmittedVatReturnController.show
+POST        /submitted-vat-return          uk.gov.hmrc.claimvatenrolmentfrontend.controllers.CaptureSubmittedVatReturnController.submit

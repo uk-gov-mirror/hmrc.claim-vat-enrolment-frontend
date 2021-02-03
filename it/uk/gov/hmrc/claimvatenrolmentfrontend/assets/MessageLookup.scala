@@ -40,4 +40,9 @@ object MessageLookup {
     val hint = "For example, 6 4 2017"
   }
 
+  object CaptureSubmittedVATReturn {
+    val title = "Are you currently submitting VAT Returns? - Claim VAT Enrolment - GOV.UK"
+    val heading = "Are you currently submitting VAT Returns?"
+  }
+
 }

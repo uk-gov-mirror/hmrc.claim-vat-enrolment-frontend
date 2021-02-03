@@ -18,31 +18,20 @@ package uk.gov.hmrc.claimvatenrolmentfrontend.controllers
 
 import play.api.test.Helpers._
 import uk.gov.hmrc.claimvatenrolmentfrontend.utils.ComponentSpecHelper
-import uk.gov.hmrc.claimvatenrolmentfrontend.views.CaptureBusinessPostcodeViewTests
+import uk.gov.hmrc.claimvatenrolmentfrontend.views.CaptureSubmittedVatReturnViewTests
 
-class CaptureBusinessPostcodeControllerISpec extends ComponentSpecHelper with CaptureBusinessPostcodeViewTests {
+class CaptureSubmittedVatReturnControllerISpec extends ComponentSpecHelper with CaptureSubmittedVatReturnViewTests {
 
   "GET /business-postcode" should {
     "return OK" in {
-      lazy val result = get("/business-postcode")
+      lazy val result = get("/submitted-vat-return")
 
       result.status mustBe OK
     }
     "return a view" should {
-      lazy val result = get("/business-postcode")
+      lazy val result = get("/submitted-vat-return")
 
-      testCaptureBusinessPostcodeViewTests(result)
-    }
-  }
-
-  "POST /business-postcode" should {
-    "redirect to CaptureSubmittedVatReturn" in {
-      lazy val result = post("/business-postcode")()
-
-      result must have(
-        httpStatus(SEE_OTHER),
-        redirectUri(routes.CaptureSubmittedVatReturnController.show().url)
-      )
+      testCaptureSubmittedVatReturnViewTests(result)
     }
   }
 

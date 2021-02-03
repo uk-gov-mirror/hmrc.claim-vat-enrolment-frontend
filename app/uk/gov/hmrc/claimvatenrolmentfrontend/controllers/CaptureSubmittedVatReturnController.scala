@@ -18,25 +18,25 @@ package uk.gov.hmrc.claimvatenrolmentfrontend.controllers
 
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.claimvatenrolmentfrontend.config.AppConfig
-import uk.gov.hmrc.claimvatenrolmentfrontend.forms.CaptureBusinessPostcodeForm
-import uk.gov.hmrc.claimvatenrolmentfrontend.views.html.capture_business_postcode_page
+import uk.gov.hmrc.claimvatenrolmentfrontend.forms.CaptureSubmittedVatReturnForm
+import uk.gov.hmrc.claimvatenrolmentfrontend.views.html.capture_submitted_vat_return_page
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.Inject
 import scala.concurrent.Future
 
-@Singleton
-class CaptureBusinessPostcodeController @Inject()(mcc: MessagesControllerComponents,
-                                                  view: capture_business_postcode_page
-                                                 )(implicit val config: AppConfig) extends FrontendController(mcc) {
+class CaptureSubmittedVatReturnController @Inject()(mcc: MessagesControllerComponents,
+                                                    view: capture_submitted_vat_return_page
+                                                   )(implicit val config: AppConfig) extends FrontendController(mcc) {
 
   val show: Action[AnyContent] = Action.async {
     implicit request =>
-      Future.successful(Ok(view(routes.CaptureBusinessPostcodeController.submit(), CaptureBusinessPostcodeForm.form)))
+      Future.successful(Ok(view(routes.CaptureSubmittedVatReturnController.submit(), CaptureSubmittedVatReturnForm.form)))
   }
 
   val submit: Action[AnyContent] = Action.async {
     implicit request =>
-      Future.successful(Redirect(routes.CaptureSubmittedVatReturnController.show().url))
+      Future.successful(NotImplemented)
   }
+
 }
