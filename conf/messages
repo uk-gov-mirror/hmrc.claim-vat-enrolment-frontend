@@ -5,6 +5,7 @@ app.title.error_prefix                                       = Error:
 app.common.errorSummaryLabel                                 = There is a problem
 app.common.continue                                          = Continue
 app.common.back                                              = Back
+app.common.change                                            = Change
 app.phaseBanner1                                             = This is a new service - your
 app.phaseBanner2                                             = feedback (opens in new tab)
 app.phaseBanner3                                             = will help us to improve it.
@@ -41,3 +42,12 @@ capture-box5-figure.line_1                                  = You can find this 
 capture-box5-figure.line_2                                  = The format of this number needs to be two decimal places, for example £123.00
 capture-box5-figure.error.message                           = Enter your latest VAT Return total or Box 5 amount
 
+# Check Your Answers Page
+check-your-answers.title                                    = Check Your Answers
+check-your-answers.heading                                  = Check Your Answers
+check-your-answers.vat_number                               = VAT Number
+check-your-answers.registration_date                        = VAT Registration Date
+check-your-answers.business_postcode                        = Where your business is registered for VAT
+check-your-answers.vat_returns                              = You are currently submitting VAT returns
+check-your-answers.box_five                                 = Your VAT return total or Box 5 amount
+check-your-answers.last_return_month                        = The last month in your latest accounting period
