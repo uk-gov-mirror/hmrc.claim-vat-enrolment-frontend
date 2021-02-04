@@ -20,10 +20,16 @@ object MessageLookup {
 
   object Base {
     val continue = "Continue"
+    val change = "Change"
+    val yes = "Yes"
   }
 
   object Header {
     val signOut = "Sign out"
+  }
+
+  object BetaBanner {
+    val title = "This is a new service - your feedback (opens in new tab) will help us to improve it."
   }
 
   object CaptureBusinessPostcode {
@@ -51,6 +57,18 @@ object MessageLookup {
   object CaptureSubmittedVATReturn {
     val title = "Are you currently submitting VAT Returns? - Claim VAT Enrolment - GOV.UK"
     val heading = "Are you currently submitting VAT Returns?"
+  }
+
+  object CheckYourAnswers {
+    val title = "Check Your Answers - Claim VAT Enrolment - GOV.UK"
+    val heading = "Check Your Answers"
+    val vatNumberRow = "VAT Number"
+    val vatRegDateRow = "VAT Registration Date"
+    val businessPostcodeRow = "Where your business is registered for VAT"
+    val vatReturnsRow = "You are currently submitting VAT returns"
+    val boxFiveRow = "Your VAT return total or Box 5 amount"
+    val lastReturnMonthRow = "The last month in your latest accounting period"
+
   }
 
 }
