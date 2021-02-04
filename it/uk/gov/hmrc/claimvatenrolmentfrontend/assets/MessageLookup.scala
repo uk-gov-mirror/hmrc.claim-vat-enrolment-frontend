@@ -59,6 +59,29 @@ object MessageLookup {
     val heading = "Are you currently submitting VAT Returns?"
   }
 
+  object CaptureLastMonthSubmitted {
+    val title = "Select the last month of your latest VAT accounting period - Claim VAT Enrolment - GOV.UK"
+    val heading = "Select the last month of your latest VAT accounting period"
+    val firstLine = "You can find this by signing into your online VAT account. You can also find it in your latest VAT Return submitted to HMRC."
+    val panelFirstHeading = "Latest VAT accounting period, example 1"
+    val panelFirstText = "You submit your VAT Return quarterly (every three months). In the ‘accounting period’ January to March, the last month in that ‘accounting period’ is March. You must therefore select March."
+    val panelSecondHeading = "Latest VAT accounting period, example 2"
+    val panelSecondText = "If you submit your VAT Return monthly, the last accounting period you ‘submitted for’ was January. You must select January."
+    val hint = "Select the last month of your latest VAT accounting period."
+    val januaryLabel= "January"
+    val februaryLabel = "February"
+    val marchLabel = "March"
+    val aprilLabel = "April"
+    val mayLabel = "May"
+    val juneLabel = "June"
+    val julyLabel = "July"
+    val augustLabel = "August"
+    val septemberLabel = "September"
+    val octoberLabel = "October"
+    val novemberLabel = "November"
+    val decemberLabel = "December"
+  }
+
   object CheckYourAnswers {
     val title = "Check Your Answers - Claim VAT Enrolment - GOV.UK"
     val heading = "Check Your Answers"

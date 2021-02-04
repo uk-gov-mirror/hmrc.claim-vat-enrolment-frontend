@@ -16,19 +16,20 @@
 
 package uk.gov.hmrc.claimvatenrolmentfrontend.controllers
 
+import play.api.i18n.Lang
+import play.api.mvc._
 import uk.gov.hmrc.claimvatenrolmentfrontend.config.AppConfig
 import uk.gov.hmrc.play.language.{LanguageController, LanguageUtils}
-import play.api.mvc._
-import play.api.i18n.Lang
-import com.google.inject.Inject
-import javax.inject.Singleton
+
+import javax.inject.{Inject, Singleton}
 
 @Singleton
 class LanguageSwitchController @Inject()(
-  appConfig: AppConfig,
-  languageUtils: LanguageUtils,
-  cc: ControllerComponents)
-    extends LanguageController(languageUtils, cc) {
+                                          appConfig: AppConfig,
+                                          languageUtils: LanguageUtils,
+                                          cc: ControllerComponents)
+  extends LanguageController(languageUtils, cc) {
+
   import appConfig._
 
   override def fallbackURL: String =

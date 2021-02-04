@@ -21,6 +21,16 @@ class CaptureBox5FigureControllerISpec extends ComponentSpecHelper with CaptureB
     }
   }
 
-}
+  "POST /box-5-figure" should {
+    "redirect to CaptureLastMonthSubmitted" in {
+      lazy val result = post("/box-5-figure")()
 
+      result must have(
+        httpStatus(SEE_OTHER),
+        redirectUri(routes.CaptureLastMonthSubmittedController.show().url)
+      )
+    }
+  }
+
+}
 

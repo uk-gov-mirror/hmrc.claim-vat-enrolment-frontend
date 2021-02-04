@@ -19,7 +19,7 @@ package uk.gov.hmrc.claimvatenrolmentfrontend.views
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.libs.ws.WSResponse
-import uk.gov.hmrc.claimvatenrolmentfrontend.assets.MessageLookup.{Base, CaptureBusinessPostcode => messages}
+import uk.gov.hmrc.claimvatenrolmentfrontend.assets.MessageLookup.{Base, BetaBanner, Header, CaptureBusinessPostcode => messages}
 import uk.gov.hmrc.claimvatenrolmentfrontend.utils.ComponentSpecHelper
 import uk.gov.hmrc.claimvatenrolmentfrontend.utils.ViewSpecHelper.ElementExtensions
 
@@ -30,6 +30,13 @@ trait CaptureBusinessPostcodeViewTests {
 
     lazy val doc: Document = {
       Jsoup.parse(result.body)
+    }
+
+    "have a sign out link in the header" in {
+      doc.getSignOutText mustBe Header.signOut
+    }
+    "have the correct beta banner" in {
+      doc.getBanner.text mustBe BetaBanner.title
     }
 
     "have a view with the correct title" in {

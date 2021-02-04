@@ -42,6 +42,28 @@ capture-box5-figure.line_1                                  = You can find this 
 capture-box5-figure.line_2                                  = The format of this number needs to be two decimal places, for example £123.00
 capture-box5-figure.error.message                           = Enter your latest VAT Return total or Box 5 amount
 
+# Last Month Submitted Page
+capture-last-month-submitted.title                          = Select the last month of your latest VAT accounting period
+capture-last-month-submitted.heading                        = Select the last month of your latest VAT accounting period
+capture-last-month-submitted.line_1                         = You can find this by signing into your online VAT account. You can also find it in your latest VAT Return submitted to HMRC.
+capture-last-month-submitted.panel_title_1                  = Latest VAT accounting period, example 1
+capture-last-month-submitted.panel_text_1                   = You submit your VAT Return quarterly (every three months). In the ‘accounting period’ January to March, the last month in that ‘accounting period’ is March. You must therefore select March.
+capture-last-month-submitted.panel_title_2                  = Latest VAT accounting period, example 2
+capture-last-month-submitted.panel_text_2                   = If you submit your VAT Return monthly, the last accounting period you ‘submitted for’ was January. You must select January.
+capture-last-month-submitted.hint                           = Select the last month of your latest VAT accounting period.
+capture-last-month-submitted.jan                            = January
+capture-last-month-submitted.feb                            = February
+capture-last-month-submitted.march                          = March
+capture-last-month-submitted.april                          = April
+capture-last-month-submitted.may                            = May
+capture-last-month-submitted.june                           = June
+capture-last-month-submitted.july                           = July
+capture-last-month-submitted.august                         = August
+capture-last-month-submitted.september                      = September
+capture-last-month-submitted.october                        = October
+capture-last-month-submitted.november                       = November
+capture-last-month-submitted.december                       = December
+
 # Check Your Answers Page
 check-your-answers.title                                    = Check Your Answers
 check-your-answers.heading                                  = Check Your Answers

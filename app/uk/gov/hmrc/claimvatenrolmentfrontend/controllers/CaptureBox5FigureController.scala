@@ -18,11 +18,11 @@ package uk.gov.hmrc.claimvatenrolmentfrontend.controllers
 
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.claimvatenrolmentfrontend.config.AppConfig
+import uk.gov.hmrc.claimvatenrolmentfrontend.forms.CaptureBox5FigureForm
 import uk.gov.hmrc.claimvatenrolmentfrontend.views.html.capture_box5_figure_page
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import javax.inject.{Inject, Singleton}
-import uk.gov.hmrc.claimvatenrolmentfrontend.forms.CaptureBox5FigureForm
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
 
 @Singleton
@@ -37,7 +37,7 @@ class CaptureBox5FigureController @Inject()(mcc: MessagesControllerComponents,
 
   val submit: Action[AnyContent] = Action.async {
     implicit request =>
-      Future.successful(NotImplemented)
+      Future.successful(Redirect(routes.CaptureLastMonthSubmittedController.show().url))
   }
 
 }
