@@ -38,9 +38,9 @@ object VatRegistrationDateForm {
   private val vatRegistrationDateFormatter: Formatter[LocalDate] = new Formatter[LocalDate] {
     override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], LocalDate] = {
 
-      val dayExists = data.getOrElse(dayKey, "").length > 0
-      val monthExists = data.getOrElse(monthKey, "").length > 0
-      val yearExists = data.getOrElse(yearKey, "").length > 0
+      val dayExists = data.getOrElse(dayKey, "").nonEmpty
+      val monthExists = data.getOrElse(monthKey, "").nonEmpty
+      val yearExists = data.getOrElse(yearKey, "").nonEmpty
 
       val dateExists = dayExists && monthExists && yearExists
 
@@ -49,7 +49,7 @@ object VatRegistrationDateForm {
           for {
             day <- data.get(dayKey).map(Integer.parseInt)
             month <- data.get(monthKey).map(Integer.parseInt)
-            year <- data.get(yearKey).map(Integer.parseInt)
+            year <- data.get(yearKey).map(Integer.parseInt).filter(_ > 1900)
           } yield LocalDate.of(year, month, day)
         ).getOrElse(None)
 
