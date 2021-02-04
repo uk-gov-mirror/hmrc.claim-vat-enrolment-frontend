@@ -66,6 +66,16 @@ class CaptureVatRegistrationDateControllerISpec extends ComponentSpecHelper with
       result.status mustBe BAD_REQUEST
     }
 
+    "return a BAD_REQUEST if the year is invalid" in {
+      lazy val result = post("/vat-registration-date")(
+        "date.day" -> "1",
+        "date.month" -> "1",
+        "date.year" -> "94"
+      )
+
+      result.status mustBe BAD_REQUEST
+    }
+
     "return a BAD_REQUEST if the date is in the future" in {
       lazy val result = post("/vat-registration-date")(
         "date.day" -> "1",
