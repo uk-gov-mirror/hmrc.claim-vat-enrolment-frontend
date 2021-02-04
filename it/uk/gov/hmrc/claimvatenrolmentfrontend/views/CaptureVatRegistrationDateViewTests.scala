@@ -17,11 +17,11 @@
 package uk.gov.hmrc.claimvatenrolmentfrontend.views
 
 import org.jsoup.Jsoup
-import play.api.libs.ws.WSResponse
-import uk.gov.hmrc.claimvatenrolmentfrontend.utils.ComponentSpecHelper
 import org.jsoup.nodes.Document
+import play.api.libs.ws.WSResponse
+import uk.gov.hmrc.claimvatenrolmentfrontend.assets.MessageLookup.{Base, BetaBanner, Header, CaptureVatRegistrationDate => messages}
+import uk.gov.hmrc.claimvatenrolmentfrontend.utils.ComponentSpecHelper
 import uk.gov.hmrc.claimvatenrolmentfrontend.utils.ViewSpecHelper.ElementExtensions
-import uk.gov.hmrc.claimvatenrolmentfrontend.assets.MessageLookup.{Base, CaptureVatRegistrationDate => messages}
 
 trait CaptureVatRegistrationDateViewTests {
   this: ComponentSpecHelper =>
@@ -30,6 +30,13 @@ trait CaptureVatRegistrationDateViewTests {
 
     lazy val doc: Document = {
       Jsoup.parse(result.body)
+    }
+
+    "have a sign out link in the header" in {
+      doc.getSignOutText mustBe Header.signOut
+    }
+    "have the correct beta banner" in {
+      doc.getBanner.text mustBe BetaBanner.title
     }
 
     "have a view with the correct title" in {

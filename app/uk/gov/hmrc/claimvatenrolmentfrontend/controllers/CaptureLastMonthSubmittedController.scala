@@ -18,26 +18,26 @@ package uk.gov.hmrc.claimvatenrolmentfrontend.controllers
 
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.claimvatenrolmentfrontend.config.AppConfig
-import uk.gov.hmrc.claimvatenrolmentfrontend.forms.CaptureSubmittedVatReturnForm
-import uk.gov.hmrc.claimvatenrolmentfrontend.views.html.capture_submitted_vat_return_page
+import uk.gov.hmrc.claimvatenrolmentfrontend.forms.CaptureLastMonthSubmittedForm
+import uk.gov.hmrc.claimvatenrolmentfrontend.views.html.capture_last_month_submitted_page
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
 
 @Singleton
-class CaptureSubmittedVatReturnController @Inject()(mcc: MessagesControllerComponents,
-                                                    view: capture_submitted_vat_return_page
+class CaptureLastMonthSubmittedController @Inject()(mcc: MessagesControllerComponents,
+                                                    view: capture_last_month_submitted_page
                                                    )(implicit val config: AppConfig) extends FrontendController(mcc) {
 
   val show: Action[AnyContent] = Action.async {
     implicit request =>
-      Future.successful(Ok(view(routes.CaptureSubmittedVatReturnController.submit(), CaptureSubmittedVatReturnForm.form)))
+      Future.successful(Ok(view(routes.CaptureLastMonthSubmittedController.submit(), CaptureLastMonthSubmittedForm.form)))
   }
 
   val submit: Action[AnyContent] = Action.async {
     implicit request =>
-      Future.successful(Redirect(routes.CaptureBox5FigureController.show().url))
+      Future.successful(Redirect(routes.CheckYourAnswersController.show().url))
   }
 
 }

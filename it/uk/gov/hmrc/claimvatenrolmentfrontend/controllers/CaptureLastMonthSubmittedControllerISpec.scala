@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,35 +16,24 @@
 
 package uk.gov.hmrc.claimvatenrolmentfrontend.controllers
 
-import play.api.libs.ws.WSResponse
 import play.api.test.Helpers._
 import uk.gov.hmrc.claimvatenrolmentfrontend.utils.ComponentSpecHelper
-import uk.gov.hmrc.claimvatenrolmentfrontend.views.CheckYourAnswersViewTests
+import uk.gov.hmrc.claimvatenrolmentfrontend.views.CaptureLastMonthSubmittedViewTests
 
+class CaptureLastMonthSubmittedControllerISpec extends ComponentSpecHelper with CaptureLastMonthSubmittedViewTests {
 
-class CheckYourAnswersControllerISpec extends ComponentSpecHelper with CheckYourAnswersViewTests {
-
-  "GET /check-your-answers-vat" should {
+  "GET /last-vat-return-date" should {
     "return OK" in {
-      lazy val result: WSResponse = get("/check-your-answers-vat")
+      lazy val result = get("/last-vat-return-date")
 
       result.status mustBe OK
     }
+    "return the correct view" should {
+      lazy val result = get("/last-vat-return-date")
 
-    "return a view" should {
-      lazy val result = get("/check-your-answers-vat")
-
-      testCheckYourAnswersView(result)
+      testCaptureLastMonthSubmittedViewTests(result)
     }
   }
 
-  "POST /check-your-answers-vat" should {
-    "return Not Implemented" in {
-
-      lazy val result = post("/check-your-answers-vat")()
-
-      result.status mustBe NOT_IMPLEMENTED
-    }
-  }
 
 }

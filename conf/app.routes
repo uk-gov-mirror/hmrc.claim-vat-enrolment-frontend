@@ -28,6 +28,10 @@ POST        /box-5-figure                   uk.gov.hmrc.claimvatenrolmentfronten
 GET        /submitted-vat-return            uk.gov.hmrc.claimvatenrolmentfrontend.controllers.CaptureSubmittedVatReturnController.show
 POST       /submitted-vat-return            uk.gov.hmrc.claimvatenrolmentfrontend.controllers.CaptureSubmittedVatReturnController.submit
 
+#  Capture Last Month Submitted
+GET         /last-vat-return-date           uk.gov.hmrc.claimvatenrolmentfrontend.controllers.CaptureLastMonthSubmittedController.show
+POST        /last-vat-return-date           uk.gov.hmrc.claimvatenrolmentfrontend.controllers.CaptureLastMonthSubmittedController.submit
+
 #  Check Your Answers
-GET        /check-your-answers              uk.gov.hmrc.claimvatenrolmentfrontend.controllers.CheckYourAnswersController.show
-POST       /check-your-answers              uk.gov.hmrc.claimvatenrolmentfrontend.controllers.CheckYourAnswersController.submit
+GET        /check-your-answers-vat          uk.gov.hmrc.claimvatenrolmentfrontend.controllers.CheckYourAnswersController.show
+POST       /check-your-answers-vat          uk.gov.hmrc.claimvatenrolmentfrontend.controllers.CheckYourAnswersController.submit
