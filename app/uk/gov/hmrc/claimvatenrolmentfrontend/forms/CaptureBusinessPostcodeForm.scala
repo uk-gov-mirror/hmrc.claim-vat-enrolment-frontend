@@ -17,16 +17,37 @@
 package uk.gov.hmrc.claimvatenrolmentfrontend.forms
 
 import play.api.data.Form
-import play.api.data.Forms.text
+import play.api.data.Forms._
+import play.api.data.validation.Constraint
+import uk.gov.hmrc.claimvatenrolmentfrontend.forms.utils.ConstraintUtil.ConstraintUtil
+import uk.gov.hmrc.claimvatenrolmentfrontend.forms.utils.ValidationHelper.{validate, validateNot}
 
 object CaptureBusinessPostcodeForm {
 
   val businessPostcode: String = "business_postcode"
+  val postCodeRegex = "^[A-Z]{1,2}[0-9][0-9A-Z]? [0-9][A-Z]{2}$"
+
+  val businessPostcodeEmpty: Constraint[String] = Constraint("business_postcode.not_entered")(
+    businessPostcode => validate(
+      constraint = businessPostcode.isEmpty,
+      errMsg = "capture-business-postcode.emptyPostcode.error"
+    )
+  )
+
+  val businessPostcodeFormat: Constraint[String] = Constraint("business_postcode.invalid_format")(
+    businessPostcode => validateNot(
+      constraint = businessPostcode.toUpperCase matches postCodeRegex,
+      errMsg = "capture-business-postcode.invalidPostcode.error"
+    )
+  )
 
   val form: Form[String] = {
     Form(
-      businessPostcode -> text
-    )
+      businessPostcode -> text.verifying(
+        businessPostcodeEmpty andThen
+          businessPostcodeFormat
+      ))
+
   }
 
 }

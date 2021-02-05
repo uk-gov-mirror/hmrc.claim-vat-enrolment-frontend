@@ -17,16 +17,19 @@
 @import uk.gov.hmrc.claimvatenrolmentfrontend.views.html.helpers._
 
 @this(
-    layout: templates.layout,
-    h1: h1,
-    formWithCSRF: FormWithCSRF,
-    inputText: inputText,
-    govukButton: GovukButton
+        layout: templates.layout,
+        errorSummary: errorSummary,
+        h1: h1,
+        formWithCSRF: FormWithCSRF,
+        inputText: inputText,
+        govukButton: GovukButton
 )
 
 @(formAction: Call, form: Form[String])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(Some(title(form, "capture-business-postcode.title"))) {
+
+    @errorSummary(form.errors)
 
     @h1(messages("capture-business-postcode.heading"))
 
@@ -42,7 +45,8 @@
         )
 
         <div class="govuk-body">
-            <a class="govuk-link" id="no-uk-postcode" href="">@messages("capture-business-postcode.link_text")</a>
+            <a class="govuk-link" id="no-uk-postcode" href="@uk.gov.hmrc.claimvatenrolmentfrontend.controllers.routes.CaptureSubmittedVatReturnController.show()">
+            @messages("capture-business-postcode.link_text")</a>
         </div>
 
         @govukButton(Button(
