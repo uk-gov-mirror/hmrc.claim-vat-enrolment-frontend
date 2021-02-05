@@ -37,13 +37,31 @@ class CaptureBusinessPostcodeControllerISpec extends ComponentSpecHelper with Ca
 
   "POST /business-postcode" should {
     "redirect to CaptureSubmittedVatReturn" in {
-      lazy val result = post("/business-postcode")()
+      lazy val result = post("/business-postcode")(
+        "business_postcode" -> "ZZ1 1ZZ"
+      )
 
       result must have(
         httpStatus(SEE_OTHER),
         redirectUri(routes.CaptureSubmittedVatReturnController.show().url)
       )
     }
+
+    "return a BAD_REQUEST if the postcode is missing" in {
+      lazy val result = post("/business-postcode")(
+        "business_postcode" -> ""
+      )
+
+      result.status mustBe BAD_REQUEST
+    }
+
+    "return a BAD_REQUEST if the postcode is invalid" in {
+      lazy val result = post("/business-postcode")(
+        "business_postcode" -> "111 111"
+      )
+
+      result.status mustBe BAD_REQUEST
+      }
   }
 
 }
