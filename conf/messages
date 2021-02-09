@@ -18,6 +18,7 @@ app.date.year                                                = Year
 error.invalid_vat_registration_date                          = Enter a real date
 error.no_vat_registration_date_entered                       = Enter your VAT registration date
 error.vat_registration_date_future                           = VAT registration date must be in the past
+error.capture_submitted_vat_return                           = Select yes if you are submitting VAT returns
 
 # Capture VAT Registration Date
 vat_registration_date.title                                  = When did you become VAT registered?

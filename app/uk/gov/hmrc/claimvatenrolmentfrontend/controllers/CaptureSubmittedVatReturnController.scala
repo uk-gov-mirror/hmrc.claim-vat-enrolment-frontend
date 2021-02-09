@@ -37,7 +37,13 @@ class CaptureSubmittedVatReturnController @Inject()(mcc: MessagesControllerCompo
 
   val submit: Action[AnyContent] = Action.async {
     implicit request =>
+      CaptureSubmittedVatReturnForm.form.bindFromRequest.fold(
+        formWithErrors => Future.successful(
+          BadRequest(view(routes.CaptureSubmittedVatReturnController.submit(), formWithErrors))
+        ),
+        submittedReturn =>
       Future.successful(Redirect(routes.CaptureBox5FigureController.show().url))
+      )
   }
 
 }

@@ -20,6 +20,7 @@
 @this(
     layout: templates.layout,
     h1: h1,
+    errorSummary: errorSummary,
     formWithCSRF: FormWithCSRF,
     govukRadios : GovukRadios,
     govukButton: GovukButton
@@ -28,6 +29,8 @@
 @(formAction: Call, form: Form[_])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(Some(title(form, "capture-submitted-vat-return.title"))) {
+
+    @errorSummary(form.errors)
 
     @formWithCSRF(action = formAction) {
         @govukRadios(Radios(
@@ -38,7 +41,7 @@
                     isPageHeading = true
                 ))
             )),
-            idPrefix = Some("vat-return"),
+            idPrefix = Some("vat_return"),
             name = "vat_return",
             items = Seq(
                 RadioItem(
@@ -50,7 +53,8 @@
                     value = Some("no")
                 )
             ),
-            classes = "govuk-radios--inline"
+            classes = "govuk-radios--inline",
+            errorMessage = form("vat_return").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
 
         @govukButton(Button(
