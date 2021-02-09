@@ -22,7 +22,7 @@ import uk.gov.hmrc.claimvatenrolmentfrontend.views.CaptureSubmittedVatReturnView
 
 class CaptureSubmittedVatReturnControllerISpec extends ComponentSpecHelper with CaptureSubmittedVatReturnViewTests {
 
-  "GET /business-postcode" should {
+  "GET /submitted-vat-return" should {
     "return OK" in {
       lazy val result = get("/submitted-vat-return")
 
@@ -32,6 +32,25 @@ class CaptureSubmittedVatReturnControllerISpec extends ComponentSpecHelper with 
       lazy val result = get("/submitted-vat-return")
 
       testCaptureSubmittedVatReturnViewTests(result)
+    }
+  }
+
+  "POST /submitted-vat-return" should {
+    "redirect to CaptureBox5Figure" in {
+      lazy val result = post("/submitted-vat-return")("vat_return" -> "yes")
+
+      result must have(
+        httpStatus(SEE_OTHER),
+        redirectUri(routes.CaptureBox5FigureController.show().url)
+      )
+    }
+
+    "return a BAD_REQUEST if the user has not given an answer" in {
+      lazy val result = post("/submitted-vat-return")(
+        "vat_return" -> ""
+      )
+
+      result.status mustBe BAD_REQUEST
     }
   }
 

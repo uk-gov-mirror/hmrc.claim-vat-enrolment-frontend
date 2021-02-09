@@ -16,14 +16,28 @@
 
 package uk.gov.hmrc.claimvatenrolmentfrontend.forms
 
-import play.api.data.Form
-import play.api.data.Forms.boolean
+import play.api.data.{FieldMapping, Form, FormError}
+import play.api.data.Forms.{boolean, of}
+import play.api.data.format.Formatter
 
 object CaptureSubmittedVatReturnForm {
 
-  val form: Form[Boolean] =
+  def booleanFormatter(errorKey: String): Formatter[Boolean] =
+    new Formatter[Boolean] {
+
+      override def bind(key: String, data: Map[String, String]) =
+        data.get(key) match {
+          case None | Some("") => Left(Seq(FormError(key, errorKey)))
+          case Some("yes") => Right(true)
+          case Some("no") => Right(false)
+          case _ => Left(Seq(FormError(key, errorKey)))
+        }
+      def unbind(key: String, value: Boolean) = Map(key -> value.toString)
+    }
+
+ val form: Form[Boolean] =
     Form(
-      "value" -> boolean
+      "vat_return" -> of(booleanFormatter("error.capture_submitted_vat_return"))
     )
 
 }
