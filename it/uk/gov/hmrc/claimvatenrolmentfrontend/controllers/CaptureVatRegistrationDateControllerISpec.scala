@@ -50,13 +50,14 @@ class CaptureVatRegistrationDateControllerISpec extends ComponentSpecHelper with
       )
     }
 
-    "return a BAD_REQUEST if the date is missing" in {
+    "return a BAD_REQUEST if the date is missing and show the correct errors" should {
       lazy val result = post("/vat-registration-date")()
 
       result.status mustBe BAD_REQUEST
+      testCaptureVatRegistrationDateMissingErrorViewTests(result)
     }
 
-    "return a BAD_REQUEST if the date is invalid" in {
+    "return a BAD_REQUEST if the date is invalid and show the correct errors" should {
       lazy val result = post("/vat-registration-date")(
         "date.day" -> "1",
         "date.month" -> "1",
@@ -64,9 +65,10 @@ class CaptureVatRegistrationDateControllerISpec extends ComponentSpecHelper with
       )
 
       result.status mustBe BAD_REQUEST
+      testCaptureVatRegistrationDateInvalidErrorViewTests(result)
     }
 
-    "return a BAD_REQUEST if the year is invalid" in {
+    "return a BAD_REQUEST if the year is invalid and show the correct errors" should {
       lazy val result = post("/vat-registration-date")(
         "date.day" -> "1",
         "date.month" -> "1",
@@ -74,9 +76,10 @@ class CaptureVatRegistrationDateControllerISpec extends ComponentSpecHelper with
       )
 
       result.status mustBe BAD_REQUEST
+      testCaptureVatRegistrationDateInvalidErrorViewTests(result)
     }
 
-    "return a BAD_REQUEST if the date is in the future" in {
+    "return a BAD_REQUEST if the date is in the future and show the correct errors" should {
       lazy val result = post("/vat-registration-date")(
         "date.day" -> "1",
         "date.month" -> "1",
@@ -84,6 +87,7 @@ class CaptureVatRegistrationDateControllerISpec extends ComponentSpecHelper with
       )
 
       result.status mustBe BAD_REQUEST
+      testCaptureVatRegistrationDateFutureErrorViewTests(result)
     }
   }
 }

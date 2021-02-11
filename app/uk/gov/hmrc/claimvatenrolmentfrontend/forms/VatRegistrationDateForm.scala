@@ -31,9 +31,9 @@ object VatRegistrationDateForm {
   val monthKey = "date.month"
   val yearKey = "date.year"
 
-  val missingDateErrorKey = "error.no_vat_registration_date_entered"
-  val invalidDateErrorKey = "error.invalid_vat_registration_date"
-  val futureDateErrorKey = "error.vat_registration_date_future"
+  val missingDateErrorKey = "vat_registration_date.error.no_date"
+  val invalidDateErrorKey = "vat_registration_date.error.invalid_date"
+  val futureDateErrorKey = "vat_registration_date.error.future_date"
 
   private val vatRegistrationDateFormatter: Formatter[LocalDate] = new Formatter[LocalDate] {
     override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], LocalDate] = {

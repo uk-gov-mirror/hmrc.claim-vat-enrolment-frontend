@@ -45,12 +45,13 @@ class CaptureSubmittedVatReturnControllerISpec extends ComponentSpecHelper with 
       )
     }
 
-    "return a BAD_REQUEST if the user has not given an answer" in {
+    "return a BAD_REQUEST if the user has not given an answer and the correct errors" should {
       lazy val result = post("/submitted-vat-return")(
         "vat_return" -> ""
       )
 
       result.status mustBe BAD_REQUEST
+      testCaptureSubmittedVatReturnErrorViewTests(result)
     }
   }
 

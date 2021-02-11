@@ -14,29 +14,27 @@ app.date.day                                                 = Day
 app.date.month                                               = Month
 app.date.year                                                = Year
 
-# Errors
-error.invalid_vat_registration_date                          = Enter a real date
-error.no_vat_registration_date_entered                       = Enter your VAT registration date
-error.vat_registration_date_future                           = VAT registration date must be in the past
-error.capture_submitted_vat_return                           = Select yes if you are submitting VAT returns
-
 # Capture VAT Registration Date
 vat_registration_date.title                                  = When did you become VAT registered?
 vat_registration_date.heading                                = When did you become VAT registered?
 vat_registration_date.line_1                                 = You can find this date on your VAT registration certificate.
 vat_registration_date.formhint_1                             = For example, 6 4 2017
+vat_registration_date.error.invalid_date                     = Enter a real date
+vat_registration_date.error.no_date                          = Enter your VAT registration date
+vat_registration_date.error.future_date                      = VAT registration date must be in the past
 
 # Business Postcode Page
 capture-business-postcode.title                             = What is the UK postcode where your business is registered for VAT?
 capture-business-postcode.heading                           = What is the UK postcode where your business is registered for VAT?
 capture-business-postcode.hint                              = For example, AB1 2YZ
 capture-business-postcode.link_text                         = The business does not have a UK postcode
-capture-business-postcode.emptyPostcode.error               = Enter the postcode where your business is registered for VAT
-capture-business-postcode.invalidPostcode.error             = Enter a UK postcode in the correct format
+capture-business-postcode.error.emptyPostcode               = Enter the postcode where your business is registered for VAT
+capture-business-postcode.error.invalidPostcode             = Enter a UK postcode in the correct format
 
 # Submitted VAT Return Page
 capture-submitted-vat-return.title                          = Are you currently submitting VAT Returns?
 capture-submitted-vat-return.heading                        = Are you currently submitting VAT Returns?
+capture-submitted-vat-return.error.message                  = Select yes if you are submitting VAT returns
 
 ## Box 5 Figure Page
 capture-box5-figure.title                                   = What is your latest VAT Return total?
@@ -66,6 +64,7 @@ capture-last-month-submitted.september                      = September
 capture-last-month-submitted.october                        = October
 capture-last-month-submitted.november                       = November
 capture-last-month-submitted.december                       = December
+capture-last-month-submitted.error.message                  = Select a month
 
 # Check Your Answers Page
 check-your-answers.title                                    = Check Your Answers

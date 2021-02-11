@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.claimvatenrolmentfrontend.forms
+package uk.gov.hmrc.claimvatenrolmentfrontend.models
 
-import play.api.data.Form
-import play.api.data.Forms._
-import uk.gov.hmrc.claimvatenrolmentfrontend.forms.utils.MonthMapping.monthMapping
-import uk.gov.hmrc.claimvatenrolmentfrontend.models.Month
+sealed trait Month
 
-object CaptureLastMonthSubmittedForm {
-
-  val returnDate: String = "return_date"
-
-  val form: Form[Month] = Form(
-    single(returnDate -> of(monthMapping("capture-last-month-submitted.error.message")))
-  )
-
-}
+case object January extends Month
+case object February extends Month
+case object March extends Month
+case object April extends Month
+case object May extends Month
+case object June extends Month
+case object July extends Month
+case object August extends Month
+case object September extends Month
+case object October extends Month
+case object November extends Month
+case object December extends Month
