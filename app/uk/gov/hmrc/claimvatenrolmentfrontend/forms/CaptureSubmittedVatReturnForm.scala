@@ -16,9 +16,9 @@
 
 package uk.gov.hmrc.claimvatenrolmentfrontend.forms
 
-import play.api.data.{FieldMapping, Form, FormError}
-import play.api.data.Forms.{boolean, of}
+import play.api.data.Forms.of
 import play.api.data.format.Formatter
+import play.api.data.{Form, FormError}
 
 object CaptureSubmittedVatReturnForm {
 
@@ -32,12 +32,13 @@ object CaptureSubmittedVatReturnForm {
           case Some("no") => Right(false)
           case _ => Left(Seq(FormError(key, errorKey)))
         }
+
       def unbind(key: String, value: Boolean) = Map(key -> value.toString)
     }
 
- val form: Form[Boolean] =
+  val form: Form[Boolean] =
     Form(
-      "vat_return" -> of(booleanFormatter("error.capture_submitted_vat_return"))
+      "vat_return" -> of(booleanFormatter("capture-submitted-vat-return.error.message"))
     )
 
 }

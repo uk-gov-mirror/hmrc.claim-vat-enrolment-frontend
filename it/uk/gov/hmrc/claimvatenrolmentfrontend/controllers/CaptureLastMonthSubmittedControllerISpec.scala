@@ -35,5 +35,26 @@ class CaptureLastMonthSubmittedControllerISpec extends ComponentSpecHelper with 
     }
   }
 
+  "POST /last-vat-return-date" should {
+    "redirect to Check Your Answers page if a month is selected" in {
+      lazy val result = post("/last-vat-return-date")("return_date" -> "January")
+
+      result must have(
+        httpStatus(SEE_OTHER),
+        redirectUri(routes.CheckYourAnswersController.show().url)
+      )
+    }
+    "return BAD_REQUEST if no month is selected" in {
+      lazy val result = post("/last-vat-return-date")()
+
+      result.status mustBe BAD_REQUEST
+    }
+    "return the correct view with error messages" should {
+      lazy val result = post("/last-vat-return-date")()
+
+      testCaptureLastMonthSubmittedErrorViewTests(result)
+    }
+  }
+
 
 }

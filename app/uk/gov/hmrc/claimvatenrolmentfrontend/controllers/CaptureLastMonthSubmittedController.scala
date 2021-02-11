@@ -37,7 +37,13 @@ class CaptureLastMonthSubmittedController @Inject()(mcc: MessagesControllerCompo
 
   val submit: Action[AnyContent] = Action.async {
     implicit request =>
-      Future.successful(Redirect(routes.CheckYourAnswersController.show().url))
+      CaptureLastMonthSubmittedForm.form.bindFromRequest.fold(
+        formWithErrors => Future.successful(
+          BadRequest(view(routes.CaptureLastMonthSubmittedController.submit(), formWithErrors))
+        ),
+        lastMonthSubmitted =>
+          Future.successful(Redirect(routes.CheckYourAnswersController.show().url))
+      )
   }
 
 }

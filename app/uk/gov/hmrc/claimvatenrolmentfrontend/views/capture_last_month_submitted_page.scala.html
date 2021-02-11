@@ -20,6 +20,7 @@
 
 @this(
   layout: templates.layout,
+  errorSummary: errorSummary,
   h1: h1,
   p: p,
   strong: strong,
@@ -39,6 +40,8 @@
 }
 
 @layout(Some(title(form, "capture-last-month-submitted.title"))) {
+
+    @errorSummary(form.errors)
 
     @h1(messages("capture-last-month-submitted.heading"))
 
@@ -122,7 +125,8 @@
                     content = Text(messages("capture-last-month-submitted.december")),
                     value = Some("December")
                 )
-            )
+            ),
+            errorMessage = form("return_date").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
          ))
 
         @govukButton(Button(

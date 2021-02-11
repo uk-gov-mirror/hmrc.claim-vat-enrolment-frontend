@@ -22,6 +22,12 @@ object MessageLookup {
     val continue = "Continue"
     val change = "Change"
     val yes = "Yes"
+
+    object Error {
+      val title = "There is a problem"
+      val error = "Error: "
+    }
+
   }
 
   object Header {
@@ -44,6 +50,13 @@ object MessageLookup {
     val heading = "When did you become VAT registered?"
     val para = "You can find this date on your VAT registration certificate."
     val hint = "For example, 6 4 2017"
+
+    object Error {
+      val invalidDate = "Enter a real date"
+      val noDate = "Enter your VAT registration date"
+      val futureDate = "VAT registration date must be in the past"
+    }
+
   }
 
   object CaptureBox5Figure {
@@ -57,6 +70,11 @@ object MessageLookup {
   object CaptureSubmittedVATReturn {
     val title = "Are you currently submitting VAT Returns? - Claim VAT Enrolment - GOV.UK"
     val heading = "Are you currently submitting VAT Returns?"
+
+    object Error {
+      val errorMessage = "Select yes if you are submitting VAT returns"
+    }
+
   }
 
   object CaptureLastMonthSubmitted {
@@ -68,7 +86,7 @@ object MessageLookup {
     val panelSecondHeading = "Latest VAT accounting period, example 2"
     val panelSecondText = "If you submit your VAT Return monthly, the last accounting period you ‘submitted for’ was January. You must select January."
     val hint = "Select the last month of your latest VAT accounting period."
-    val januaryLabel= "January"
+    val januaryLabel = "January"
     val februaryLabel = "February"
     val marchLabel = "March"
     val aprilLabel = "April"
@@ -80,6 +98,11 @@ object MessageLookup {
     val octoberLabel = "October"
     val novemberLabel = "November"
     val decemberLabel = "December"
+
+    object Error {
+      val noMonthSelected = "Select a month"
+    }
+
   }
 
   object CheckYourAnswers {

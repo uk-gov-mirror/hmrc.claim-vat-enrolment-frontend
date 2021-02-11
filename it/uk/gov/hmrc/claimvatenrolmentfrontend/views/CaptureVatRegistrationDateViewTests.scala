@@ -60,4 +60,52 @@ trait CaptureVatRegistrationDateViewTests {
     }
   }
 
+  def testCaptureVatRegistrationDateInvalidErrorViewTests(result: => WSResponse): Unit = {
+
+    lazy val doc: Document = {
+      Jsoup.parse(result.body)
+    }
+
+    "correctly display the error summary" in {
+      doc.getErrorSummaryTitle.text mustBe Base.Error.title
+      doc.getErrorSummaryBody.text mustBe messages.Error.invalidDate
+    }
+
+    "correctly display the field error" in {
+      doc.getFieldErrorMessage.text mustBe Base.Error.error + messages.Error.invalidDate
+    }
+  }
+
+  def testCaptureVatRegistrationDateMissingErrorViewTests(result: => WSResponse): Unit = {
+
+    lazy val doc: Document = {
+      Jsoup.parse(result.body)
+    }
+
+    "correctly display the error summary" in {
+      doc.getErrorSummaryTitle.text mustBe Base.Error.title
+      doc.getErrorSummaryBody.text mustBe messages.Error.noDate
+    }
+
+    "correctly display the field error" in {
+      doc.getFieldErrorMessage.text mustBe Base.Error.error + messages.Error.noDate
+    }
+  }
+
+  def testCaptureVatRegistrationDateFutureErrorViewTests(result: => WSResponse): Unit = {
+
+    lazy val doc: Document = {
+      Jsoup.parse(result.body)
+    }
+
+    "correctly display the error summary" in {
+      doc.getErrorSummaryTitle.text mustBe Base.Error.title
+      doc.getErrorSummaryBody.text mustBe messages.Error.futureDate
+    }
+
+    "correctly display the field error" in {
+      doc.getFieldErrorMessage.text mustBe Base.Error.error + messages.Error.futureDate
+    }
+  }
+
 }
