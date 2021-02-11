@@ -16,13 +16,13 @@
 
 package uk.gov.hmrc.claimvatenrolmentfrontend.controllers
 
+import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.claimvatenrolmentfrontend.config.AppConfig
 import uk.gov.hmrc.claimvatenrolmentfrontend.forms.CaptureBox5FigureForm
 import uk.gov.hmrc.claimvatenrolmentfrontend.views.html.capture_box5_figure_page
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
-import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
 
 @Singleton
@@ -30,14 +30,19 @@ class CaptureBox5FigureController @Inject()(mcc: MessagesControllerComponents,
                                             view: capture_box5_figure_page
                                            )(implicit val config: AppConfig) extends FrontendController(mcc) {
 
-  val show: Action[AnyContent] = Action.async {
+  def show: Action[AnyContent] = Action.async {
     implicit request =>
       Future.successful(Ok(view(CaptureBox5FigureForm.form, routes.CaptureBox5FigureController.submit())))
   }
 
-  val submit: Action[AnyContent] = Action.async {
+  def submit: Action[AnyContent] = Action.async {
     implicit request =>
-      Future.successful(Redirect(routes.CaptureLastMonthSubmittedController.show().url))
+      CaptureBox5FigureForm.form.bindFromRequest.fold(
+        formWithErrors => Future.successful(
+          BadRequest(view(formWithErrors, routes.CaptureBox5FigureController.submit()))
+        ),
+        box5Figure =>
+          Future.successful(Redirect(routes.CaptureLastMonthSubmittedController.show().url))
+      )
   }
-
 }

@@ -17,15 +17,42 @@
 package uk.gov.hmrc.claimvatenrolmentfrontend.forms
 
 import play.api.data.Form
-import play.api.data.Forms.text
+import play.api.data.Forms._
+import play.api.data.validation.Constraint
+import uk.gov.hmrc.claimvatenrolmentfrontend.forms.utils.ConstraintUtil.ConstraintUtil
+import uk.gov.hmrc.claimvatenrolmentfrontend.forms.utils.ValidationHelper.{validate, validateNot}
 
 object CaptureBox5FigureForm {
+
   val box5Figure: String = "box5_figure"
+  val box5FigureRegex = "^-?([0-9]*)([.])([0-9]{2})*$"
+  val defaultMaxLength = 14
+  val negativeValueMaxLength = 15
+
+  val box5FigureEmpty: Constraint[String] = Constraint("box5_figure.empty")(
+    box5Figure => validate(
+      constraint = box5Figure.isEmpty,
+      errMsg = "capture_box5_figure.empty.error"
+    )
+  )
+
+  val box5FigureLength: Constraint[String] = Constraint("box5_figure.invalid_length")(
+    box5Figure => validateNot(
+      constraint = if (box5Figure.contains("-")) box5Figure.length <= negativeValueMaxLength else box5Figure.length <= defaultMaxLength,
+      errMsg = "capture_box5_figure.invalid_length.error"
+    )
+  )
+
+  val box5FigureFormat: Constraint[String] = Constraint("box5_figure.invalid_format")(
+    box5Figure => validateNot(
+      constraint = box5Figure matches box5FigureRegex,
+      errMsg = "capture_box5_figure.invalid_format.error"
+    )
+  )
 
   val form: Form[String] = {
     Form(
-      box5Figure -> text
+      box5Figure -> text.verifying(box5FigureEmpty andThen box5FigureLength andThen box5FigureFormat)
     )
   }
-
 }
