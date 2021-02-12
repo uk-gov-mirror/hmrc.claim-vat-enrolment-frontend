@@ -26,11 +26,11 @@
         errorSummary: errorSummary
 )
 
-@(captureBox5FigureForm: Form[String], formAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[String], formAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@layout(Some(title(captureBox5FigureForm, "capture-box5-figure.title"))) {
+@layout(Some(title(form, "capture-box5-figure.title"))) {
 
-    @errorSummary(captureBox5FigureForm.errors)
+    @errorSummary(form.errors)
 
     @h1(messages("capture-box5-figure.heading"))
 
@@ -43,7 +43,7 @@
 
     @formWithCSRF(action = formAction) {
         @inputCurrency(
-            form = captureBox5FigureForm,
+            form = form,
             id = "box5_figure",
             name = "box5_figure",
             label = Some(messages("capture-box5-figure.heading")),
