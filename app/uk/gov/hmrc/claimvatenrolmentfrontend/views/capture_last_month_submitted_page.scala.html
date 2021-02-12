@@ -41,7 +41,7 @@
 
 @layout(Some(title(form, "capture-last-month-submitted.title"))) {
 
-    @errorSummary(form.errors)
+    @errorSummary(form.errors, errorId = Some("January"))
 
     @h1(messages("capture-last-month-submitted.heading"))
 
