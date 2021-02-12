@@ -14,19 +14,12 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.claimvatenrolmentfrontend.assets
+package uk.gov.hmrc.claimvatenrolmentfrontend.models
 
-import java.util.UUID
+import play.api.libs.json.{Json, OFormat}
 
+case class JourneyConfig(continueUrl: String)
 
-object TestConstants {
-
-  val testVatNumber: String = "123456782"
-  val testVatRegDate: String = "1 January 2021"
-  val testBusinessPostcode: String = "AA1 1AA"
-  val testLastReturnMonth: String = "January"
-  val testBoxFive: String = "1000.00"
-  val testJourneyId: String = UUID.randomUUID().toString
-  val testContinueUrl: String = "/test-continue-url"
-
+object JourneyConfig {
+  implicit val format: OFormat[JourneyConfig] = Json.format[JourneyConfig]
 }
