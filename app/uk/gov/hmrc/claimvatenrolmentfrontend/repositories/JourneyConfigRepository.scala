@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class JourneyConfigRepository @Inject()(reactiveMongoComponent: ReactiveMongoComponent,
                                         appConfig: AppConfig
                                        )(implicit ec: ExecutionContext) extends ReactiveRepository[JourneyConfig, String](
-  collectionName = "claim-vat-enrolment-frontend",
+  collectionName = "claim-vat-enrolment-frontend-journey-config",
   mongo = reactiveMongoComponent.mongoConnector.db,
   domainFormat = JourneyConfig.format,
   idFormat = implicitly[Format[String]]
