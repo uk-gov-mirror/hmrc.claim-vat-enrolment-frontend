@@ -18,32 +18,37 @@ package uk.gov.hmrc.claimvatenrolmentfrontend.controllers
 
 import play.api.libs.ws.WSResponse
 import play.api.test.Helpers._
+import uk.gov.hmrc.claimvatenrolmentfrontend.assets.TestConstants.{testContinueUrl, testJourneyId}
 import uk.gov.hmrc.claimvatenrolmentfrontend.utils.ComponentSpecHelper
 import uk.gov.hmrc.claimvatenrolmentfrontend.views.CheckYourAnswersViewTests
 
 
 class CheckYourAnswersControllerISpec extends ComponentSpecHelper with CheckYourAnswersViewTests {
 
-  "GET /check-your-answers-vat" should {
+  s"GET /$testJourneyId/check-your-answers-vat" should {
     "return OK" in {
-      lazy val result: WSResponse = get("/check-your-answers-vat")
+      lazy val result: WSResponse = get(s"/$testJourneyId/check-your-answers-vat")
 
       result.status mustBe OK
     }
 
     "return a view" should {
-      lazy val result = get("/check-your-answers-vat")
+      lazy val result = get(s"/$testJourneyId/check-your-answers-vat")
 
       testCheckYourAnswersView(result)
     }
   }
 
-  "POST /check-your-answers-vat" should {
-    "return Not Implemented" in {
+  s"POST /$testJourneyId/check-your-answers-vat" should {
+    "redirect to the continue url" in {
+      await(insertJourneyConfig(testJourneyId, testContinueUrl))
 
-      lazy val result = post("/check-your-answers-vat")()
+      lazy val result = post(s"/$testJourneyId/check-your-answers-vat")()
 
-      result.status mustBe NOT_IMPLEMENTED
+      result must have(
+        httpStatus(SEE_OTHER),
+        redirectUri(testContinueUrl)
+      )
     }
   }
 

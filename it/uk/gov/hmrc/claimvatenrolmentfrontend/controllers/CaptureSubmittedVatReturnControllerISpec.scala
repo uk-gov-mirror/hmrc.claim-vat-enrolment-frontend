@@ -17,19 +17,20 @@
 package uk.gov.hmrc.claimvatenrolmentfrontend.controllers
 
 import play.api.test.Helpers._
+import uk.gov.hmrc.claimvatenrolmentfrontend.assets.TestConstants.testJourneyId
 import uk.gov.hmrc.claimvatenrolmentfrontend.utils.ComponentSpecHelper
 import uk.gov.hmrc.claimvatenrolmentfrontend.views.CaptureSubmittedVatReturnViewTests
 
 class CaptureSubmittedVatReturnControllerISpec extends ComponentSpecHelper with CaptureSubmittedVatReturnViewTests {
 
-  "GET /submitted-vat-return" should {
+  s"GET /$testJourneyId/submitted-vat-return" should {
     "return OK" in {
-      lazy val result = get("/submitted-vat-return")
+      lazy val result = get(s"/$testJourneyId/submitted-vat-return")
 
       result.status mustBe OK
     }
     "return a view" should {
-      lazy val result = get("/submitted-vat-return")
+      lazy val result = get(s"/$testJourneyId/submitted-vat-return")
 
       testCaptureSubmittedVatReturnViewTests(result)
     }
@@ -37,16 +38,16 @@ class CaptureSubmittedVatReturnControllerISpec extends ComponentSpecHelper with 
 
   "POST /submitted-vat-return" should {
     "redirect to CaptureBox5Figure" in {
-      lazy val result = post("/submitted-vat-return")("vat_return" -> "yes")
+      lazy val result = post(s"/$testJourneyId/submitted-vat-return")("vat_return" -> "yes")
 
       result must have(
         httpStatus(SEE_OTHER),
-        redirectUri(routes.CaptureBox5FigureController.show().url)
+        redirectUri(routes.CaptureBox5FigureController.show(testJourneyId).url)
       )
     }
 
     "return a BAD_REQUEST if the user has not given an answer and the correct errors" should {
-      lazy val result = post("/submitted-vat-return")(
+      lazy val result = post(s"/$testJourneyId/submitted-vat-return")(
         "vat_return" -> ""
       )
 

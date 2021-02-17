@@ -5,33 +5,33 @@
 GET        /language/:lang                  uk.gov.hmrc.claimvatenrolmentfrontend.controllers.LanguageSwitchController.switchToLanguage(lang: String)
 GET        /assets/*file                    controllers.Assets.versioned(path = "/public", file: Asset)
 
-#  Index
-GET         /                              uk.gov.hmrc.claimvatenrolmentfrontend.controllers.IndexController.show
-
 # Session
 GET         /keep-alive                    uk.gov.hmrc.claimvatenrolmentfrontend.controllers.SignInOutController.keepAlive
 GET         /sign-out                      uk.gov.hmrc.claimvatenrolmentfrontend.controllers.SignInOutController.signOut
 
+# Journey
+GET        /journey/:vrn                   uk.gov.hmrc.claimvatenrolmentfrontend.controllers.JourneyController.createJourney(vrn, continueUrl)
+
 #  Capture VAT Registration Date
-GET        /vat-registration-date           uk.gov.hmrc.claimvatenrolmentfrontend.controllers.CaptureVatRegistrationDateController.show
-POST       /vat-registration-date           uk.gov.hmrc.claimvatenrolmentfrontend.controllers.CaptureVatRegistrationDateController.submit
+GET        /:journeyId/vat-registration-date           uk.gov.hmrc.claimvatenrolmentfrontend.controllers.CaptureVatRegistrationDateController.show(journeyId)
+POST       /:journeyId/vat-registration-date           uk.gov.hmrc.claimvatenrolmentfrontend.controllers.CaptureVatRegistrationDateController.submit(journeyId)
 
 #  Capture Business Postcode
-GET        /business-postcode               uk.gov.hmrc.claimvatenrolmentfrontend.controllers.CaptureBusinessPostcodeController.show
-POST       /business-postcode               uk.gov.hmrc.claimvatenrolmentfrontend.controllers.CaptureBusinessPostcodeController.submit
+GET        /:journeyId/business-postcode               uk.gov.hmrc.claimvatenrolmentfrontend.controllers.CaptureBusinessPostcodeController.show(journeyId)
+POST       /:journeyId/business-postcode               uk.gov.hmrc.claimvatenrolmentfrontend.controllers.CaptureBusinessPostcodeController.submit(journeyId)
 
 # Capture Box 5 Figure
-GET         /box-5-figure                   uk.gov.hmrc.claimvatenrolmentfrontend.controllers.CaptureBox5FigureController.show()
-POST        /box-5-figure                   uk.gov.hmrc.claimvatenrolmentfrontend.controllers.CaptureBox5FigureController.submit()
+GET         /:journeyId/box-5-figure                   uk.gov.hmrc.claimvatenrolmentfrontend.controllers.CaptureBox5FigureController.show(journeyId)
+POST        /:journeyId/box-5-figure                   uk.gov.hmrc.claimvatenrolmentfrontend.controllers.CaptureBox5FigureController.submit(journeyId)
 
 #  Capture Submitted VAT Return
-GET        /submitted-vat-return            uk.gov.hmrc.claimvatenrolmentfrontend.controllers.CaptureSubmittedVatReturnController.show
-POST       /submitted-vat-return            uk.gov.hmrc.claimvatenrolmentfrontend.controllers.CaptureSubmittedVatReturnController.submit
+GET        /:journeyId/submitted-vat-return            uk.gov.hmrc.claimvatenrolmentfrontend.controllers.CaptureSubmittedVatReturnController.show(journeyId)
+POST       /:journeyId/submitted-vat-return            uk.gov.hmrc.claimvatenrolmentfrontend.controllers.CaptureSubmittedVatReturnController.submit(journeyId)
 
 #  Capture Last Month Submitted
-GET         /last-vat-return-date           uk.gov.hmrc.claimvatenrolmentfrontend.controllers.CaptureLastMonthSubmittedController.show
-POST        /last-vat-return-date           uk.gov.hmrc.claimvatenrolmentfrontend.controllers.CaptureLastMonthSubmittedController.submit
+GET         /:journeyId/last-vat-return-date           uk.gov.hmrc.claimvatenrolmentfrontend.controllers.CaptureLastMonthSubmittedController.show(journeyId)
+POST        /:journeyId/last-vat-return-date           uk.gov.hmrc.claimvatenrolmentfrontend.controllers.CaptureLastMonthSubmittedController.submit(journeyId)
 
 #  Check Your Answers
-GET        /check-your-answers-vat          uk.gov.hmrc.claimvatenrolmentfrontend.controllers.CheckYourAnswersController.show
-POST       /check-your-answers-vat          uk.gov.hmrc.claimvatenrolmentfrontend.controllers.CheckYourAnswersController.submit
+GET        /:journeyId/check-your-answers-vat          uk.gov.hmrc.claimvatenrolmentfrontend.controllers.CheckYourAnswersController.show(journeyId)
+POST       /:journeyId/check-your-answers-vat          uk.gov.hmrc.claimvatenrolmentfrontend.controllers.CheckYourAnswersController.submit(journeyId)

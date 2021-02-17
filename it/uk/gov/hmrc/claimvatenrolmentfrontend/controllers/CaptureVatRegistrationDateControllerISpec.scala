@@ -17,28 +17,29 @@
 package uk.gov.hmrc.claimvatenrolmentfrontend.controllers
 
 import play.api.test.Helpers._
+import uk.gov.hmrc.claimvatenrolmentfrontend.assets.TestConstants.testJourneyId
 import uk.gov.hmrc.claimvatenrolmentfrontend.utils.ComponentSpecHelper
 import uk.gov.hmrc.claimvatenrolmentfrontend.views.CaptureVatRegistrationDateViewTests
 
 class CaptureVatRegistrationDateControllerISpec extends ComponentSpecHelper with CaptureVatRegistrationDateViewTests {
 
-  "GET /vat-registration-date" should {
+  s"GET /$testJourneyId/vat-registration-date" should {
     "return OK" in {
-      lazy val result = get("/vat-registration-date")
+      lazy val result = get(s"/$testJourneyId/vat-registration-date")
 
       result.status mustBe OK
     }
 
     "return a view" should {
-      lazy val result = get("/vat-registration-date")
+      lazy val result = get(s"/$testJourneyId/vat-registration-date")
 
       testCaptureVatRegistrationDateViewTests(result)
     }
   }
 
-  "POST /vat-registration-date" should {
+  s"POST /$testJourneyId/vat-registration-date" should {
     "redirect to CaptureBusinessPostcode if the date is valid" in {
-      lazy val result = post("/vat-registration-date")(
+      lazy val result = post(s"/$testJourneyId/vat-registration-date")(
         "date.day" -> "1",
         "date.month" -> "1",
         "date.year" -> "2020"
@@ -46,19 +47,19 @@ class CaptureVatRegistrationDateControllerISpec extends ComponentSpecHelper with
 
       result must have(
         httpStatus(SEE_OTHER),
-        redirectUri(routes.CaptureBusinessPostcodeController.show().url)
+        redirectUri(routes.CaptureBusinessPostcodeController.show(testJourneyId).url)
       )
     }
 
     "return a BAD_REQUEST if the date is missing and show the correct errors" should {
-      lazy val result = post("/vat-registration-date")()
+      lazy val result = post(s"/$testJourneyId/vat-registration-date")()
 
       result.status mustBe BAD_REQUEST
       testCaptureVatRegistrationDateMissingErrorViewTests(result)
     }
 
     "return a BAD_REQUEST if the date is invalid and show the correct errors" should {
-      lazy val result = post("/vat-registration-date")(
+      lazy val result = post(s"/$testJourneyId/vat-registration-date")(
         "date.day" -> "1",
         "date.month" -> "1",
         "date.year" -> "invalidYear"
@@ -69,7 +70,7 @@ class CaptureVatRegistrationDateControllerISpec extends ComponentSpecHelper with
     }
 
     "return a BAD_REQUEST if the year is invalid and show the correct errors" should {
-      lazy val result = post("/vat-registration-date")(
+      lazy val result = post(s"/$testJourneyId/vat-registration-date")(
         "date.day" -> "1",
         "date.month" -> "1",
         "date.year" -> "94"
@@ -80,7 +81,7 @@ class CaptureVatRegistrationDateControllerISpec extends ComponentSpecHelper with
     }
 
     "return a BAD_REQUEST if the date is in the future and show the correct errors" should {
-      lazy val result = post("/vat-registration-date")(
+      lazy val result = post(s"/$testJourneyId/vat-registration-date")(
         "date.day" -> "1",
         "date.month" -> "1",
         "date.year" -> "2100"

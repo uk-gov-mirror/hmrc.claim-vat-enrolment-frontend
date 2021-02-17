@@ -16,13 +16,13 @@
 
 package uk.gov.hmrc.claimvatenrolmentfrontend.controllers
 
-import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.claimvatenrolmentfrontend.config.AppConfig
 import uk.gov.hmrc.claimvatenrolmentfrontend.forms.VatRegistrationDateForm.vatRegistrationDateForm
 import uk.gov.hmrc.claimvatenrolmentfrontend.views.html.capture_vat_registration_date_page
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -32,19 +32,19 @@ class CaptureVatRegistrationDateController @Inject()(mcc: MessagesControllerComp
                                                       appConfig: AppConfig)
   extends FrontendController(mcc) {
 
-  def show: Action[AnyContent] = Action.async { implicit request =>
+  def show(journeyId: String): Action[AnyContent] = Action.async { implicit request =>
     Future.successful(
-      Ok(view(vatRegistrationDateForm, routes.CaptureVatRegistrationDateController.submit()))
+      Ok(view(vatRegistrationDateForm, routes.CaptureVatRegistrationDateController.submit(journeyId)))
     )
   }
 
-  def submit: Action[AnyContent] = Action.async { implicit request =>
+  def submit(journeyId: String): Action[AnyContent] = Action.async { implicit request =>
     vatRegistrationDateForm.bindFromRequest.fold(
       formWithErrors => Future.successful(
-        BadRequest(view(formWithErrors, routes.CaptureVatRegistrationDateController.submit()))
+        BadRequest(view(formWithErrors, routes.CaptureVatRegistrationDateController.submit(journeyId)))
       ),
       vatRegistrationDate =>
-        Future.successful(Redirect(routes.CaptureBusinessPostcodeController.show().url))
+        Future.successful(Redirect(routes.CaptureBusinessPostcodeController.show(journeyId).url))
     )
   }
 

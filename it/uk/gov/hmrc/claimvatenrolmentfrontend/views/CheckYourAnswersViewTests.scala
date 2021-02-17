@@ -72,7 +72,7 @@ trait CheckYourAnswersViewTests {
 
         vatRegDateRow.getSummaryListQuestion mustBe messages.vatRegDateRow
         vatRegDateRow.getSummaryListAnswer mustBe testVatRegDate
-        vatRegDateRow.getSummaryListChangeLink mustBe routes.CaptureVatRegistrationDateController.show().url
+        vatRegDateRow.getSummaryListChangeLink mustBe routes.CaptureVatRegistrationDateController.show(testJourneyId).url
         vatRegDateRow.getSummaryListChangeText mustBe s"${Base.change} ${messages.vatRegDateRow}"
       }
 
@@ -81,7 +81,7 @@ trait CheckYourAnswersViewTests {
 
         businessPostcodeRow.getSummaryListQuestion mustBe messages.businessPostcodeRow
         businessPostcodeRow.getSummaryListAnswer mustBe testBusinessPostcode
-        businessPostcodeRow.getSummaryListChangeLink mustBe routes.CaptureBusinessPostcodeController.show().url
+        businessPostcodeRow.getSummaryListChangeLink mustBe routes.CaptureBusinessPostcodeController.show(testJourneyId).url
         businessPostcodeRow.getSummaryListChangeText mustBe s"${Base.change} ${messages.businessPostcodeRow}"
       }
 
@@ -90,7 +90,7 @@ trait CheckYourAnswersViewTests {
 
         vatReturnRow.getSummaryListQuestion mustBe messages.vatReturnsRow
         vatReturnRow.getSummaryListAnswer mustBe Base.yes
-        vatReturnRow.getSummaryListChangeLink mustBe routes.CaptureSubmittedVatReturnController.show().url
+        vatReturnRow.getSummaryListChangeLink mustBe routes.CaptureSubmittedVatReturnController.show(testJourneyId).url
         vatReturnRow.getSummaryListChangeText mustBe s"${Base.change} ${messages.vatReturnsRow}"
       }
 
@@ -99,7 +99,7 @@ trait CheckYourAnswersViewTests {
 
         boxFiveRow.getSummaryListQuestion mustBe messages.boxFiveRow
         boxFiveRow.getSummaryListAnswer mustBe testBoxFive
-        boxFiveRow.getSummaryListChangeLink mustBe routes.CaptureBox5FigureController.show().url
+        boxFiveRow.getSummaryListChangeLink mustBe routes.CaptureBox5FigureController.show(testJourneyId).url
         boxFiveRow.getSummaryListChangeText mustBe s"${Base.change} ${messages.boxFiveRow}"
       }
 
@@ -108,7 +108,7 @@ trait CheckYourAnswersViewTests {
 
         lastReturnMonthRow.getSummaryListQuestion mustBe messages.lastReturnMonthRow
         lastReturnMonthRow.getSummaryListAnswer mustBe testLastReturnMonth
-        lastReturnMonthRow.getSummaryListChangeLink mustBe "/" //TODO update when page is built
+        lastReturnMonthRow.getSummaryListChangeLink mustBe routes.CaptureLastMonthSubmittedController.show(testJourneyId).url
         lastReturnMonthRow.getSummaryListChangeText mustBe s"${Base.change} ${messages.lastReturnMonthRow}"
       }
     }

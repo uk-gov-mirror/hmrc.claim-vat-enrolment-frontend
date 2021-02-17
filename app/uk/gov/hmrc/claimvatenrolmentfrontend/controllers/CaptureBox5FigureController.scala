@@ -30,19 +30,19 @@ class CaptureBox5FigureController @Inject()(mcc: MessagesControllerComponents,
                                             view: capture_box5_figure_page
                                            )(implicit val config: AppConfig) extends FrontendController(mcc) {
 
-  def show: Action[AnyContent] = Action.async {
+  def show(journeyId: String): Action[AnyContent] = Action.async {
     implicit request =>
-      Future.successful(Ok(view(CaptureBox5FigureForm.form, routes.CaptureBox5FigureController.submit())))
+      Future.successful(Ok(view(CaptureBox5FigureForm.form, routes.CaptureBox5FigureController.submit(journeyId))))
   }
 
-  def submit: Action[AnyContent] = Action.async {
+  def submit(journeyId: String): Action[AnyContent] = Action.async {
     implicit request =>
       CaptureBox5FigureForm.form.bindFromRequest.fold(
         formWithErrors => Future.successful(
-          BadRequest(view(formWithErrors, routes.CaptureBox5FigureController.submit()))
+          BadRequest(view(formWithErrors, routes.CaptureBox5FigureController.submit(journeyId)))
         ),
         box5Figure =>
-          Future.successful(Redirect(routes.CaptureLastMonthSubmittedController.show().url))
+          Future.successful(Redirect(routes.CaptureLastMonthSubmittedController.show(journeyId).url))
       )
   }
 }

@@ -17,38 +17,39 @@
 package uk.gov.hmrc.claimvatenrolmentfrontend.controllers
 
 import play.api.test.Helpers._
+import uk.gov.hmrc.claimvatenrolmentfrontend.assets.TestConstants.testJourneyId
 import uk.gov.hmrc.claimvatenrolmentfrontend.utils.ComponentSpecHelper
 import uk.gov.hmrc.claimvatenrolmentfrontend.views.CaptureBusinessPostcodeViewTests
 
 class CaptureBusinessPostcodeControllerISpec extends ComponentSpecHelper with CaptureBusinessPostcodeViewTests {
 
-  "GET /business-postcode" should {
+  s"GET /$testJourneyId/business-postcode" should {
     "return OK" in {
-      lazy val result = get("/business-postcode")
+      lazy val result = get(s"/$testJourneyId/business-postcode")
 
       result.status mustBe OK
     }
     "return a view" should {
-      lazy val result = get("/business-postcode")
+      lazy val result = get(s"/$testJourneyId/business-postcode")
 
       testCaptureBusinessPostcodeViewTests(result)
     }
   }
 
-  "POST /business-postcode" should {
+  s"POST /$testJourneyId/business-postcode" should {
     "redirect to CaptureSubmittedVatReturn" in {
-      lazy val result = post("/business-postcode")(
+      lazy val result = post(s"/$testJourneyId/business-postcode")(
         "business_postcode" -> "ZZ1 1ZZ"
       )
 
       result must have(
         httpStatus(SEE_OTHER),
-        redirectUri(routes.CaptureSubmittedVatReturnController.show().url)
+        redirectUri(routes.CaptureSubmittedVatReturnController.show(testJourneyId).url)
       )
     }
 
     "return a BAD_REQUEST if the postcode is missing" in {
-      lazy val result = post("/business-postcode")(
+      lazy val result = post(s"/$testJourneyId/business-postcode")(
         "business_postcode" -> ""
       )
 
@@ -56,7 +57,7 @@ class CaptureBusinessPostcodeControllerISpec extends ComponentSpecHelper with Ca
     }
 
     "return a BAD_REQUEST if the postcode is invalid" in {
-      lazy val result = post("/business-postcode")(
+      lazy val result = post(s"/$testJourneyId/business-postcode")(
         "business_postcode" -> "111 111"
       )
 
