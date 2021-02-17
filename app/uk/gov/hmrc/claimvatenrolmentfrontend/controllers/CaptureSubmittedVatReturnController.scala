@@ -30,19 +30,19 @@ class CaptureSubmittedVatReturnController @Inject()(mcc: MessagesControllerCompo
                                                     view: capture_submitted_vat_return_page
                                                    )(implicit val config: AppConfig) extends FrontendController(mcc) {
 
-  val show: Action[AnyContent] = Action.async {
+  def show(journeyId: String): Action[AnyContent] = Action.async {
     implicit request =>
-      Future.successful(Ok(view(routes.CaptureSubmittedVatReturnController.submit(), CaptureSubmittedVatReturnForm.form)))
+      Future.successful(Ok(view(routes.CaptureSubmittedVatReturnController.submit(journeyId), CaptureSubmittedVatReturnForm.form)))
   }
 
-  val submit: Action[AnyContent] = Action.async {
+  def submit(journeyId: String): Action[AnyContent] = Action.async {
     implicit request =>
       CaptureSubmittedVatReturnForm.form.bindFromRequest.fold(
         formWithErrors => Future.successful(
-          BadRequest(view(routes.CaptureSubmittedVatReturnController.submit(), formWithErrors))
+          BadRequest(view(routes.CaptureSubmittedVatReturnController.submit(journeyId), formWithErrors))
         ),
         submittedReturn =>
-      Future.successful(Redirect(routes.CaptureBox5FigureController.show().url))
+      Future.successful(Redirect(routes.CaptureBox5FigureController.show(journeyId).url))
       )
   }
 

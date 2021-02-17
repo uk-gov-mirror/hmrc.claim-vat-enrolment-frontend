@@ -25,6 +25,12 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsValue, Writes}
 import play.api.libs.ws.{WSClient, WSRequest, WSResponse}
 import play.api.test.Helpers._
+import reactivemongo.api.commands.WriteResult
+import uk.gov.hmrc.claimvatenrolmentfrontend.models.JourneyConfig
+import uk.gov.hmrc.claimvatenrolmentfrontend.repositories.JourneyConfigRepository
+
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 trait ComponentSpecHelper extends AnyWordSpec with Matchers
   with CustomMatchers
@@ -65,6 +71,7 @@ trait ComponentSpecHelper extends AnyWordSpec with Matchers
 
   override def beforeEach(): Unit = {
     resetWiremock()
+    journeyConfigRepository.drop
     super.beforeEach()
   }
 
@@ -103,4 +110,11 @@ trait ComponentSpecHelper extends AnyWordSpec with Matchers
   private def buildClient(path: String): WSRequest =
     ws.url(s"http://localhost:$port$baseUrl$path").withFollowRedirects(false)
 
+  lazy val journeyConfigRepository: JourneyConfigRepository = app.injector.instanceOf[JourneyConfigRepository]
+
+  def insertJourneyConfig(journeyId: String,
+                          continueUrl: String): Future[WriteResult] =
+    journeyConfigRepository.insertJourneyConfig(
+      journeyId, JourneyConfig(continueUrl)
+    )
 }

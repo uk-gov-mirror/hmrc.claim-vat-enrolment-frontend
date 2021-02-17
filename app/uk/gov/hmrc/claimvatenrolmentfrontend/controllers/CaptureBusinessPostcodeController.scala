@@ -30,19 +30,19 @@ class CaptureBusinessPostcodeController @Inject()(mcc: MessagesControllerCompone
                                                   view: capture_business_postcode_page
                                                  )(implicit val config: AppConfig) extends FrontendController(mcc) {
 
-  def show: Action[AnyContent] = Action.async {
+  def show(journeyId: String): Action[AnyContent] = Action.async {
     implicit request =>
-      Future.successful(Ok(view(routes.CaptureBusinessPostcodeController.submit(), CaptureBusinessPostcodeForm.form)))
+      Future.successful(Ok(view(routes.CaptureBusinessPostcodeController.submit(journeyId), CaptureBusinessPostcodeForm.form, journeyId)))
   }
 
-  def submit: Action[AnyContent] = Action.async {
+  def submit(journeyId: String): Action[AnyContent] = Action.async {
     implicit request =>
       CaptureBusinessPostcodeForm.form.bindFromRequest.fold(
         formWithErrors => Future.successful(
-          BadRequest(view(routes.CaptureBusinessPostcodeController.submit(),formWithErrors))
+          BadRequest(view(routes.CaptureBusinessPostcodeController.submit(journeyId),formWithErrors, journeyId))
         ),
         businessPostcode =>
-      Future.successful(Redirect(routes.CaptureSubmittedVatReturnController.show().url))
+      Future.successful(Redirect(routes.CaptureSubmittedVatReturnController.show(journeyId).url))
       )
   }
 }

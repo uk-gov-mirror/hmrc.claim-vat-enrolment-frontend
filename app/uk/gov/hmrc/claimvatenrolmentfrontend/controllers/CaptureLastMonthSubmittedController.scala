@@ -30,19 +30,19 @@ class CaptureLastMonthSubmittedController @Inject()(mcc: MessagesControllerCompo
                                                     view: capture_last_month_submitted_page
                                                    )(implicit val config: AppConfig) extends FrontendController(mcc) {
 
-  val show: Action[AnyContent] = Action.async {
+  def show(journeyId: String): Action[AnyContent] = Action.async {
     implicit request =>
-      Future.successful(Ok(view(routes.CaptureLastMonthSubmittedController.submit(), CaptureLastMonthSubmittedForm.form)))
+      Future.successful(Ok(view(routes.CaptureLastMonthSubmittedController.submit(journeyId), CaptureLastMonthSubmittedForm.form)))
   }
 
-  val submit: Action[AnyContent] = Action.async {
+  def submit(journeyId: String): Action[AnyContent] = Action.async {
     implicit request =>
       CaptureLastMonthSubmittedForm.form.bindFromRequest.fold(
         formWithErrors => Future.successful(
-          BadRequest(view(routes.CaptureLastMonthSubmittedController.submit(), formWithErrors))
+          BadRequest(view(routes.CaptureLastMonthSubmittedController.submit(journeyId), formWithErrors))
         ),
         lastMonthSubmitted =>
-          Future.successful(Redirect(routes.CheckYourAnswersController.show().url))
+          Future.successful(Redirect(routes.CheckYourAnswersController.show(journeyId).url))
       )
   }
 

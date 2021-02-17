@@ -26,7 +26,7 @@
         formWithCSRF: FormWithCSRF
 )
 
-@(formAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(formAction: Call, journeyId: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(Some(titleNoForm(messages("check-your-answers.title")))) {
 
@@ -51,7 +51,7 @@
                 value = Value(content = Text("1 January 2021")),
                 actions = Some(Actions(items = Seq(
                     ActionItem(
-                        href = Routes.CaptureVatRegistrationDateController.show().url,
+                        href = Routes.CaptureVatRegistrationDateController.show(journeyId).url,
                         content = Text(messages("app.common.change")),
                         visuallyHiddenText = Some(messages("check-your-answers.registration_date"))
                     )
@@ -62,7 +62,7 @@
                 value = Value(content = Text("AA1 1AA")),
                 actions = Some(Actions(items = Seq(
                     ActionItem(
-                        href = Routes.CaptureBusinessPostcodeController.show().url,
+                        href = Routes.CaptureBusinessPostcodeController.show(journeyId).url,
                         content = Text(messages("app.common.change")),
                         visuallyHiddenText = Some(messages("check-your-answers.business_postcode"))
                     )
@@ -73,7 +73,7 @@
                 value = Value(content = Text("Yes")),
                 actions = Some(Actions(items = Seq(
                     ActionItem(
-                        href = Routes.CaptureSubmittedVatReturnController.show().url,
+                        href = Routes.CaptureSubmittedVatReturnController.show(journeyId).url,
                         content = Text(messages("app.common.change")),
                         visuallyHiddenText = Some(messages("check-your-answers.vat_returns"))
                     )
@@ -84,7 +84,7 @@
                 value = Value(content = Text("1000.00")),
                 actions = Some(Actions(items = Seq(
                     ActionItem(
-                        href = Routes.CaptureBox5FigureController.show().url,
+                        href = Routes.CaptureBox5FigureController.show(journeyId).url,
                         content = Text(messages("app.common.change")),
                         visuallyHiddenText = Some(messages("check-your-answers.box_five"))
                     )
@@ -95,7 +95,7 @@
                 value = Value(content = Text("January")),
                 actions = Some(Actions(items = Seq(
                     ActionItem(
-                        href = "/", //TODO update when page is built
+                        href = Routes.CaptureLastMonthSubmittedController.show(journeyId).url,
                         content = Text(messages("app.common.change")),
                         visuallyHiddenText = Some(messages("check-your-answers.last_return_month"))
                     )

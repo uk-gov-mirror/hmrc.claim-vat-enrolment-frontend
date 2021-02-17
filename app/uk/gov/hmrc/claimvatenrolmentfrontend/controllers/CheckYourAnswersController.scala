@@ -18,25 +18,29 @@ package uk.gov.hmrc.claimvatenrolmentfrontend.controllers
 
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.claimvatenrolmentfrontend.config.AppConfig
+import uk.gov.hmrc.claimvatenrolmentfrontend.services.JourneyService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import uk.gov.hmrc.claimvatenrolmentfrontend.views.html.check_your_answers_page
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CheckYourAnswersController @Inject()(mcc: MessagesControllerComponents,
-                                           view: check_your_answers_page
-                                          )(implicit appConfig: AppConfig) extends FrontendController(mcc) {
+                                           view: check_your_answers_page,
+                                           journeyService: JourneyService
+                                          )(implicit appConfig: AppConfig, ec: ExecutionContext) extends FrontendController(mcc) {
 
-  val show: Action[AnyContent] = Action.async {
+  def show(journeyId: String): Action[AnyContent] = Action.async {
     implicit request =>
-      Future.successful(Ok(view(routes.CheckYourAnswersController.submit())))
+      Future.successful(Ok(view(routes.CheckYourAnswersController.submit(journeyId), journeyId)))
   }
 
-  val submit: Action[AnyContent] = Action.async {
+  def submit(journeyId: String): Action[AnyContent] = Action.async {
     implicit request =>
-      Future.successful(NotImplemented)
+      journeyService.retrieveJourneyConfig(journeyId).map{
+        journeyConfig => SeeOther(journeyConfig.continueUrl)
+      }
   }
 
 }

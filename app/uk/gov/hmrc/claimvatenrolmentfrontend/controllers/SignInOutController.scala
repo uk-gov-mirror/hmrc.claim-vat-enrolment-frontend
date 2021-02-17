@@ -29,10 +29,6 @@ class SignInOutController @Inject()(val controllerComponents: ControllerComponen
                                     appConfig: AppConfig)
   extends BaseController with AuthorisedFunctions{
 
-  def postSignIn: Action[AnyContent] = Action.async {
-    _ => Future.successful(Redirect(routes.IndexController.show().url))
-  }
-
   def signOut: Action[AnyContent] = Action.async {
     _ => Future.successful(Redirect(appConfig.feedbackUrl).withNewSession)
   }
