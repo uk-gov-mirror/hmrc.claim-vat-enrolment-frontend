@@ -14,20 +14,23 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.claimvatenrolmentfrontend.assets
+package uk.gov.hmrc.claimvatenrolmentfrontend.models
 
-import java.util.UUID
+import play.api.libs.json.{Format, JsObject, JsResult, JsValue, Json, OFormat}
 
 
-object TestConstants {
+case class JourneyDataModel(journeyId: String)
 
-  val testVatNumber: String = "123456782"
-  val testVatRegDate: String = "1 January 2021"
-  val testBusinessPostcode: String = "AA1 1AA"
-  val testLastReturnMonth: String = "January"
-  val testBoxFive: String = "1000.00"
-  val testJourneyId: String = UUID.randomUUID().toString
-  val testInternalId: String = UUID.randomUUID().toString
-  val testContinueUrl: String = "/test-continue-url"
+object JourneyDataModel {
+
+  implicit object MongoFormat extends Format[JourneyDataModel] {
+    override def writes(o: JourneyDataModel): JsObject =
+      Json.obj("_id" -> o.journeyId)
+
+    override def reads(json: JsValue): JsResult[JourneyDataModel] =
+      for {
+        journeyId <- (json \ "_id").validate[String]
+      } yield JourneyDataModel(journeyId)
+  }
 
 }
