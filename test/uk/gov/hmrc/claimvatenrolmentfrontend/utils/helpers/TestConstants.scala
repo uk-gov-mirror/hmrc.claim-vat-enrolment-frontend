@@ -16,11 +16,15 @@
 
 package uk.gov.hmrc.claimvatenrolmentfrontend.utils.helpers
 
+import java.time.LocalDate
 import java.util.UUID
 
 object TestConstants {
 
   val testJourneyId: String = UUID.randomUUID().toString
-  val testContinueUrl = "/test"
+  val testContinueUrl: String = "/test"
+  val testVatRegDate: LocalDate = LocalDate.parse("2021-01-01")
+  val testInternalId: String = UUID.randomUUID().toString
+  val testVatNumber: String = UUID.randomUUID().toString
 
 }

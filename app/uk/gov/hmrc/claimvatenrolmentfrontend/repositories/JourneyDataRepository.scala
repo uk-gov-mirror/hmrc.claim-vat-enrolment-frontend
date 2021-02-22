@@ -35,17 +35,18 @@ import scala.concurrent.{ExecutionContext, Future}
 class JourneyDataRepository @Inject()(reactiveMongoComponent: ReactiveMongoComponent,
                                       appConfig: AppConfig
                                      )(implicit ec: ExecutionContext) extends ReactiveRepository[JourneyDataModel, String](
-  collectionName = "claim-vat-enrolment-frontend",
+  collectionName = "claim-vat-enrolment-frontend-data",
   mongo = reactiveMongoComponent.mongoConnector.db,
   domainFormat = JourneyDataModel.MongoFormat,
   idFormat = implicitly[Format[String]]
 ) {
 
-  def createJourney(journeyId: String, authInternalId: String): Future[String] =
+  def insertJourneyData(journeyId: String, authInternalId: String, vatNumber: String): Future[String] =
     collection.insert(true).one(
       Json.obj(
         journeyIdKey -> journeyId,
         authInternalIdKey -> authInternalId,
+        vatNumberKey -> vatNumber,
         "creationTimestamp" -> Json.obj("$date" -> Instant.now.toEpochMilli)
       )
     ).map(_ => journeyId)
@@ -98,5 +99,6 @@ class JourneyDataRepository @Inject()(reactiveMongoComponent: ReactiveMongoCompo
 object JourneyDataRepository {
   val journeyIdKey: String = "_id"
   val authInternalIdKey: String = "authInternalId"
+  val vatNumberKey: String = "vatNumber"
 }
 

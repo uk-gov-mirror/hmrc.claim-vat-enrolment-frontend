@@ -20,6 +20,7 @@ import play.api.libs.json.{JsString, Json}
 import play.api.test.Helpers._
 import uk.gov.hmrc.claimvatenrolmentfrontend.assets.TestConstants._
 import uk.gov.hmrc.claimvatenrolmentfrontend.models.JourneyDataModel
+import uk.gov.hmrc.claimvatenrolmentfrontend.repositories.JourneyDataRepository.vatNumberKey
 import uk.gov.hmrc.claimvatenrolmentfrontend.utils.ComponentSpecHelper
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -38,21 +39,26 @@ class JourneyDataRepositoryISpec extends ComponentSpecHelper {
 
   "createJourney" should {
     "successfully insert the journeyId" in {
-      repo.createJourney(testJourneyId, testInternalId)
+      repo.insertJourneyData(testJourneyId, testInternalId, testVatNumber)
       await(repo.findById(testJourneyId)) mustBe Some(JourneyDataModel(testJourneyId))
     }
   }
   s"getJourneyData($testJourneyId)" should {
     "successfully return all data" in {
-      await(repo.createJourney(testJourneyId, testInternalId))
-      await(repo.getJourneyData(testJourneyId, testInternalId)).map(_.-(creationTimestampKey)) mustBe Some(Json.obj(authInternalIdKey -> testInternalId))
+      val testJson = Json.obj(
+        authInternalIdKey -> testInternalId,
+        vatNumberKey -> testVatNumber
+      )
+
+      await(repo.insertJourneyData(testJourneyId, testInternalId, testVatNumber))
+      await(repo.getJourneyData(testJourneyId, testInternalId)).map(_.-(creationTimestampKey)) mustBe Some(testJson)
     }
   }
   "updateJourneyData" should {
     "successfully insert data" in {
       val testKey = "testKey"
       val testData = "test"
-      await(repo.createJourney(testJourneyId, testInternalId))
+      await(repo.insertJourneyData(testJourneyId, testInternalId, testVatNumber))
       await(repo.updateJourneyData(testJourneyId, testKey, JsString(testData), testInternalId))
       await(repo.getJourneyData(testJourneyId, testInternalId)).map(json => (json \ testKey).as[String]) mustBe Some(testData)
     }
@@ -60,7 +66,7 @@ class JourneyDataRepositoryISpec extends ComponentSpecHelper {
       val testKey = "testKey"
       val testData = "test"
       val updatedData = "updated"
-      await(repo.createJourney(testJourneyId, testInternalId))
+      await(repo.insertJourneyData(testJourneyId, testInternalId, testVatNumber))
       await(repo.updateJourneyData(testJourneyId, testKey, JsString(testData), testInternalId))
       await(repo.updateJourneyData(testJourneyId, testKey, JsString(updatedData), testInternalId))
       await(repo.getJourneyData(testJourneyId, testInternalId)).map(json => (json \ testKey).as[String]) mustBe Some(updatedData)

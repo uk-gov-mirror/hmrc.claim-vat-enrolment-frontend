@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.claimvatenrolmentfrontend.views
 
+import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.libs.ws.WSResponse
@@ -26,9 +27,11 @@ import uk.gov.hmrc.claimvatenrolmentfrontend.utils.ViewSpecHelper.ElementExtensi
 trait CaptureVatRegistrationDateViewTests {
   this: ComponentSpecHelper =>
 
-  def testCaptureVatRegistrationDateViewTests(result: => WSResponse): Unit = {
+  def testCaptureVatRegistrationDateViewTests(result: => WSResponse,
+                                              authStub: => StubMapping): Unit = {
 
     lazy val doc: Document = {
+      authStub
       Jsoup.parse(result.body)
     }
 
@@ -60,9 +63,11 @@ trait CaptureVatRegistrationDateViewTests {
     }
   }
 
-  def testCaptureVatRegistrationDateInvalidErrorViewTests(result: => WSResponse): Unit = {
+  def testCaptureVatRegistrationDateInvalidErrorViewTests(result: => WSResponse,
+                                                          authStub: => StubMapping): Unit = {
 
     lazy val doc: Document = {
+      authStub
       Jsoup.parse(result.body)
     }
 
@@ -76,9 +81,11 @@ trait CaptureVatRegistrationDateViewTests {
     }
   }
 
-  def testCaptureVatRegistrationDateMissingErrorViewTests(result: => WSResponse): Unit = {
+  def testCaptureVatRegistrationDateMissingErrorViewTests(result: => WSResponse,
+                                                          authStub: => StubMapping): Unit = {
 
     lazy val doc: Document = {
+      authStub
       Jsoup.parse(result.body)
     }
 
@@ -92,9 +99,11 @@ trait CaptureVatRegistrationDateViewTests {
     }
   }
 
-  def testCaptureVatRegistrationDateFutureErrorViewTests(result: => WSResponse): Unit = {
+  def testCaptureVatRegistrationDateFutureErrorViewTests(result: => WSResponse,
+                                                         authStub: => StubMapping): Unit = {
 
     lazy val doc: Document = {
+      authStub
       Jsoup.parse(result.body)
     }
 

@@ -17,28 +17,35 @@
 package uk.gov.hmrc.claimvatenrolmentfrontend.controllers
 
 import play.api.test.Helpers._
-import uk.gov.hmrc.claimvatenrolmentfrontend.assets.TestConstants.testJourneyId
+import uk.gov.hmrc.claimvatenrolmentfrontend.assets.TestConstants.{testInternalId, testJourneyId}
+import uk.gov.hmrc.claimvatenrolmentfrontend.stubs.AuthStub
 import uk.gov.hmrc.claimvatenrolmentfrontend.utils.ComponentSpecHelper
 import uk.gov.hmrc.claimvatenrolmentfrontend.views.CaptureVatRegistrationDateViewTests
 
-class CaptureVatRegistrationDateControllerISpec extends ComponentSpecHelper with CaptureVatRegistrationDateViewTests {
+class CaptureVatRegistrationDateControllerISpec extends ComponentSpecHelper with CaptureVatRegistrationDateViewTests with AuthStub {
 
   s"GET /$testJourneyId/vat-registration-date" should {
     "return OK" in {
+      stubAuth(OK, successfulAuthResponse(Some(testInternalId)))
+
       lazy val result = get(s"/$testJourneyId/vat-registration-date")
 
       result.status mustBe OK
     }
 
     "return a view" should {
+      lazy val authStub = stubAuth(OK, successfulAuthResponse(Some(testInternalId)))
+
       lazy val result = get(s"/$testJourneyId/vat-registration-date")
 
-      testCaptureVatRegistrationDateViewTests(result)
+      testCaptureVatRegistrationDateViewTests(result, authStub)
     }
   }
 
   s"POST /$testJourneyId/vat-registration-date" should {
     "redirect to CaptureBusinessPostcode if the date is valid" in {
+      stubAuth(OK, successfulAuthResponse(Some(testInternalId)))
+
       lazy val result = post(s"/$testJourneyId/vat-registration-date")(
         "date.day" -> "1",
         "date.month" -> "1",
@@ -51,44 +58,84 @@ class CaptureVatRegistrationDateControllerISpec extends ComponentSpecHelper with
       )
     }
 
-    "return a BAD_REQUEST if the date is missing and show the correct errors" should {
+    "when the user has submitted an empty form, the page" should {
+      lazy val authStub = stubAuth(OK, successfulAuthResponse(Some(testInternalId)))
       lazy val result = post(s"/$testJourneyId/vat-registration-date")()
 
-      result.status mustBe BAD_REQUEST
-      testCaptureVatRegistrationDateMissingErrorViewTests(result)
+      testCaptureVatRegistrationDateMissingErrorViewTests(result, authStub)
+
+      "return a BAD_REQUEST" in {
+        stubAuth(OK, successfulAuthResponse(Some(testInternalId)))
+        lazy val result = post(s"/$testJourneyId/vat-registration-date")()
+
+        result.status mustBe BAD_REQUEST
+      }
     }
 
-    "return a BAD_REQUEST if the date is invalid and show the correct errors" should {
+    "when the user has submitted a date that is invalid, the page" should {
+      lazy val authStub = stubAuth(OK, successfulAuthResponse(Some(testInternalId)))
       lazy val result = post(s"/$testJourneyId/vat-registration-date")(
         "date.day" -> "1",
         "date.month" -> "1",
         "date.year" -> "invalidYear"
       )
 
-      result.status mustBe BAD_REQUEST
-      testCaptureVatRegistrationDateInvalidErrorViewTests(result)
+      testCaptureVatRegistrationDateInvalidErrorViewTests(result, authStub)
+
+      "return a BAD_REQUEST" in {
+        stubAuth(OK, successfulAuthResponse(Some(testInternalId)))
+        lazy val result = post(s"/$testJourneyId/vat-registration-date")(
+          "date.day" -> "1",
+          "date.month" -> "1",
+          "date.year" -> "invalidYear"
+        )
+
+        result.status mustBe BAD_REQUEST
+      }
     }
 
-    "return a BAD_REQUEST if the year is invalid and show the correct errors" should {
+    "when the user has submitted a date with an invalid year, the page" should {
+      lazy val authStub = stubAuth(OK, successfulAuthResponse(Some(testInternalId)))
       lazy val result = post(s"/$testJourneyId/vat-registration-date")(
         "date.day" -> "1",
         "date.month" -> "1",
         "date.year" -> "94"
       )
 
-      result.status mustBe BAD_REQUEST
-      testCaptureVatRegistrationDateInvalidErrorViewTests(result)
+      testCaptureVatRegistrationDateInvalidErrorViewTests(result, authStub)
+
+      "return a BAD_REQUEST" in {
+        stubAuth(OK, successfulAuthResponse(Some(testInternalId)))
+        lazy val result = post(s"/$testJourneyId/vat-registration-date")(
+          "date.day" -> "1",
+          "date.month" -> "1",
+          "date.year" -> "94"
+        )
+
+        result.status mustBe BAD_REQUEST
+      }
     }
 
-    "return a BAD_REQUEST if the date is in the future and show the correct errors" should {
+    "when the user enters a date that is in the future, the page" should {
+      lazy val authStub = stubAuth(OK, successfulAuthResponse(Some(testInternalId)))
       lazy val result = post(s"/$testJourneyId/vat-registration-date")(
         "date.day" -> "1",
         "date.month" -> "1",
         "date.year" -> "2100"
       )
 
-      result.status mustBe BAD_REQUEST
-      testCaptureVatRegistrationDateFutureErrorViewTests(result)
+      testCaptureVatRegistrationDateFutureErrorViewTests(result, authStub)
+
+      "return a BAD_REQUEST" in {
+        stubAuth(OK, successfulAuthResponse(Some(testInternalId)))
+        lazy val result = post(s"/$testJourneyId/vat-registration-date")(
+          "date.day" -> "1",
+          "date.month" -> "1",
+          "date.year" -> "2100"
+        )
+
+        result.status mustBe BAD_REQUEST
+      }
     }
   }
 }
