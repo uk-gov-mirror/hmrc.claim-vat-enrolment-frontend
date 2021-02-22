@@ -1,16 +1,16 @@
 # microservice specific routes
 
-->         /govuk-frontend                  govuk.Routes
-->         /hmrc-frontend                   hmrcfrontend.Routes
-GET        /language/:lang                  uk.gov.hmrc.claimvatenrolmentfrontend.controllers.LanguageSwitchController.switchToLanguage(lang: String)
-GET        /assets/*file                    controllers.Assets.versioned(path = "/public", file: Asset)
+->         /govuk-frontend                             govuk.Routes
+->         /hmrc-frontend                              hmrcfrontend.Routes
+GET        /language/:lang                             uk.gov.hmrc.claimvatenrolmentfrontend.controllers.LanguageSwitchController.switchToLanguage(lang: String)
+GET        /assets/*file                               controllers.Assets.versioned(path = "/public", file: Asset)
 
 # Session
-GET         /keep-alive                    uk.gov.hmrc.claimvatenrolmentfrontend.controllers.SignInOutController.keepAlive
-GET         /sign-out                      uk.gov.hmrc.claimvatenrolmentfrontend.controllers.SignInOutController.signOut
+GET         /keep-alive                                uk.gov.hmrc.claimvatenrolmentfrontend.controllers.SignInOutController.keepAlive
+GET         /sign-out                                  uk.gov.hmrc.claimvatenrolmentfrontend.controllers.SignInOutController.signOut
 
 # Journey
-GET        /journey/:vrn                   uk.gov.hmrc.claimvatenrolmentfrontend.controllers.JourneyController.createJourney(vrn, continueUrl)
+GET        /journey/:vrn                               uk.gov.hmrc.claimvatenrolmentfrontend.controllers.JourneyController.createJourney(vrn, continueUrl)
 
 #  Capture VAT Registration Date
 GET        /:journeyId/vat-registration-date           uk.gov.hmrc.claimvatenrolmentfrontend.controllers.CaptureVatRegistrationDateController.show(journeyId)

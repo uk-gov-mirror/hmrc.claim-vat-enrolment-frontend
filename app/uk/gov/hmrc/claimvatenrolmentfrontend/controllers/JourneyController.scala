@@ -17,23 +17,32 @@
 package uk.gov.hmrc.claimvatenrolmentfrontend.controllers
 
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.internalId
+import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions}
 import uk.gov.hmrc.claimvatenrolmentfrontend.models.JourneyConfig
 import uk.gov.hmrc.claimvatenrolmentfrontend.services.JourneyService
-import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class JourneyController @Inject()(journeyService: JourneyService,
-                                  mcc: MessagesControllerComponents
-                                 )(implicit ec: ExecutionContext) extends BackendController(mcc) {
+                                  mcc: MessagesControllerComponents,
+                                  val authConnector: AuthConnector
+                                 )(implicit ec: ExecutionContext) extends FrontendController(mcc) with AuthorisedFunctions {
 
-  def createJourney(vrn: String, continueUrl: String): Action[AnyContent] = Action.async {
+  def createJourney(vatNumber: String, continueUrl: String): Action[AnyContent] = Action.async {
     implicit request =>
-      journeyService.createJourney(JourneyConfig(continueUrl)).map(
-        journeyId => Redirect(routes.CaptureVatRegistrationDateController.show(journeyId).url)
-      )
+      authorised().retrieve(internalId) {
+        case Some(authId) =>
+          journeyService.createJourney(JourneyConfig(continueUrl), vatNumber, authId).map {
+            journeyId => Redirect(routes.CaptureVatRegistrationDateController.show(journeyId).url)
+          }
+        case None =>
+          Future.successful(Unauthorized)
+      }
+
   }
 
 }

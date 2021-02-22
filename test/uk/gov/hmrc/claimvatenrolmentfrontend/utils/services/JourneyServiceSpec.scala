@@ -22,20 +22,20 @@ import reactivemongo.api.commands.WriteResult
 import uk.gov.hmrc.claimvatenrolmentfrontend.models.JourneyConfig
 import uk.gov.hmrc.claimvatenrolmentfrontend.services.{JourneyIdGenerationService, JourneyService}
 import uk.gov.hmrc.claimvatenrolmentfrontend.utils.UnitSpec
-import uk.gov.hmrc.claimvatenrolmentfrontend.utils.helpers.TestConstants.{testContinueUrl, testJourneyId}
-import uk.gov.hmrc.claimvatenrolmentfrontend.utils.repositories.mocks.MockJourneyConfigRepository
+import uk.gov.hmrc.claimvatenrolmentfrontend.utils.helpers.TestConstants.{testContinueUrl, testInternalId, testJourneyId, testVatNumber}
+import uk.gov.hmrc.claimvatenrolmentfrontend.utils.repositories.mocks.{MockJourneyConfigRepository, MockJourneyDataRepository}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class JourneyServiceSpec extends UnitSpec with MockJourneyConfigRepository {
+class JourneyServiceSpec extends UnitSpec with MockJourneyConfigRepository with MockJourneyDataRepository {
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
   val mockJourneyIdGenerationService: JourneyIdGenerationService = mock[JourneyIdGenerationService]
 
-  object TestService extends JourneyService(mockJourneyConfigRepository, mockJourneyIdGenerationService)
+  object TestService extends JourneyService(mockJourneyConfigRepository, mockJourneyDataRepository, mockJourneyIdGenerationService)
 
   val testJourneyConfig: JourneyConfig = JourneyConfig(
     continueUrl = testContinueUrl
@@ -45,8 +45,9 @@ class JourneyServiceSpec extends UnitSpec with MockJourneyConfigRepository {
     "return the journeyId and store the Journey Config" in {
       when(mockJourneyIdGenerationService.generateJourneyId()).thenReturn(testJourneyId)
       mockInsertJourneyConfig(testJourneyId, testJourneyConfig)(response = Future.successful(mock[WriteResult]))
+      mockInsertJourneyData(testJourneyId, testInternalId, testVatNumber)(response = Future.successful(testJourneyId))
 
-      val result = await(TestService.createJourney(testJourneyConfig))
+      val result = await(TestService.createJourney(testJourneyConfig, testVatNumber, testInternalId))
 
       result mustBe testJourneyId
       verifyInsertJourneyConfig(testJourneyId, testJourneyConfig)

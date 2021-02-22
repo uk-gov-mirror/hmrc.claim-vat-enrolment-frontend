@@ -17,7 +17,7 @@
 package uk.gov.hmrc.claimvatenrolmentfrontend.services
 
 import uk.gov.hmrc.claimvatenrolmentfrontend.models.JourneyConfig
-import uk.gov.hmrc.claimvatenrolmentfrontend.repositories.JourneyConfigRepository
+import uk.gov.hmrc.claimvatenrolmentfrontend.repositories.{JourneyConfigRepository, JourneyDataRepository}
 import uk.gov.hmrc.http.InternalServerException
 
 import javax.inject.{Inject, Singleton}
@@ -25,14 +25,16 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class JourneyService @Inject()(journeyConfigRepository: JourneyConfigRepository,
+                               journeyDataRepository: JourneyDataRepository,
                                journeyIdGenerationService: JourneyIdGenerationService
                               )(implicit ec: ExecutionContext) {
 
-  def createJourney(journeyConfig: JourneyConfig): Future[String] = {
-    val journeyId = journeyIdGenerationService.generateJourneyId()
-    journeyConfigRepository.insertJourneyConfig(journeyId, journeyConfig).map {
-      _ => journeyId
-    }
+  def createJourney(journeyConfig: JourneyConfig, vatNumber: String, authInternalId: String): Future[String] = {
+    val id = journeyIdGenerationService.generateJourneyId()
+    for {
+      _ <- journeyConfigRepository.insertJourneyConfig(id, journeyConfig)
+      _ <- journeyDataRepository.insertJourneyData(id, authInternalId, vatNumber)
+    } yield id
   }
 
   def retrieveJourneyConfig(journeyId: String): Future[JourneyConfig] =

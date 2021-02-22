@@ -41,7 +41,7 @@ trait MockJourneyConfigRepository extends MockitoSugar with BeforeAndAfterEach {
   def mockInsertJourneyConfig(journeyId: String, journeyConfig: JourneyConfig)
                              (response: Future[WriteResult]): OngoingStubbing[_] = {
     when(mockJourneyConfigRepository.insertJourneyConfig(
-      ArgumentMatchers.any[String],
+      ArgumentMatchers.eq(journeyId),
       ArgumentMatchers.eq(journeyConfig)
     )).thenReturn(response)
   }
