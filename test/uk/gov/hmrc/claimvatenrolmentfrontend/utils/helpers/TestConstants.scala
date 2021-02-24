@@ -26,5 +26,6 @@ object TestConstants {
   val testVatRegDate: LocalDate = LocalDate.parse("2021-01-01")
   val testInternalId: String = UUID.randomUUID().toString
   val testVatNumber: String = UUID.randomUUID().toString
+  val testBoxFive: String = "1000.00"
 
 }
