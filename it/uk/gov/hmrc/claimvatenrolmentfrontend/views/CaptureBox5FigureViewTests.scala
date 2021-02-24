@@ -1,6 +1,7 @@
 
 package uk.gov.hmrc.claimvatenrolmentfrontend.views
 
+import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.libs.ws.WSResponse
@@ -11,9 +12,11 @@ import uk.gov.hmrc.claimvatenrolmentfrontend.utils.ViewSpecHelper.ElementExtensi
 trait CaptureBox5FigureViewTests {
   this: ComponentSpecHelper =>
 
-  def testCaptureBox5FigureViewTests(result: => WSResponse): Unit = {
+  def testCaptureBox5FigureViewTests(result: => WSResponse,
+                                     authStub: => StubMapping): Unit = {
 
     lazy val doc: Document = {
+      authStub
       Jsoup.parse(result.body)
     }
 
@@ -42,6 +45,60 @@ trait CaptureBox5FigureViewTests {
 
     "have a continue button" in {
       doc.getSubmitButton.first.text mustBe Base.continue
+    }
+  }
+
+  def testCaptureBox5MissingErrorViewTests(result: => WSResponse,
+                                           authStub: => StubMapping): Unit = {
+
+    lazy val doc: Document = {
+      authStub
+      Jsoup.parse(result.body)
+    }
+
+    "correctly display the error summary" in {
+      doc.getErrorSummaryTitle.text mustBe Base.Error.title
+      doc.getErrorSummaryBody.text mustBe messages.Error.noFigure
+    }
+
+    "correctly display the field error" in {
+      doc.getFieldErrorMessage.text mustBe Base.Error.error + messages.Error.noFigure
+    }
+  }
+
+  def testCaptureBox5InvalidLengthErrorViewTests(result: => WSResponse,
+                                                 authStub: => StubMapping): Unit = {
+
+    lazy val doc: Document = {
+      authStub
+      Jsoup.parse(result.body)
+    }
+
+    "correctly display the error summary" in {
+      doc.getErrorSummaryTitle.text mustBe Base.Error.title
+      doc.getErrorSummaryBody.text mustBe messages.Error.invalidLength
+    }
+
+    "correctly display the field error" in {
+      doc.getFieldErrorMessage.text mustBe Base.Error.error + messages.Error.invalidLength
+    }
+  }
+
+  def testCaptureBox5InvalidFormatErrorViewTests(result: => WSResponse,
+                                                 authStub: => StubMapping): Unit = {
+
+    lazy val doc: Document = {
+      authStub
+      Jsoup.parse(result.body)
+    }
+
+    "correctly display the error summary" in {
+      doc.getErrorSummaryTitle.text mustBe Base.Error.title
+      doc.getErrorSummaryBody.text mustBe messages.Error.invalidFormat
+    }
+
+    "correctly display the field error" in {
+      doc.getFieldErrorMessage.text mustBe Base.Error.error + messages.Error.invalidFormat
     }
   }
 

@@ -16,33 +16,49 @@
 
 package uk.gov.hmrc.claimvatenrolmentfrontend.controllers
 
-import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.internalId
+import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions}
 import uk.gov.hmrc.claimvatenrolmentfrontend.config.AppConfig
 import uk.gov.hmrc.claimvatenrolmentfrontend.forms.CaptureBox5FigureForm
+import uk.gov.hmrc.claimvatenrolmentfrontend.services.StoreBox5FigureService
 import uk.gov.hmrc.claimvatenrolmentfrontend.views.html.capture_box5_figure_page
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
-import scala.concurrent.Future
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CaptureBox5FigureController @Inject()(mcc: MessagesControllerComponents,
-                                            view: capture_box5_figure_page
-                                           )(implicit val config: AppConfig) extends FrontendController(mcc) {
+                                            view: capture_box5_figure_page,
+                                            storeBox5FigureService: StoreBox5FigureService,
+                                            val authConnector: AuthConnector
+                                           )(implicit val config: AppConfig,
+                                             ec: ExecutionContext) extends FrontendController(mcc) with AuthorisedFunctions {
 
   def show(journeyId: String): Action[AnyContent] = Action.async {
     implicit request =>
-      Future.successful(Ok(view(CaptureBox5FigureForm.form, routes.CaptureBox5FigureController.submit(journeyId))))
+      authorised() {
+        Future.successful(Ok(view(CaptureBox5FigureForm.form, routes.CaptureBox5FigureController.submit(journeyId))))
+      }
   }
 
   def submit(journeyId: String): Action[AnyContent] = Action.async {
     implicit request =>
-      CaptureBox5FigureForm.form.bindFromRequest.fold(
-        formWithErrors => Future.successful(
-          BadRequest(view(formWithErrors, routes.CaptureBox5FigureController.submit(journeyId)))
-        ),
-        box5Figure =>
-          Future.successful(Redirect(routes.CaptureLastMonthSubmittedController.show(journeyId).url))
-      )
+      authorised().retrieve(internalId) {
+        case Some(authId) =>
+          CaptureBox5FigureForm.form.bindFromRequest.fold(
+            formWithErrors =>
+              Future.successful(
+                BadRequest(view(formWithErrors, routes.CaptureBox5FigureController.submit(journeyId)))
+              ),
+            box5Figure =>
+              storeBox5FigureService.storeBox5Figure(journeyId, box5Figure, authId).map {
+                _ => Redirect(routes.CaptureLastMonthSubmittedController.show(journeyId).url)
+              }
+          )
+        case None =>
+          Future.successful(Unauthorized)
+      }
   }
 }
