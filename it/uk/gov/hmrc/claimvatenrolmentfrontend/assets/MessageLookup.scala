@@ -43,6 +43,12 @@ object MessageLookup {
     val heading = "What is the UK postcode where your business is registered for VAT?"
     val hint = "For example, AB1 2YZ"
     val link_text = "The business does not have a UK postcode"
+
+    object Error {
+      val emptyPostcode = "This field is required"
+      val invalidPostcode = "Enter the postcode where your business is registered for VAT"
+    }
+
   }
 
   object CaptureVatRegistrationDate {

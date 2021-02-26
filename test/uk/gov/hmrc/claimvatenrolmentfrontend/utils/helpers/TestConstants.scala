@@ -28,5 +28,5 @@ object TestConstants {
   val testInternalId: String = UUID.randomUUID().toString
   val testVatNumber: String = UUID.randomUUID().toString
   val testBoxFive: String = "1000.00"
-
+  val testPostcode: String = "111 111"
 }
