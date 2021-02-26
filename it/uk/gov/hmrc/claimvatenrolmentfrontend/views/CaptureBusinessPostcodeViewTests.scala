@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.claimvatenrolmentfrontend.views
 
+import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.libs.ws.WSResponse
@@ -26,9 +27,11 @@ import uk.gov.hmrc.claimvatenrolmentfrontend.utils.ViewSpecHelper.ElementExtensi
 trait CaptureBusinessPostcodeViewTests {
   this: ComponentSpecHelper =>
 
-  def testCaptureBusinessPostcodeViewTests(result: => WSResponse): Unit = {
+  def testCaptureBusinessPostcodeViewTests(result: => WSResponse,
+                                           authStub: => StubMapping): Unit = {
 
     lazy val doc: Document = {
+      authStub
       Jsoup.parse(result.body)
     }
 
@@ -60,4 +63,37 @@ trait CaptureBusinessPostcodeViewTests {
     }
   }
 
+  def testCaptureBusinessPostcodeMissingErrorViewTests(result: => WSResponse,
+                                                       authStub: => StubMapping): Unit = {
+
+    lazy val doc: Document = {
+      authStub
+      Jsoup.parse(result.body)
+    }
+
+    "correctly display the error summary" in {
+      doc.getErrorSummaryTitle.text mustBe Base.Error.title
+    }
+
+    "correctly display the field error" in {
+      doc.getFieldErrorMessage.text mustBe Base.Error.error + messages.Error.emptyPostcode
+    }
+  }
+
+  def testCaptureBusinessPostcodeInvalidErrorViewTests(result: => WSResponse,
+                                                       authStub: => StubMapping): Unit = {
+
+    lazy val doc: Document = {
+      authStub
+      Jsoup.parse(result.body)
+    }
+
+    "correctly display the error summary" in {
+      doc.getErrorSummaryTitle.text mustBe Base.Error.title
+    }
+
+    "correctly display the field error" in {
+      doc.getFieldErrorMessage.text mustBe Base.Error.error + messages.Error.invalidPostcode
+    }
+  }
 }

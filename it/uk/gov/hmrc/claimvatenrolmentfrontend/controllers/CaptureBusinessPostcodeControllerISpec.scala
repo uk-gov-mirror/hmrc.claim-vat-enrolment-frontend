@@ -17,52 +17,67 @@
 package uk.gov.hmrc.claimvatenrolmentfrontend.controllers
 
 import play.api.test.Helpers._
-import uk.gov.hmrc.claimvatenrolmentfrontend.assets.TestConstants.testJourneyId
+import uk.gov.hmrc.claimvatenrolmentfrontend.assets.TestConstants.{testInternalId, testJourneyId, testVatNumber}
+import uk.gov.hmrc.claimvatenrolmentfrontend.stubs.AuthStub
 import uk.gov.hmrc.claimvatenrolmentfrontend.utils.ComponentSpecHelper
 import uk.gov.hmrc.claimvatenrolmentfrontend.views.CaptureBusinessPostcodeViewTests
 
-class CaptureBusinessPostcodeControllerISpec extends ComponentSpecHelper with CaptureBusinessPostcodeViewTests {
+class CaptureBusinessPostcodeControllerISpec extends ComponentSpecHelper with CaptureBusinessPostcodeViewTests with AuthStub {
 
   s"GET /$testJourneyId/business-postcode" should {
     "return OK" in {
+      stubAuth(OK, successfulAuthResponse(Some(testInternalId)))
       lazy val result = get(s"/$testJourneyId/business-postcode")
 
       result.status mustBe OK
     }
     "return a view" should {
+      lazy val authStub = stubAuth(OK, successfulAuthResponse(Some(testInternalId)))
       lazy val result = get(s"/$testJourneyId/business-postcode")
 
-      testCaptureBusinessPostcodeViewTests(result)
+      testCaptureBusinessPostcodeViewTests(result, authStub)
     }
   }
 
   s"POST /$testJourneyId/business-postcode" should {
     "redirect to CaptureSubmittedVatReturn" in {
+      stubAuth(OK, successfulAuthResponse(Some(testInternalId)))
       lazy val result = post(s"/$testJourneyId/business-postcode")(
         "business_postcode" -> "ZZ1 1ZZ"
       )
-
+      await(journeyDataRepository.insertJourneyData(testJourneyId, testInternalId, testVatNumber))
       result must have(
         httpStatus(SEE_OTHER),
         redirectUri(routes.CaptureSubmittedVatReturnController.show(testJourneyId).url)
       )
     }
 
-    "return a BAD_REQUEST if the postcode is missing" in {
-      lazy val result = post(s"/$testJourneyId/business-postcode")(
-        "business_postcode" -> ""
-      )
+    "when the user has submitted an empty form, the page" should {
+      lazy val authStub = stubAuth(OK, successfulAuthResponse(Some(testInternalId)))
+      lazy val result = post(s"/$testJourneyId/business-postcode")()
+      testCaptureBusinessPostcodeMissingErrorViewTests(result, authStub)
 
-      result.status mustBe BAD_REQUEST
+      "return a BAD_REQUEST" in {
+        stubAuth(OK, successfulAuthResponse(Some(testInternalId)))
+        lazy val result = post(s"/$testJourneyId/business-postcode")()
+
+        result.status mustBe BAD_REQUEST
+      }
     }
 
-    "return a BAD_REQUEST if the postcode is invalid" in {
+    "when the user has submitted an invalid postcode" should {
+      lazy val authStub = stubAuth(OK, successfulAuthResponse(Some(testInternalId)))
       lazy val result = post(s"/$testJourneyId/business-postcode")(
-        "business_postcode" -> "111 111"
+        "business_postcode" -> "invalid"
       )
+      testCaptureBusinessPostcodeInvalidErrorViewTests(result, authStub)
 
-      result.status mustBe BAD_REQUEST
+      "return a BAD_REQUEST" in {
+        stubAuth(OK, successfulAuthResponse(Some(testInternalId)))
+        lazy val result = post(s"/$testJourneyId/business-postcode")()
+        result.status mustBe BAD_REQUEST
       }
-  }
+    }
 
+  }
 }
