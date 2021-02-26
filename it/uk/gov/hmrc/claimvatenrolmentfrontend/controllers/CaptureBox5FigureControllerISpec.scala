@@ -10,28 +10,22 @@ import uk.gov.hmrc.claimvatenrolmentfrontend.views.CaptureBox5FigureViewTests
 class CaptureBox5FigureControllerISpec extends ComponentSpecHelper with CaptureBox5FigureViewTests with AuthStub {
 
   s"GET /$testJourneyId/box-5-figure" should {
-    "return OK" in {
+    lazy val result = {
       stubAuth(OK, successfulAuthResponse(Some(testInternalId)))
 
-      lazy val result = get(s"/$testJourneyId/box-5-figure")
+      get(s"/$testJourneyId/box-5-figure")
+    }
 
+    "return OK" in {
       result.status mustBe OK
     }
 
-    "return a view" should {
-      lazy val authStub = stubAuth(OK, successfulAuthResponse(Some(testInternalId)))
-
-      lazy val result = get(s"/$testJourneyId/box-5-figure")
-
-      testCaptureBox5FigureViewTests(result, authStub)
-    }
+    testCaptureBox5FigureViewTests(result)
   }
 
   s"POST /$testJourneyId/box-5-figure" should {
     "redirect to CaptureLastMonthSubmitted if the box 5 figure is valid" in {
       stubAuth(OK, successfulAuthResponse(Some(testInternalId)))
-
-      await(journeyDataRepository.insertJourneyData(testJourneyId, testInternalId, testVatNumber))
 
       lazy val result = post(s"/$testJourneyId/box-5-figure")(
         "box5_figure" -> "1234.56"
@@ -45,8 +39,6 @@ class CaptureBox5FigureControllerISpec extends ComponentSpecHelper with CaptureB
 
     "redirect to CaptureLastMonthSubmitted if the box 5 figure is a negative value " in {
       stubAuth(OK, successfulAuthResponse(Some(testInternalId)))
-
-      await(journeyDataRepository.insertJourneyData(testJourneyId, testInternalId, testVatNumber))
 
       lazy val result = post(s"/$testJourneyId/box-5-figure")(
         "box5_figure" -> "-100.00"

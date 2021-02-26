@@ -12,13 +12,9 @@ import uk.gov.hmrc.claimvatenrolmentfrontend.utils.ViewSpecHelper.ElementExtensi
 trait CaptureBox5FigureViewTests {
   this: ComponentSpecHelper =>
 
-  def testCaptureBox5FigureViewTests(result: => WSResponse,
-                                     authStub: => StubMapping): Unit = {
+  def testCaptureBox5FigureViewTests(result: => WSResponse): Unit = {
 
-    lazy val doc: Document = {
-      authStub
-      Jsoup.parse(result.body)
-    }
+    lazy val doc: Document = Jsoup.parse(result.body)
 
     "have a sign out link in the header" in {
       doc.getSignOutText mustBe Header.signOut
