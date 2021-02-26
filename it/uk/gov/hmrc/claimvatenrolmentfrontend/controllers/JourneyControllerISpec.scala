@@ -35,6 +35,7 @@ class JourneyControllerISpec extends ComponentSpecHelper with AuthStub {
   s"GET  /journey/$testVatNumber" should {
     "redirect to the Capture VAT Registration Date page" in {
       stubAuth(OK, successfulAuthResponse(Some(testInternalId)))
+
       lazy val result = get(s"/journey/$testVatNumber?continueUrl=$testContinueUrl")
 
       result.status mustBe SEE_OTHER

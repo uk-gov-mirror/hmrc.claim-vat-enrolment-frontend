@@ -2,7 +2,7 @@
 package uk.gov.hmrc.claimvatenrolmentfrontend.controllers
 
 import play.api.test.Helpers._
-import uk.gov.hmrc.claimvatenrolmentfrontend.assets.TestConstants.{testInternalId, testJourneyId}
+import uk.gov.hmrc.claimvatenrolmentfrontend.assets.TestConstants.{testInternalId, testJourneyId, testVatNumber}
 import uk.gov.hmrc.claimvatenrolmentfrontend.stubs.AuthStub
 import uk.gov.hmrc.claimvatenrolmentfrontend.utils.ComponentSpecHelper
 import uk.gov.hmrc.claimvatenrolmentfrontend.views.CaptureBox5FigureViewTests
@@ -31,6 +31,8 @@ class CaptureBox5FigureControllerISpec extends ComponentSpecHelper with CaptureB
     "redirect to CaptureLastMonthSubmitted if the box 5 figure is valid" in {
       stubAuth(OK, successfulAuthResponse(Some(testInternalId)))
 
+      await(journeyDataRepository.insertJourneyData(testJourneyId, testInternalId, testVatNumber))
+
       lazy val result = post(s"/$testJourneyId/box-5-figure")(
         "box5_figure" -> "1234.56"
       )
@@ -43,6 +45,8 @@ class CaptureBox5FigureControllerISpec extends ComponentSpecHelper with CaptureB
 
     "redirect to CaptureLastMonthSubmitted if the box 5 figure is a negative value " in {
       stubAuth(OK, successfulAuthResponse(Some(testInternalId)))
+
+      await(journeyDataRepository.insertJourneyData(testJourneyId, testInternalId, testVatNumber))
 
       lazy val result = post(s"/$testJourneyId/box-5-figure")(
         "box5_figure" -> "-100.00"

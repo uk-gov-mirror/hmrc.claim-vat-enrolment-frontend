@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.claimvatenrolmentfrontend.controllers
 
+import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.internalId
 import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions}
@@ -25,7 +26,6 @@ import uk.gov.hmrc.claimvatenrolmentfrontend.services.StoreBox5FigureService
 import uk.gov.hmrc.claimvatenrolmentfrontend.views.html.capture_box5_figure_page
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
-import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
