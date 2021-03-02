@@ -23,7 +23,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import scala.concurrent.Future
 
 @Singleton
-class SuccessfulEnrolmentController @Inject()(mcc: MessagesControllerComponents,
+class SuccessfulEnrolmentController @Inject()(mcc: MessagesControllerComponents
                                               ) extends FrontendController(mcc) {
 
   def show(): Action[AnyContent] = Action.async {
