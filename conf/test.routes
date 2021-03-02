@@ -1,0 +1,1 @@
+GET        /successful-enrolment                       uk.gov.hmrc.claimvatenrolmentfrontend.testOnly.SuccessfulEnrolmentController.show()
