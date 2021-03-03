@@ -22,6 +22,7 @@ object MessageLookup {
     val continue = "Continue"
     val change = "Change"
     val yes = "Yes"
+    val tryAgain = "Try Again"
 
     object Error {
       val title = "There is a problem"
@@ -126,6 +127,13 @@ object MessageLookup {
     val vatReturnsRow = "You are currently submitting VAT returns"
     val boxFiveRow = "Your VAT return total or Box 5 amount"
     val lastReturnMonthRow = "The last month in your latest accounting period"
+
+  }
+
+  object KnownFactsMismatch {
+    val title = "We could not confirm your business - Claim VAT Enrolment - GOV.UK"
+    val heading = "We could not confirm your business"
+    val line_1 = "The information you provided does not match the details we have about your business."
 
   }
 
