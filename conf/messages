@@ -4,6 +4,7 @@ app.title                                                    = Claim VAT Enrolme
 app.title.error_prefix                                       = Error:
 app.common.errorSummaryLabel                                 = There is a problem
 app.common.continue                                          = Continue
+app.common.tryAgain                                          = Try Again
 app.common.back                                              = Back
 app.common.change                                            = Change
 app.phaseBanner1                                             = This is a new service - your
@@ -77,3 +78,9 @@ check-your-answers.business_postcode                        = Where your busines
 check-your-answers.vat_returns                              = You are currently submitting VAT returns
 check-your-answers.box_five                                 = Your VAT return total or Box 5 amount
 check-your-answers.last_return_month                        = The last month in your latest accounting period
+
+# Known Facts Mismatch Page
+known_facts_mismatch.title                                  = We could not confirm your business
+known_facts_mismatch.heading                                = We could not confirm your business
+known_facts_mismatch.line_1                                 = The information you provided does not match the details we have about your business.
+
