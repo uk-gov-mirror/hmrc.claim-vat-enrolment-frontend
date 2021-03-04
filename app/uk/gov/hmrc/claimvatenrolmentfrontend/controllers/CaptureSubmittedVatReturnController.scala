@@ -58,7 +58,12 @@ class CaptureSubmittedVatReturnController @Inject()(mcc: MessagesControllerCompo
                 submittedReturn,
                 authId
               ).map {
-                _ => Redirect(routes.CaptureBox5FigureController.show(journeyId).url)
+                _ =>
+                  if (submittedReturn) {
+                    Redirect(routes.CaptureBox5FigureController.show(journeyId).url)
+                  } else {
+                    Redirect(routes.CheckYourAnswersController.show(journeyId).url)
+                  }
               }
           )
         case None =>

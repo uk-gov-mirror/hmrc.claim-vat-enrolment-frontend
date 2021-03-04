@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.claimvatenrolmentfrontend.views
 
-import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.libs.ws.WSResponse
@@ -27,13 +26,9 @@ import uk.gov.hmrc.claimvatenrolmentfrontend.utils.ViewSpecHelper.ElementExtensi
 trait CaptureSubmittedVatReturnViewTests {
   this: ComponentSpecHelper =>
 
-  def testCaptureSubmittedVatReturnViewTests(result: => WSResponse,
-                                             authStub: => StubMapping): Unit = {
+  def testCaptureSubmittedVatReturnViewTests(result: => WSResponse): Unit = {
 
-    lazy val doc: Document = {
-      authStub
-      Jsoup.parse(result.body)
-    }
+    lazy val doc: Document = Jsoup.parse(result.body)
 
     "have a sign out link in the header" in {
       doc.getSignOutText mustBe Header.signOut
@@ -56,13 +51,9 @@ trait CaptureSubmittedVatReturnViewTests {
 
   }
 
-  def testCaptureSubmittedVatReturnErrorViewTests(result: => WSResponse,
-                                                  authStub: => StubMapping): Unit = {
+  def testCaptureSubmittedVatReturnErrorViewTests(result: => WSResponse): Unit = {
 
-    lazy val doc: Document = {
-      authStub
-      Jsoup.parse(result.body)
-    }
+    lazy val doc: Document = Jsoup.parse(result.body)
 
     "correctly display the error summary" in {
       doc.getErrorSummaryTitle.text mustBe Base.Error.title

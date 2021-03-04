@@ -25,50 +25,58 @@ import uk.gov.hmrc.claimvatenrolmentfrontend.views.CaptureSubmittedVatReturnView
 class CaptureSubmittedVatReturnControllerISpec extends ComponentSpecHelper with CaptureSubmittedVatReturnViewTests with AuthStub {
 
   s"GET /$testJourneyId/submitted-vat-return" should {
-    "return OK" in {
+    lazy val result = {
       stubAuth(OK, successfulAuthResponse(Some(testInternalId)))
+      get(s"/$testJourneyId/submitted-vat-return")
+    }
 
-      lazy val result = get(s"/$testJourneyId/submitted-vat-return")
-
+    "return OK" in {
       result.status mustBe OK
     }
 
-    "return a view" should {
-      lazy val authStub = stubAuth(OK, successfulAuthResponse(Some(testInternalId)))
-
-      lazy val result = get(s"/$testJourneyId/submitted-vat-return")
-
-      testCaptureSubmittedVatReturnViewTests(result, authStub)
-    }
+    testCaptureSubmittedVatReturnViewTests(result)
   }
 
+
   s"POST /$testJourneyId/submitted-vat-return" should {
-    "redirect to CaptureBox5Figure" in {
-      stubAuth(OK, successfulAuthResponse(Some(testInternalId)))
+    "redirect to CaptureBox5Figure" when {
+      "the user selects yes" in {
+        stubAuth(OK, successfulAuthResponse(Some(testInternalId)))
+        await(journeyDataRepository.insertJourneyData(testJourneyId, testInternalId, testVatNumber))
+        lazy val result = post(s"/$testJourneyId/submitted-vat-return")("vat_return" -> "yes")
 
-      await(journeyDataRepository.insertJourneyData(testJourneyId, testInternalId, testVatNumber))
-
-      lazy val result = post(s"/$testJourneyId/submitted-vat-return")(
-        "vat_return" -> "yes")
-
-      result must have(
-        httpStatus(SEE_OTHER),
-        redirectUri(routes.CaptureBox5FigureController.show(testJourneyId).url)
-      )
+        result must have(
+          httpStatus(SEE_OTHER),
+          redirectUri(routes.CaptureBox5FigureController.show(testJourneyId).url)
+        )
+      }
     }
 
-    "when the user has submitted an empty form" should {
-      lazy val authStub = stubAuth(OK, successfulAuthResponse(Some(testInternalId)))
-      lazy val result = post(s"/$testJourneyId/submitted-vat-return")()
-
-      testCaptureSubmittedVatReturnErrorViewTests(result, authStub)
-
-
-      "return a BAD_REQUEST" in {
+    "redirect to Check Your Answers Page" when {
+      "the user selects no" in {
         stubAuth(OK, successfulAuthResponse(Some(testInternalId)))
-        lazy val result = post(s"/$testJourneyId/vat-registration-date")()
+        await(journeyDataRepository.insertJourneyData(testJourneyId, testInternalId, testVatNumber))
+        lazy val result = post(s"/$testJourneyId/submitted-vat-return")("vat_return" -> "no")
 
-        result.status mustBe BAD_REQUEST
+        result must have(
+          httpStatus(SEE_OTHER),
+          redirectUri(routes.CheckYourAnswersController.show(testJourneyId).url)
+        )
+      }
+    }
+
+    "return a view with errors" when {
+      "the user submits an empty form" should {
+        lazy val result = {
+          stubAuth(OK, successfulAuthResponse(Some(testInternalId)))
+          post(s"/$testJourneyId/submitted-vat-return")()
+        }
+
+        "return a BAD_REQUEST" in {
+          result.status mustBe BAD_REQUEST
+        }
+
+        testCaptureSubmittedVatReturnErrorViewTests(result)
       }
     }
   }

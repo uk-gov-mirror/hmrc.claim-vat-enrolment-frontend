@@ -25,7 +25,7 @@ import uk.gov.hmrc.claimvatenrolmentfrontend.forms.utils.ValidationHelper.{valid
 object CaptureBusinessPostcodeForm {
 
   val businessPostcode: String = "business_postcode"
-  val postCodeRegex = "^[A-Z]{1,2}[0-9][0-9A-Z]? [0-9][A-Z]{2}$"
+  val postCodeRegex = "^[A-Z]{1,2}[0-9][0-9A-Z]?[ ]?[0-9][A-Z]{2}$"
 
   val businessPostcodeEmpty: Constraint[String] = Constraint("business_postcode.not_entered")(
     businessPostcode => validate(
@@ -41,13 +41,8 @@ object CaptureBusinessPostcodeForm {
     )
   )
 
-  val form: Form[String] = {
-    Form(
-      businessPostcode -> text.verifying(
-        businessPostcodeEmpty andThen
-          businessPostcodeFormat
-      ))
-
-  }
+  val form: Form[String] = Form(
+    businessPostcode -> text.verifying(businessPostcodeEmpty andThen businessPostcodeFormat)
+  )
 
 }

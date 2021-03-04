@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.claimvatenrolmentfrontend.views
 
-import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.libs.ws.WSResponse
@@ -27,13 +26,9 @@ import uk.gov.hmrc.claimvatenrolmentfrontend.utils.ViewSpecHelper.ElementExtensi
 trait CaptureBusinessPostcodeViewTests {
   this: ComponentSpecHelper =>
 
-  def testCaptureBusinessPostcodeViewTests(result: => WSResponse,
-                                           authStub: => StubMapping): Unit = {
+  def testCaptureBusinessPostcodeViewTests(result: => WSResponse): Unit = {
 
-    lazy val doc: Document = {
-      authStub
-      Jsoup.parse(result.body)
-    }
+    lazy val doc: Document = Jsoup.parse(result.body)
 
     "have a sign out link in the header" in {
       doc.getSignOutText mustBe Header.signOut
@@ -63,13 +58,9 @@ trait CaptureBusinessPostcodeViewTests {
     }
   }
 
-  def testCaptureBusinessPostcodeMissingErrorViewTests(result: => WSResponse,
-                                                       authStub: => StubMapping): Unit = {
+  def testCaptureBusinessPostcodeMissingErrorViewTests(result: => WSResponse): Unit = {
 
-    lazy val doc: Document = {
-      authStub
-      Jsoup.parse(result.body)
-    }
+    lazy val doc: Document = Jsoup.parse(result.body)
 
     "correctly display the error summary" in {
       doc.getErrorSummaryTitle.text mustBe Base.Error.title
@@ -80,13 +71,9 @@ trait CaptureBusinessPostcodeViewTests {
     }
   }
 
-  def testCaptureBusinessPostcodeInvalidErrorViewTests(result: => WSResponse,
-                                                       authStub: => StubMapping): Unit = {
+  def testCaptureBusinessPostcodeInvalidErrorViewTests(result: => WSResponse): Unit = {
 
-    lazy val doc: Document = {
-      authStub
-      Jsoup.parse(result.body)
-    }
+    lazy val doc: Document = Jsoup.parse(result.body)
 
     "correctly display the error summary" in {
       doc.getErrorSummaryTitle.text mustBe Base.Error.title
