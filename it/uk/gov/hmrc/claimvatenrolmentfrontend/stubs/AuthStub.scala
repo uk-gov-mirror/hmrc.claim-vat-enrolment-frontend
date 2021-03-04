@@ -20,6 +20,7 @@ import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames
 import play.api.libs.json.{JsObject, Json, Writes}
 import play.api.test.Helpers.UNAUTHORIZED
+import uk.gov.hmrc.claimvatenrolmentfrontend.assets.TestConstants.testCredentialId
 import uk.gov.hmrc.claimvatenrolmentfrontend.utils.WireMockMethods
 
 
@@ -38,6 +39,15 @@ trait AuthStub extends WireMockMethods {
   }
 
   def successfulAuthResponse(internalId: Option[String]): JsObject = Json.obj(
+    "internalId" -> internalId
+  )
+
+  def successfulAuthResponseEnrolmentAllocation(groupId: Option[String], internalId: Option[String]): JsObject = Json.obj(
+    "optionalCredentials" -> Json.obj(
+      "providerId" -> testCredentialId,
+      "providerType" -> "GovernmentGateway"
+    ),
+    "groupIdentifier" -> groupId,
     "internalId" -> internalId
   )
 

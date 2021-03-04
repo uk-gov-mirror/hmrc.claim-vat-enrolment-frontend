@@ -21,7 +21,7 @@ import play.api.test.Helpers._
 import reactivemongo.play.json._
 import uk.gov.hmrc.claimvatenrolmentfrontend.assets.TestConstants._
 import uk.gov.hmrc.claimvatenrolmentfrontend.models.ClaimVatEnrolmentModel
-import uk.gov.hmrc.claimvatenrolmentfrontend.stubs.AuthStub
+import uk.gov.hmrc.claimvatenrolmentfrontend.stubs.{AllocationEnrolmentStub, AuthStub}
 import uk.gov.hmrc.claimvatenrolmentfrontend.utils.ComponentSpecHelper
 import uk.gov.hmrc.claimvatenrolmentfrontend.views.CheckYourAnswersViewTests
 
@@ -29,11 +29,11 @@ import java.time.Instant
 import scala.concurrent.ExecutionContext.Implicits.global
 
 
-class CheckYourAnswersControllerISpec extends ComponentSpecHelper with CheckYourAnswersViewTests with AuthStub {
+class CheckYourAnswersControllerISpec extends ComponentSpecHelper with CheckYourAnswersViewTests with AuthStub with AllocationEnrolmentStub {
 
   override def beforeEach(): Unit = {
+    await(journeyDataRepository.drop)
     super.beforeEach()
-    journeyDataRepository.drop
   }
 
   implicit val writes: OWrites[ClaimVatEnrolmentModel] =
@@ -56,13 +56,13 @@ class CheckYourAnswersControllerISpec extends ComponentSpecHelper with CheckYour
   s"GET /$testJourneyId/check-your-answers-vat" when {
     "there is a full ClaimVatEnrolmentModel stored in the database" should {
       lazy val result = {
-        journeyDataRepository.collection.insert(true).one(
+        await(journeyDataRepository.collection.insert(true).one(
           Json.obj(
             "_id" -> testJourneyId,
             "authInternalId" -> testInternalId,
             "creationTimestamp" -> Json.obj("$date" -> Instant.now.toEpochMilli)
           ) ++ Json.toJsObject(testFullClaimVatEnrolmentModel)
-        )
+        ))
         stubAuth(OK, successfulAuthResponse(Some(testInternalId)))
         get(s"/$testJourneyId/check-your-answers-vat")
       }
@@ -74,13 +74,13 @@ class CheckYourAnswersControllerISpec extends ComponentSpecHelper with CheckYour
 
     "there is a ClaimVatEnrolmentModel with no postcode stored in the database" should {
       lazy val result = {
-        journeyDataRepository.collection.insert(true).one(
+        await(journeyDataRepository.collection.insert(true).one(
           Json.obj(
             "_id" -> testJourneyId,
             "authInternalId" -> testInternalId,
             "creationTimestamp" -> Json.obj("$date" -> Instant.now.toEpochMilli)
           ) ++ Json.toJsObject(testClaimVatEnrolmentModelNoPostcode)
-        )
+        ))
         stubAuth(OK, successfulAuthResponse(Some(testInternalId)))
         get(s"/$testJourneyId/check-your-answers-vat")
       }
@@ -94,13 +94,13 @@ class CheckYourAnswersControllerISpec extends ComponentSpecHelper with CheckYour
 
     "there is a ClaimVatEnrolmentModel with no returns stored in the database" should {
       lazy val result = {
-        journeyDataRepository.collection.insert(true).one(
+        await(journeyDataRepository.collection.insert(true).one(
           Json.obj(
             "_id" -> testJourneyId,
             "authInternalId" -> testInternalId,
             "creationTimestamp" -> Json.obj("$date" -> Instant.now.toEpochMilli)
           ) ++ Json.toJsObject(testClaimVatEnrolmentModelNoReturns)
-        )
+        ))
         stubAuth(OK, successfulAuthResponse(Some(testInternalId)))
         get(s"/$testJourneyId/check-your-answers-vat")
       }
@@ -114,13 +114,13 @@ class CheckYourAnswersControllerISpec extends ComponentSpecHelper with CheckYour
 
     "there is a ClaimVatEnrolmentModel with no returns and no postcode stored in the database" should {
       lazy val result = {
-        journeyDataRepository.collection.insert(true).one(
+        await(journeyDataRepository.collection.insert(true).one(
           Json.obj(
             "_id" -> testJourneyId,
             "authInternalId" -> testInternalId,
             "creationTimestamp" -> Json.obj("$date" -> Instant.now.toEpochMilli)
           ) ++ Json.toJsObject(testClaimVatEnrolmentModelNoReturnsNoPostcode)
-        )
+        ))
         stubAuth(OK, successfulAuthResponse(Some(testInternalId)))
         get(s"/$testJourneyId/check-your-answers-vat")
       }
@@ -134,9 +134,17 @@ class CheckYourAnswersControllerISpec extends ComponentSpecHelper with CheckYour
   }
 
   s"POST /$testJourneyId/check-your-answers-vat" should {
-    "redirect to the continue url" in {
-      stubAuth(OK, successfulAuthResponse(Some(testInternalId)))
+    "redirect to the continue url when the allocation was successfully created" in {
+      stubAuth(OK, successfulAuthResponseEnrolmentAllocation(Some(testGroupId), Some(testInternalId)))
+      await(journeyDataRepository.collection.insert(true).one(
+        Json.obj(
+          "_id" -> testJourneyId,
+          "authInternalId" -> testInternalId,
+          "creationTimestamp" -> Json.obj("$date" -> Instant.now.toEpochMilli)
+        ) ++ Json.toJsObject(testFullClaimVatEnrolmentModel)
+      ))
       await(insertJourneyConfig(testJourneyId, testContinueUrl))
+      stubAllocateEnrolment(testFullClaimVatEnrolmentModel, testCredentialId, testGroupId)(CREATED)
 
       lazy val result = post(s"/$testJourneyId/check-your-answers-vat")()
 
@@ -144,6 +152,28 @@ class CheckYourAnswersControllerISpec extends ComponentSpecHelper with CheckYour
         httpStatus(SEE_OTHER),
         redirectUri(testContinueUrl)
       )
+    }
+    "return NOT_IMPLEMENTED when the allocation was not successfully created" in {
+      stubAuth(OK, successfulAuthResponseEnrolmentAllocation(Some(testGroupId), Some(testInternalId)))
+      await(journeyDataRepository.collection.insert(true).one(
+        Json.obj(
+          "_id" -> testJourneyId,
+          "authInternalId" -> testInternalId,
+          "creationTimestamp" -> Json.obj("$date" -> Instant.now.toEpochMilli)
+        ) ++ Json.toJsObject(testFullClaimVatEnrolmentModel)
+      ))
+      stubAllocateEnrolment(testFullClaimVatEnrolmentModel, testCredentialId, testGroupId)(BAD_REQUEST)
+
+      lazy val result = post(s"/$testJourneyId/check-your-answers-vat")()
+
+      result.status mustBe NOT_IMPLEMENTED
+    }
+    "return UNAUTHORISED when no credentials or groupId are retrieved from Auth" in {
+      stubAuth(OK, successfulAuthResponse(Some(testInternalId)))
+
+      lazy val result = post(s"/$testJourneyId/check-your-answers-vat")()
+
+      result.status mustBe UNAUTHORIZED
     }
   }
 

@@ -16,16 +16,16 @@
 
 package uk.gov.hmrc.claimvatenrolmentfrontend.services
 
-import javax.inject.{Inject, Singleton}
 import play.api.libs.json.Json
 import uk.gov.hmrc.claimvatenrolmentfrontend.repositories.JourneyDataRepository
 import uk.gov.hmrc.claimvatenrolmentfrontend.services.StoreSubmittedVatReturnService.SubmittedVatReturnKey
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class StoreSubmittedVatReturnService @Inject()(journeyDataRepository: JourneyDataRepository
-                                        )(implicit executionContext: ExecutionContext) {
+                                              )(implicit executionContext: ExecutionContext) {
 
   def storeStoreSubmittedVat(journeyId: String,
                              submittedReturn: Boolean,

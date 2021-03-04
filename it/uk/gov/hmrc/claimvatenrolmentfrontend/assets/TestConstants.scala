@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.claimvatenrolmentfrontend.assets
 
+import uk.gov.hmrc.auth.core.retrieve.Credentials
 import uk.gov.hmrc.claimvatenrolmentfrontend.models.{ClaimVatEnrolmentModel, Postcode, ReturnsInformationModel}
 
 import java.time.LocalDate
@@ -34,6 +35,7 @@ object TestConstants {
   val testContinueUrl: String = "/test-continue-url"
   val testGroupId: String = UUID.randomUUID().toString
   val testCredentialId: String = UUID.randomUUID().toString
+  val testCredentials: Credentials = Credentials(testCredentialId, "GovernmentGateway")
 
   val testFullClaimVatEnrolmentModel: ClaimVatEnrolmentModel =
     ClaimVatEnrolmentModel(

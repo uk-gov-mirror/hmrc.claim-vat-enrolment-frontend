@@ -23,7 +23,7 @@ import uk.gov.hmrc.claimvatenrolmentfrontend.utils.WireMockMethods
 
 trait AllocationEnrolmentStub extends WireMockMethods {
 
-  private def allocateEnrolmentUrl(groupId: String, enrolmentKey: String): String = s"/tax-enrolments/enrolment-store/groups/$groupId/enrolments/$enrolmentKey"
+  private def allocateEnrolmentUrl(groupId: String, enrolmentKey: String): String = s"/tax-enrolments/groups/$groupId/enrolments/$enrolmentKey"
 
   def stubAllocateEnrolment(claimVatEnrolmentInfo: ClaimVatEnrolmentModel,
                             credentialId: String,
@@ -54,10 +54,10 @@ trait AllocationEnrolmentStub extends WireMockMethods {
         ),
         claimVatEnrolmentInfo.optReturnsInformation.map(
           returnsInformation =>
-          Json.obj(
-            "key" -> "LastMonthLatestStagger",
-            "value" -> returnsInformation.lastReturnMonth
-          )
+            Json.obj(
+              "key" -> "LastMonthLatestStagger",
+              "value" -> returnsInformation.lastReturnMonth
+            )
         )
       )
     )
@@ -69,6 +69,6 @@ trait AllocationEnrolmentStub extends WireMockMethods {
         enrolmentKey = enrolmentKey
       ),
       body = allocateEnrolmentJsonBody
-    ) thenReturn status
+    ).thenReturn(status)
   }
 }
