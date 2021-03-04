@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.claimvatenrolmentfrontend.assets
 
-import uk.gov.hmrc.claimvatenrolmentfrontend.models.{ClaimVatEnrolmentModel, ReturnsInformationModel}
+import uk.gov.hmrc.claimvatenrolmentfrontend.models.{ClaimVatEnrolmentModel, Postcode, ReturnsInformationModel}
 
 import java.time.LocalDate
 import java.util.UUID
@@ -26,7 +26,7 @@ object TestConstants {
 
   val testVatNumber: String = "123456782"
   val testVatRegDate: LocalDate = LocalDate.now()
-  val testPostcode: String = "AA1 1AA"
+  val testPostcode: Postcode = Postcode("AA11AA")
   val testLastReturnMonth: String = "January"
   val testBoxFive: String = "1000.00"
   val testJourneyId: String = UUID.randomUUID().toString

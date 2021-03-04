@@ -37,7 +37,7 @@ class StoreVatRegistrationPostcodeServiceSpec extends UnitSpec with MockJourneyD
       mockUpdateJourneyData(
         journeyId = testJourneyId,
         dataKey = "vatRegPostcode",
-        data = Json.toJson(testPostcode),
+        data = Json.toJson(testPostcode.sanitisedPostcode),
         authId = testInternalId
       )(Future.successful(mock[UpdateWriteResult]))
 
@@ -48,7 +48,7 @@ class StoreVatRegistrationPostcodeServiceSpec extends UnitSpec with MockJourneyD
       verifyUpdateJourneyData(
         journeyId = testJourneyId,
         dataKey = "vatRegPostcode",
-        data = Json.toJson(testPostcode),
+        data = Json.toJson(testPostcode.sanitisedPostcode),
         authId = testInternalId
       )
     }
@@ -58,7 +58,7 @@ class StoreVatRegistrationPostcodeServiceSpec extends UnitSpec with MockJourneyD
         mockUpdateJourneyData(
           journeyId = testJourneyId,
           dataKey = "vatRegPostcode",
-          data = Json.toJson(testPostcode),
+          data = Json.toJson(testPostcode.stringValue),
           authId = testInternalId
         )(response = Future.failed(GenericDriverException("failed to update")))
 
@@ -68,7 +68,7 @@ class StoreVatRegistrationPostcodeServiceSpec extends UnitSpec with MockJourneyD
         verifyUpdateJourneyData(
           journeyId = testJourneyId,
           dataKey = "vatRegPostcode",
-          data = Json.toJson(testPostcode),
+          data = Json.toJson(testPostcode.sanitisedPostcode),
           authId = testInternalId
         )
       }

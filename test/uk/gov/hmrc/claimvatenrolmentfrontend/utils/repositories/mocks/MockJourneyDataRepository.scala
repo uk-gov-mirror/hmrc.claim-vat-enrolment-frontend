@@ -21,7 +21,7 @@ import org.mockito.Mockito.{reset, verify, when}
 import org.mockito.stubbing.OngoingStubbing
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.libs.json.{JsObject, JsValue}
+import play.api.libs.json.JsValue
 import reactivemongo.api.commands.UpdateWriteResult
 import uk.gov.hmrc.claimvatenrolmentfrontend.models.ClaimVatEnrolmentModel
 import uk.gov.hmrc.claimvatenrolmentfrontend.repositories.JourneyDataRepository

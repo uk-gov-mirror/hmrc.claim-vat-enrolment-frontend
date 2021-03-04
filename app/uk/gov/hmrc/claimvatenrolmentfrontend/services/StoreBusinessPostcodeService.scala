@@ -18,6 +18,7 @@ package uk.gov.hmrc.claimvatenrolmentfrontend.services
 
 import javax.inject.{Inject, Singleton}
 import play.api.libs.json.Json
+import uk.gov.hmrc.claimvatenrolmentfrontend.models.Postcode
 import uk.gov.hmrc.claimvatenrolmentfrontend.repositories.JourneyDataRepository
 import uk.gov.hmrc.claimvatenrolmentfrontend.services.StoreBusinessPostcodeService.vatRegPostcodeKey
 
@@ -28,12 +29,12 @@ class StoreBusinessPostcodeService @Inject()(journeyDataRepository: JourneyDataR
                                             )(implicit executionContext: ExecutionContext) {
 
   def storeBusinessPostcodeService(journeyId: String,
-                                   vatRegPostcode: String,
+                                   vatRegPostcode: Postcode,
                                    authInternalId: String): Future[Unit] =
     journeyDataRepository.updateJourneyData(
       journeyId = journeyId,
       dataKey = vatRegPostcodeKey,
-      data = Json.toJson(vatRegPostcode),
+      data = Json.toJson(vatRegPostcode.sanitisedPostcode),
       authInternalId = authInternalId
     ).map {
       _ => Unit

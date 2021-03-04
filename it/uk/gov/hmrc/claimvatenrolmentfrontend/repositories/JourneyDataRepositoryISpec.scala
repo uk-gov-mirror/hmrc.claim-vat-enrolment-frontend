@@ -39,7 +39,7 @@ class JourneyDataRepositoryISpec extends ComponentSpecHelper {
     (claimVatEnrolmentModel: ClaimVatEnrolmentModel) => Json.obj(
       "vatNumber" -> claimVatEnrolmentModel.vatNumber,
       "vatRegistrationDate" -> claimVatEnrolmentModel.vatRegistrationDate,
-      "vatRegPostcode" -> claimVatEnrolmentModel.optPostcode
+      "vatRegPostcode" -> claimVatEnrolmentModel.optPostcode.map(_.sanitisedPostcode)
     ) ++ {
       if (claimVatEnrolmentModel.optReturnsInformation.isDefined) {
         Json.obj(

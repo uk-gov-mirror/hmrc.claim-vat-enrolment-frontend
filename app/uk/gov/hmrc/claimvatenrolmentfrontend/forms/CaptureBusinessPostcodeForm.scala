@@ -21,6 +21,7 @@ import play.api.data.Forms._
 import play.api.data.validation.Constraint
 import uk.gov.hmrc.claimvatenrolmentfrontend.forms.utils.ConstraintUtil.ConstraintUtil
 import uk.gov.hmrc.claimvatenrolmentfrontend.forms.utils.ValidationHelper.{validate, validateNot}
+import uk.gov.hmrc.claimvatenrolmentfrontend.models.Postcode
 
 object CaptureBusinessPostcodeForm {
 
@@ -41,8 +42,10 @@ object CaptureBusinessPostcodeForm {
     )
   )
 
-  val form: Form[String] = Form(
-    businessPostcode -> text.verifying(businessPostcodeEmpty andThen businessPostcodeFormat)
+  val form: Form[Postcode] = Form(
+    mapping(
+      businessPostcode -> text.verifying(businessPostcodeEmpty andThen businessPostcodeFormat)
+    )(Postcode.apply)(Postcode.unapply)
   )
 
 }
