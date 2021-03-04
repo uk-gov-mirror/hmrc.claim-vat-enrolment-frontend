@@ -23,7 +23,7 @@ import reactivemongo.api.indexes.{Index, IndexType}
 import reactivemongo.bson.BSONDocument
 import reactivemongo.play.json._
 import uk.gov.hmrc.claimvatenrolmentfrontend.config.AppConfig
-import uk.gov.hmrc.claimvatenrolmentfrontend.models.{ClaimVatEnrolmentModel, JourneyDataModel, ReturnsInformationModel}
+import uk.gov.hmrc.claimvatenrolmentfrontend.models.{ClaimVatEnrolmentModel, JourneyDataModel, Postcode, ReturnsInformationModel}
 import uk.gov.hmrc.claimvatenrolmentfrontend.repositories.JourneyDataRepository._
 import uk.gov.hmrc.mongo.ReactiveRepository
 
@@ -107,7 +107,9 @@ object JourneyDataRepository {
   implicit lazy val claimVatEnrolmentModelReads: Reads[ClaimVatEnrolmentModel] =
     (json: JsValue) => for {
       vatNumber <- (json \ "vatNumber").validate[String]
-      optPostcode <- (json \ "vatRegPostcode").validateOpt[String]
+      optPostcode <- (json \ "vatRegPostcode").validateOpt[String].map {
+        optPostcodeString => optPostcodeString.map { stringValue => Postcode(stringValue) } // may be a cleaner way to do this
+      }
       vatRegistrationDate <- (json \ "vatRegistrationDate").validate[LocalDate]
       submittedVatReturn <- (json \ "submittedVatReturn").validate[Boolean]
       optReturnsInformation <- if (submittedVatReturn) {

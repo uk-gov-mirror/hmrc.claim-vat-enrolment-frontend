@@ -42,7 +42,7 @@ trait AllocationEnrolmentStub extends WireMockMethods {
         claimVatEnrolmentInfo.optPostcode.map(postcode =>
           Json.obj(
             "key" -> "Postcode",
-            "value" -> postcode
+            "value" -> postcode.sanitisedPostcode
           )
         ),
         claimVatEnrolmentInfo.optReturnsInformation.map(

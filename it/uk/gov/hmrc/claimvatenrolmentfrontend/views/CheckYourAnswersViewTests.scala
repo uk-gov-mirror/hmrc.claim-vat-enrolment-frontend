@@ -81,7 +81,7 @@ trait CheckYourAnswersViewTests {
         val businessPostcodeRow = summaryListRows(2)
 
         businessPostcodeRow.getSummaryListQuestion mustBe messages.businessPostcodeRow
-        businessPostcodeRow.getSummaryListAnswer mustBe testPostcode
+        businessPostcodeRow.getSummaryListAnswer mustBe testPostcode.checkYourAnswersFormat
         businessPostcodeRow.getSummaryListChangeLink mustBe routes.CaptureBusinessPostcodeController.show(testJourneyId).url
         businessPostcodeRow.getSummaryListChangeText mustBe s"${Base.change} ${messages.businessPostcodeRow}"
       }
@@ -244,7 +244,7 @@ trait CheckYourAnswersViewTests {
         val businessPostcodeRow = summaryListRows(2)
 
         businessPostcodeRow.getSummaryListQuestion mustBe messages.businessPostcodeRow
-        businessPostcodeRow.getSummaryListAnswer mustBe testPostcode
+        businessPostcodeRow.getSummaryListAnswer mustBe testPostcode.checkYourAnswersFormat
         businessPostcodeRow.getSummaryListChangeLink mustBe routes.CaptureBusinessPostcodeController.show(testJourneyId).url
         businessPostcodeRow.getSummaryListChangeText mustBe s"${Base.change} ${messages.businessPostcodeRow}"
       }

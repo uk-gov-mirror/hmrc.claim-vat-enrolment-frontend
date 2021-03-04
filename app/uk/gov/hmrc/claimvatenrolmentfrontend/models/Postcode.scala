@@ -16,11 +16,18 @@
 
 package uk.gov.hmrc.claimvatenrolmentfrontend.models
 
-import java.time.LocalDate
+case class Postcode(stringValue: String) {
+  import Postcode._
 
-case class ClaimVatEnrolmentModel(vatNumber: String,
-                                  optPostcode: Option[Postcode],
-                                  vatRegistrationDate: LocalDate,
-                                  optReturnsInformation: Option[ReturnsInformationModel])
+  val sanitisedPostcode: String = stringValue.toUpperCase.filterNot(_.isWhitespace)
 
-case class ReturnsInformationModel(boxFive: String, lastReturnMonth: String)
+  val checkYourAnswersFormat: String = sanitisedPostcode match {
+    case standardPostcodeFormat(outwardCode, inwardCode) => outwardCode + " " + inwardCode
+    case other => other // should never happen as it is validated in the form
+  }
+
+}
+
+object Postcode {
+  private[models] val standardPostcodeFormat = "([A-Z]{1,2}[0-9][0-9A-Z]?)([0-9][A-Z]{2})".r
+}
