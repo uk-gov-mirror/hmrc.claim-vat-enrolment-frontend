@@ -22,10 +22,8 @@ import play.api.data.{Form, FormError}
 
 object CaptureSubmittedVatReturnForm {
 
-  def booleanFormatter(errorKey: String): Formatter[Boolean] =
-    new Formatter[Boolean] {
-
-      override def bind(key: String, data: Map[String, String]) =
+  def booleanFormatter(errorKey: String): Formatter[Boolean] = new Formatter[Boolean] {
+      override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Boolean] =
         data.get(key) match {
           case None | Some("") => Left(Seq(FormError(key, errorKey)))
           case Some("yes") => Right(true)
@@ -36,9 +34,8 @@ object CaptureSubmittedVatReturnForm {
       def unbind(key: String, value: Boolean) = Map(key -> value.toString)
     }
 
-  val form: Form[Boolean] =
-    Form(
-      "vat_return" -> of(booleanFormatter("capture-submitted-vat-return.error.message"))
-    )
+  val form: Form[Boolean] = Form(
+    "vat_return" -> of(booleanFormatter("capture-submitted-vat-return.error.message"))
+  )
 
 }
