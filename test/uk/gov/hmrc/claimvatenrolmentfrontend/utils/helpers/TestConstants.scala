@@ -19,6 +19,8 @@ package uk.gov.hmrc.claimvatenrolmentfrontend.utils.helpers
 import java.time.LocalDate
 import java.util.UUID
 
+import uk.gov.hmrc.claimvatenrolmentfrontend.models.{March, Month}
+
 object TestConstants {
 
   val testJourneyId: String = UUID.randomUUID().toString
@@ -28,5 +30,6 @@ object TestConstants {
   val testInternalId: String = UUID.randomUUID().toString
   val testVatNumber: String = UUID.randomUUID().toString
   val testBoxFive: String = "1000.00"
+  val testLastMonthSubmitted: Month = March
   val testPostcode: String = "111 111"
 }

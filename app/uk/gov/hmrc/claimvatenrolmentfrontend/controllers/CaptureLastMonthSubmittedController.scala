@@ -21,29 +21,43 @@ import uk.gov.hmrc.claimvatenrolmentfrontend.config.AppConfig
 import uk.gov.hmrc.claimvatenrolmentfrontend.forms.CaptureLastMonthSubmittedForm
 import uk.gov.hmrc.claimvatenrolmentfrontend.views.html.capture_last_month_submitted_page
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.Future
+import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.internalId
+import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions}
+import uk.gov.hmrc.claimvatenrolmentfrontend.services.StoreLastMonthSubmittedService
+
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CaptureLastMonthSubmittedController @Inject()(mcc: MessagesControllerComponents,
-                                                    view: capture_last_month_submitted_page
-                                                   )(implicit val config: AppConfig) extends FrontendController(mcc) {
+                                                    view: capture_last_month_submitted_page,
+                                                    storeLastMonthSubmittedService: StoreLastMonthSubmittedService,
+                                                    val authConnector: AuthConnector
+                                                   )(implicit val config: AppConfig,
+                                                     ec: ExecutionContext) extends FrontendController(mcc) with AuthorisedFunctions {
 
   def show(journeyId: String): Action[AnyContent] = Action.async {
     implicit request =>
-      Future.successful(Ok(view(routes.CaptureLastMonthSubmittedController.submit(journeyId), CaptureLastMonthSubmittedForm.form)))
+      authorised() {
+        Future.successful(Ok(view(routes.CaptureLastMonthSubmittedController.submit(journeyId), CaptureLastMonthSubmittedForm.form)))
+      }
   }
 
   def submit(journeyId: String): Action[AnyContent] = Action.async {
     implicit request =>
-      CaptureLastMonthSubmittedForm.form.bindFromRequest.fold(
-        formWithErrors => Future.successful(
-          BadRequest(view(routes.CaptureLastMonthSubmittedController.submit(journeyId), formWithErrors))
-        ),
-        lastMonthSubmitted =>
-          Future.successful(Redirect(routes.CheckYourAnswersController.show(journeyId).url))
-      )
+      authorised().retrieve(internalId) {
+        case Some(authId) =>
+          CaptureLastMonthSubmittedForm.form.bindFromRequest.fold(
+            formWithErrors => Future.successful(
+              BadRequest(view(routes.CaptureLastMonthSubmittedController.submit(journeyId), formWithErrors))
+            ),
+            lastMonthSubmitted =>
+              storeLastMonthSubmittedService.storeLastMonthSubmitted(journeyId, lastMonthSubmitted, authId).map {
+                _ => Redirect(routes.CheckYourAnswersController.show(journeyId).url)
+              }
+          )
+        case None =>
+          Future.successful(Unauthorized)
+      }
   }
-
 }
