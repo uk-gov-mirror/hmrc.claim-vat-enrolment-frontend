@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.claimvatenrolmentfrontend.models
 
-import play.api.libs.json.{Format, JsObject, JsResult, JsValue, Json, OFormat}
+import play.api.libs.json.{Format, JsObject, JsResult, JsValue, Json}
 
 
 case class JourneyDataModel(journeyId: String)

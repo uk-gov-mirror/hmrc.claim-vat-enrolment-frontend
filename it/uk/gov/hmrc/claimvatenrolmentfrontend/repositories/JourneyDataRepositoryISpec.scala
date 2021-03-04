@@ -16,11 +16,12 @@
 
 package uk.gov.hmrc.claimvatenrolmentfrontend.repositories
 
-import play.api.libs.json.{JsString, Json}
+import play.api.libs.json.{JsObject, JsString, Json, OWrites}
 import play.api.test.Helpers._
+import reactivemongo.play.json._
 import uk.gov.hmrc.claimvatenrolmentfrontend.assets.TestConstants._
-import uk.gov.hmrc.claimvatenrolmentfrontend.models.JourneyDataModel
-import uk.gov.hmrc.claimvatenrolmentfrontend.repositories.JourneyDataRepository.vatNumberKey
+import uk.gov.hmrc.claimvatenrolmentfrontend.models.{ClaimVatEnrolmentModel, JourneyDataModel}
+import uk.gov.hmrc.claimvatenrolmentfrontend.repositories.JourneyDataRepository._
 import uk.gov.hmrc.claimvatenrolmentfrontend.utils.ComponentSpecHelper
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -34,42 +35,110 @@ class JourneyDataRepositoryISpec extends ComponentSpecHelper {
     await(repo.drop)
   }
 
-  val authInternalIdKey: String = "authInternalId"
-  val creationTimestampKey: String = "creationTimestamp"
+  implicit val writes: OWrites[ClaimVatEnrolmentModel] =
+    (claimVatEnrolmentModel: ClaimVatEnrolmentModel) => Json.obj(
+      "vatNumber" -> claimVatEnrolmentModel.vatNumber,
+      "vatRegistrationDate" -> claimVatEnrolmentModel.vatRegistrationDate,
+      "vatRegPostcode" -> claimVatEnrolmentModel.optPostcode
+    ) ++ {
+      if (claimVatEnrolmentModel.optReturnsInformation.isDefined) {
+        Json.obj(
+          "submittedVatReturn" -> true,
+          "box5Figure" -> claimVatEnrolmentModel.optReturnsInformation.map(_.boxFive),
+          "lastMonthSubmitted" -> claimVatEnrolmentModel.optReturnsInformation.map(_.lastReturnMonth)
+        )
+      } else {
+        Json.obj("submittedVatReturn" -> false)
+      }
+    }
 
-  "createJourney" should {
-    "successfully insert the journeyId" in {
-      repo.insertJourneyData(testJourneyId, testInternalId, testVatNumber)
+  "insertJourneyVatNumber" should {
+    "successfully insert the vatNumber" in {
+      repo.insertJourneyVatNumber(testJourneyId, testInternalId, testVatNumber)
       await(repo.findById(testJourneyId)) mustBe Some(JourneyDataModel(testJourneyId))
+      await(repo.collection.find[JsObject, JsObject](
+        Json.obj("_id" -> testJourneyId),
+        Some(Json.obj(
+          JourneyIdKey -> 0,
+          AuthInternalIdKey -> 0,
+          "creationTimestamp" -> 0
+      ))).one[JsObject]) mustBe Some(Json.obj(VatNumberKey -> testVatNumber))
     }
   }
-  s"getJourneyData($testJourneyId)" should {
-    "successfully return all data" in {
-      val testJson = Json.obj(
-        authInternalIdKey -> testInternalId,
-        vatNumberKey -> testVatNumber
-      )
 
-      await(repo.insertJourneyData(testJourneyId, testInternalId, testVatNumber))
-      await(repo.getJourneyData(testJourneyId, testInternalId)).map(_.-(creationTimestampKey)) mustBe Some(testJson)
+  s"getJourneyData($testJourneyId)" should {
+    "successfully return a full ClaimVatEnrolmentModel" when {
+      "all data is populated" in {
+        await(repo.collection.insert(ordered = false).one(
+          Json.obj(
+            JourneyIdKey -> testJourneyId,
+            AuthInternalIdKey -> testInternalId
+          ) ++ Json.toJsObject(testFullClaimVatEnrolmentModel)
+        ))
+
+        await(repo.getJourneyData(testJourneyId, testInternalId)) mustBe Some(testFullClaimVatEnrolmentModel)
+      }
+    }
+
+    "successfully return partial ClaimVatEnrolmentModel" when {
+      "there is no postcode" in {
+        await(repo.collection.insert(ordered = false).one(
+          Json.obj(
+            JourneyIdKey -> testJourneyId,
+            AuthInternalIdKey -> testInternalId
+          ) ++ Json.toJsObject(testClaimVatEnrolmentModelNoPostcode)
+        ))
+
+        await(repo.getJourneyData(testJourneyId, testInternalId)) mustBe Some(testClaimVatEnrolmentModelNoPostcode)
+      }
+
+      "there is no postcode and no returns information" in {
+        await(repo.collection.insert(ordered = false).one(
+          Json.obj(
+            JourneyIdKey -> testJourneyId,
+            AuthInternalIdKey -> testInternalId
+          ) ++ Json.toJsObject(testClaimVatEnrolmentModelNoReturnsNoPostcode)
+        ))
+
+        await(repo.getJourneyData(testJourneyId, testInternalId)) mustBe Some(testClaimVatEnrolmentModelNoReturnsNoPostcode)
+      }
+
+      "there is no returns information" in {
+        await(repo.collection.insert(ordered = false).one(
+          Json.obj(
+            JourneyIdKey -> testJourneyId,
+            AuthInternalIdKey -> testInternalId
+          ) ++ Json.toJsObject(testClaimVatEnrolmentModelNoReturns)
+        ))
+
+        await(repo.getJourneyData(testJourneyId, testInternalId)) mustBe Some(testClaimVatEnrolmentModelNoReturns)
+      }
     }
   }
+
   "updateJourneyData" should {
     "successfully insert data" in {
       val testKey = "testKey"
       val testData = "test"
-      await(repo.insertJourneyData(testJourneyId, testInternalId, testVatNumber))
+      await(repo.insertJourneyVatNumber(testJourneyId, testInternalId, testVatNumber))
       await(repo.updateJourneyData(testJourneyId, testKey, JsString(testData), testInternalId))
-      await(repo.getJourneyData(testJourneyId, testInternalId)).map(json => (json \ testKey).as[String]) mustBe Some(testData)
+      await(repo.collection.find[JsObject, JsObject](
+        Json.obj(JourneyIdKey -> testJourneyId),
+        None
+      ).one[JsObject]).map(json => (json \ testKey).as[String]) mustBe Some(testData)
     }
+
     "successfully update data when data is already stored against a key" in {
       val testKey = "testKey"
       val testData = "test"
       val updatedData = "updated"
-      await(repo.insertJourneyData(testJourneyId, testInternalId, testVatNumber))
+      await(repo.insertJourneyVatNumber(testJourneyId, testInternalId, testVatNumber))
       await(repo.updateJourneyData(testJourneyId, testKey, JsString(testData), testInternalId))
       await(repo.updateJourneyData(testJourneyId, testKey, JsString(updatedData), testInternalId))
-      await(repo.getJourneyData(testJourneyId, testInternalId)).map(json => (json \ testKey).as[String]) mustBe Some(updatedData)
+      await(repo.collection.find[JsObject, JsObject](
+        Json.obj(JourneyIdKey -> testJourneyId),
+        None
+      ).one[JsObject]).map(json => (json \ testKey).as[String]) mustBe Some(updatedData)
     }
 
   }

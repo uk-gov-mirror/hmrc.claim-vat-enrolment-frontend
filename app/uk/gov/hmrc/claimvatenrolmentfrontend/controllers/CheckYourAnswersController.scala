@@ -17,6 +17,8 @@
 package uk.gov.hmrc.claimvatenrolmentfrontend.controllers
 
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions}
+import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.internalId
 import uk.gov.hmrc.claimvatenrolmentfrontend.config.AppConfig
 import uk.gov.hmrc.claimvatenrolmentfrontend.services.JourneyService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -28,18 +30,28 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class CheckYourAnswersController @Inject()(mcc: MessagesControllerComponents,
                                            view: check_your_answers_page,
-                                           journeyService: JourneyService
-                                          )(implicit appConfig: AppConfig, ec: ExecutionContext) extends FrontendController(mcc) {
+                                           journeyService: JourneyService,
+                                           val authConnector: AuthConnector
+                                          )(implicit appConfig: AppConfig, ec: ExecutionContext) extends FrontendController(mcc) with AuthorisedFunctions {
 
   def show(journeyId: String): Action[AnyContent] = Action.async {
     implicit request =>
-      Future.successful(Ok(view(routes.CheckYourAnswersController.submit(journeyId), journeyId)))
+      authorised().retrieve(internalId) {
+        case Some(authInternalId) =>
+          journeyService.retrieveJourneyData(journeyId, authInternalId).map {
+            journeyData =>
+              Ok(view(routes.CheckYourAnswersController.submit(journeyId), journeyId, journeyData))
+          }
+        case None => Future.successful(Unauthorized)
+      }
   }
 
   def submit(journeyId: String): Action[AnyContent] = Action.async {
     implicit request =>
-      journeyService.retrieveJourneyConfig(journeyId).map{
-        journeyConfig => SeeOther(journeyConfig.continueUrl)
+      authorised() {
+        journeyService.retrieveJourneyConfig(journeyId).map {
+          journeyConfig => SeeOther(journeyConfig.continueUrl)
+        }
       }
   }
 

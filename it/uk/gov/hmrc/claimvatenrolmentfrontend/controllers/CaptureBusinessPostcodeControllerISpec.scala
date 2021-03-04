@@ -42,7 +42,7 @@ class CaptureBusinessPostcodeControllerISpec extends ComponentSpecHelper with Ca
       "the postcode contains a space" in {
         stubAuth(OK, successfulAuthResponse(Some(testInternalId)))
         lazy val result = post(s"/$testJourneyId/business-postcode")("business_postcode" -> "ZZ1 1ZZ")
-        await(journeyDataRepository.insertJourneyData(testJourneyId, testInternalId, testVatNumber))
+        await(journeyDataRepository.insertJourneyVatNumber(testJourneyId, testInternalId, testVatNumber))
 
         result must have(
           httpStatus(SEE_OTHER),
@@ -53,7 +53,7 @@ class CaptureBusinessPostcodeControllerISpec extends ComponentSpecHelper with Ca
       "the postcode does not contain a space" in {
         stubAuth(OK, successfulAuthResponse(Some(testInternalId)))
         lazy val result = post(s"/$testJourneyId/business-postcode")("business_postcode" -> "ZZ11ZZ")
-        await(journeyDataRepository.insertJourneyData(testJourneyId, testInternalId, testVatNumber))
+        await(journeyDataRepository.insertJourneyVatNumber(testJourneyId, testInternalId, testVatNumber))
 
         result must have(
           httpStatus(SEE_OTHER),

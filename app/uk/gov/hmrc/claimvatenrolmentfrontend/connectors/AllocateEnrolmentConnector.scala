@@ -40,7 +40,7 @@ class AllocateEnrolmentConnector @Inject()(http: HttpClient,
       "verifiers" -> Json.arr(
         Json.obj(
           "key" -> "VATRegistrationDate",
-          "value" -> claimVatEnrolmentInfo.vatRegDate
+          "value" -> claimVatEnrolmentInfo.vatRegistrationDate
         ),
         claimVatEnrolmentInfo.optPostcode.map(postcode =>
           Json.obj(

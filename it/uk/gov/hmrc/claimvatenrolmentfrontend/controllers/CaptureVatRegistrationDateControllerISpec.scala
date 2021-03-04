@@ -46,7 +46,7 @@ class CaptureVatRegistrationDateControllerISpec extends ComponentSpecHelper with
     "redirect to CaptureBusinessPostcode if the date is valid" in {
       stubAuth(OK, successfulAuthResponse(Some(testInternalId)))
 
-      await(journeyDataRepository.insertJourneyData(testJourneyId, testInternalId, testVatNumber))
+      await(journeyDataRepository.insertJourneyVatNumber(testJourneyId, testInternalId, testVatNumber))
 
       lazy val result = post(s"/$testJourneyId/vat-registration-date")(
         "date.day" -> "1",

@@ -19,7 +19,7 @@ package uk.gov.hmrc.claimvatenrolmentfrontend.services
 import javax.inject.{Inject, Singleton}
 import play.api.libs.json.Json
 import uk.gov.hmrc.claimvatenrolmentfrontend.repositories.JourneyDataRepository
-import uk.gov.hmrc.claimvatenrolmentfrontend.services.StoreSubmittedVatReturnService.SubmittedVatKey
+import uk.gov.hmrc.claimvatenrolmentfrontend.services.StoreSubmittedVatReturnService.SubmittedVatReturnKey
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -32,7 +32,7 @@ class StoreSubmittedVatReturnService @Inject()(journeyDataRepository: JourneyDat
                              authInternalId: String): Future[Unit] =
     journeyDataRepository.updateJourneyData(
       journeyId = journeyId,
-      dataKey = SubmittedVatKey,
+      dataKey = SubmittedVatReturnKey,
       data = Json.toJson(submittedReturn),
       authInternalId = authInternalId
     ).map {
@@ -41,6 +41,6 @@ class StoreSubmittedVatReturnService @Inject()(journeyDataRepository: JourneyDat
 }
 
 object StoreSubmittedVatReturnService {
-  val SubmittedVatKey = "vat_return"
+  val SubmittedVatReturnKey = "submittedVatReturn"
 }
 

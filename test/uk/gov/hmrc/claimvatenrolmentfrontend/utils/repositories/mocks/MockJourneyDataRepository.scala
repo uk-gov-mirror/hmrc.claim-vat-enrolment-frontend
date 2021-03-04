@@ -23,6 +23,7 @@ import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.{JsObject, JsValue}
 import reactivemongo.api.commands.UpdateWriteResult
+import uk.gov.hmrc.claimvatenrolmentfrontend.models.ClaimVatEnrolmentModel
 import uk.gov.hmrc.claimvatenrolmentfrontend.repositories.JourneyDataRepository
 
 import scala.concurrent.Future
@@ -41,7 +42,7 @@ trait MockJourneyDataRepository extends MockitoSugar with BeforeAndAfterEach {
                             authId: String,
                             vatNumber: String
                        )(response: Future[String]): OngoingStubbing[_] =
-    when(mockJourneyDataRepository.insertJourneyData(
+    when(mockJourneyDataRepository.insertJourneyVatNumber(
       ArgumentMatchers.eq(journeyId),
       ArgumentMatchers.eq(authId),
       ArgumentMatchers.eq(vatNumber),
@@ -49,7 +50,7 @@ trait MockJourneyDataRepository extends MockitoSugar with BeforeAndAfterEach {
 
   def mockGetJourneyData(journeyId: String,
                          authId: String
-                        )(response: Future[Option[JsObject]]): OngoingStubbing[_] =
+                        )(response: Future[Option[ClaimVatEnrolmentModel]]): OngoingStubbing[_] =
     when(mockJourneyDataRepository.getJourneyData(
       ArgumentMatchers.eq(journeyId),
       ArgumentMatchers.eq(authId)
@@ -70,7 +71,7 @@ trait MockJourneyDataRepository extends MockitoSugar with BeforeAndAfterEach {
   def verifyCreateJourney(journeyId: String,
                           authId: String,
                           vatNumber: String): Unit =
-    verify(mockJourneyDataRepository).insertJourneyData(
+    verify(mockJourneyDataRepository).insertJourneyVatNumber(
       ArgumentMatchers.eq(journeyId),
       ArgumentMatchers.eq(authId),
       ArgumentMatchers.eq(vatNumber)
