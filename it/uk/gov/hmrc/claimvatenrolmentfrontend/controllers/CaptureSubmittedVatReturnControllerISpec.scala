@@ -42,7 +42,7 @@ class CaptureSubmittedVatReturnControllerISpec extends ComponentSpecHelper with 
     "redirect to CaptureBox5Figure" when {
       "the user selects yes" in {
         stubAuth(OK, successfulAuthResponse(Some(testInternalId)))
-        await(journeyDataRepository.insertJourneyData(testJourneyId, testInternalId, testVatNumber))
+        await(journeyDataRepository.insertJourneyVatNumber(testJourneyId, testInternalId, testVatNumber))
         lazy val result = post(s"/$testJourneyId/submitted-vat-return")("vat_return" -> "yes")
 
         result must have(
@@ -55,7 +55,7 @@ class CaptureSubmittedVatReturnControllerISpec extends ComponentSpecHelper with 
     "redirect to Check Your Answers Page" when {
       "the user selects no" in {
         stubAuth(OK, successfulAuthResponse(Some(testInternalId)))
-        await(journeyDataRepository.insertJourneyData(testJourneyId, testInternalId, testVatNumber))
+        await(journeyDataRepository.insertJourneyVatNumber(testJourneyId, testInternalId, testVatNumber))
         lazy val result = post(s"/$testJourneyId/submitted-vat-return")("vat_return" -> "no")
 
         result must have(

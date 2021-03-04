@@ -16,6 +16,8 @@
 
 package uk.gov.hmrc.claimvatenrolmentfrontend.utils.helpers
 
+import uk.gov.hmrc.claimvatenrolmentfrontend.models.{ClaimVatEnrolmentModel, ReturnsInformationModel}
+
 import java.time.LocalDate
 import java.util.UUID
 
@@ -32,4 +34,17 @@ object TestConstants {
   val testBoxFive: String = "1000.00"
   val testLastMonthSubmitted: Month = March
   val testPostcode: String = "111 111"
+  val testLastReturnMonth: String = "January"
+  val testFullClaimVatEnrolmentModel: ClaimVatEnrolmentModel =
+    ClaimVatEnrolmentModel(
+      vatNumber = testVatNumber,
+      optPostcode = Some(testPostcode),
+      vatRegistrationDate = testVatRegDate,
+      optReturnsInformation =
+        Some(ReturnsInformationModel(
+          boxFive = testBoxFive,
+          lastReturnMonth = testLastReturnMonth
+        ))
+    )
+
 }

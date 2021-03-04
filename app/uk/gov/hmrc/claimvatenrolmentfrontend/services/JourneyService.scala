@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.claimvatenrolmentfrontend.services
 
-import uk.gov.hmrc.claimvatenrolmentfrontend.models.JourneyConfig
+import uk.gov.hmrc.claimvatenrolmentfrontend.models.{ClaimVatEnrolmentModel, JourneyConfig}
 import uk.gov.hmrc.claimvatenrolmentfrontend.repositories.{JourneyConfigRepository, JourneyDataRepository}
 import uk.gov.hmrc.http.InternalServerException
 
@@ -33,7 +33,7 @@ class JourneyService @Inject()(journeyConfigRepository: JourneyConfigRepository,
     val id = journeyIdGenerationService.generateJourneyId()
     for {
       _ <- journeyConfigRepository.insertJourneyConfig(id, journeyConfig)
-      _ <- journeyDataRepository.insertJourneyData(id, authInternalId, vatNumber)
+      _ <- journeyDataRepository.insertJourneyVatNumber(id, authInternalId, vatNumber)
     } yield id
   }
 
@@ -41,7 +41,16 @@ class JourneyService @Inject()(journeyConfigRepository: JourneyConfigRepository,
     journeyConfigRepository.findById(journeyId).map {
       case Some(journeyConfig) =>
         journeyConfig
-      case None => throw new InternalServerException(s"Journey config was not found for journey ID $journeyId")
+      case None =>
+        throw new InternalServerException(s"Journey config was not found for journey ID $journeyId")
+    }
+
+  def retrieveJourneyData(journeyId: String, authInternalId: String): Future[ClaimVatEnrolmentModel] =
+    journeyDataRepository.getJourneyData(journeyId, authInternalId).map {
+      case Some(journeyData) =>
+        journeyData
+      case None =>
+        throw new InternalServerException(s"Journey data was not found for journey ID $journeyId")
     }
 
 }

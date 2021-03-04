@@ -31,7 +31,7 @@ class AllocateEnrolmentConnectorISpec extends ComponentSpecHelper with Allocatio
 
   private implicit val headerCarrier: HeaderCarrier = HeaderCarrier()
 
-  val testClaimVatEnrolmentModel: ClaimVatEnrolmentModel = ClaimVatEnrolmentModel(testVatNumber, Some(testBusinessPostcode), LocalDate.of(2021, 1, 1), Some(ReturnsInformationModel(testBoxFive, testLastReturnMonth)))
+  val testClaimVatEnrolmentModel: ClaimVatEnrolmentModel = ClaimVatEnrolmentModel(testVatNumber, Some(testPostcode), LocalDate.of(2021, 1, 1), Some(ReturnsInformationModel(testBoxFive, testLastReturnMonth)))
 
 
   "allocateEnrolment" should {

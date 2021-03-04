@@ -21,7 +21,7 @@ import play.api.test.Helpers._
 import reactivemongo.api.commands.UpdateWriteResult
 import reactivemongo.core.errors.GenericDriverException
 import uk.gov.hmrc.claimvatenrolmentfrontend.services.StoreSubmittedVatReturnService
-import uk.gov.hmrc.claimvatenrolmentfrontend.services.StoreSubmittedVatReturnService.SubmittedVatKey
+import uk.gov.hmrc.claimvatenrolmentfrontend.services.StoreSubmittedVatReturnService.SubmittedVatReturnKey
 import uk.gov.hmrc.claimvatenrolmentfrontend.utils.UnitSpec
 import uk.gov.hmrc.claimvatenrolmentfrontend.utils.helpers.TestConstants.{testInternalId, testJourneyId, testVatReturn}
 import uk.gov.hmrc.claimvatenrolmentfrontend.utils.repositories.mocks.MockJourneyDataRepository
@@ -38,7 +38,7 @@ class StoreSubmittedVatReturnServiceSpec extends UnitSpec with MockJourneyDataRe
     "successfully update the document in the database with the submitted vat answer" in {
       mockUpdateJourneyData(
         journeyId = testJourneyId,
-        dataKey = SubmittedVatKey,
+        dataKey = SubmittedVatReturnKey,
         data = Json.toJson(testVatReturn),
         authId = testInternalId
       )(Future.successful(mock[UpdateWriteResult]))
@@ -49,7 +49,7 @@ class StoreSubmittedVatReturnServiceSpec extends UnitSpec with MockJourneyDataRe
 
       verifyUpdateJourneyData(
         journeyId = testJourneyId,
-        dataKey = SubmittedVatKey,
+        dataKey = SubmittedVatReturnKey,
         data = Json.toJson(testVatReturn),
         authId = testInternalId
       )
@@ -59,7 +59,7 @@ class StoreSubmittedVatReturnServiceSpec extends UnitSpec with MockJourneyDataRe
       "updating the document fails" in {
         mockUpdateJourneyData(
           journeyId = testJourneyId,
-          dataKey = SubmittedVatKey,
+          dataKey = SubmittedVatReturnKey,
           data = Json.toJson(testVatReturn),
           authId = testInternalId
         )(response = Future.failed(GenericDriverException("failed to update")))
@@ -70,7 +70,7 @@ class StoreSubmittedVatReturnServiceSpec extends UnitSpec with MockJourneyDataRe
 
         verifyUpdateJourneyData(
           journeyId = testJourneyId,
-          dataKey = SubmittedVatKey,
+          dataKey = SubmittedVatReturnKey,
           data = Json.toJson(testVatReturn),
           authId = testInternalId
         )

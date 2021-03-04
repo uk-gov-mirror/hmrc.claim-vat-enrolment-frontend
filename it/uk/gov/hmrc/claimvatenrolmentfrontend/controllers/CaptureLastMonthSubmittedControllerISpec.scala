@@ -40,7 +40,7 @@ class CaptureLastMonthSubmittedControllerISpec extends ComponentSpecHelper with 
   "POST /last-vat-return-date" should {
     "redirect to Check Your Answers page if a month is selected" in {
       stubAuth(OK, successfulAuthResponse(Some(testInternalId)))
-      await(journeyDataRepository.insertJourneyData(testJourneyId, testInternalId, testVatNumber))
+      await(journeyDataRepository.insertJourneyVatNumber(testJourneyId, testInternalId, testVatNumber))
 
       lazy val result = post(s"/$testJourneyId/last-vat-return-date")("return_date" -> "January")
       result must have(

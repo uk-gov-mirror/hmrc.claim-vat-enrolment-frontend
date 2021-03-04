@@ -22,6 +22,7 @@ object MessageLookup {
     val continue = "Continue"
     val change = "Change"
     val yes = "Yes"
+    val no = "No"
     val tryAgain = "Try Again"
 
     object Error {

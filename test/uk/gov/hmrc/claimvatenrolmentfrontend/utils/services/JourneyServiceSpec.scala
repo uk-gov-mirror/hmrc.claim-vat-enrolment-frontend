@@ -22,7 +22,7 @@ import reactivemongo.api.commands.WriteResult
 import uk.gov.hmrc.claimvatenrolmentfrontend.models.JourneyConfig
 import uk.gov.hmrc.claimvatenrolmentfrontend.services.{JourneyIdGenerationService, JourneyService}
 import uk.gov.hmrc.claimvatenrolmentfrontend.utils.UnitSpec
-import uk.gov.hmrc.claimvatenrolmentfrontend.utils.helpers.TestConstants.{testContinueUrl, testInternalId, testJourneyId, testVatNumber}
+import uk.gov.hmrc.claimvatenrolmentfrontend.utils.helpers.TestConstants._
 import uk.gov.hmrc.claimvatenrolmentfrontend.utils.repositories.mocks.{MockJourneyConfigRepository, MockJourneyDataRepository}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
@@ -68,11 +68,32 @@ class JourneyServiceSpec extends UnitSpec with MockJourneyConfigRepository with 
       "the journey config does not exist in the database" in {
         mockFindById(testJourneyId)(Future.successful(None))
 
-        intercept[InternalServerException](
+        intercept[InternalServerException] {
           await(TestService.retrieveJourneyConfig(testJourneyId))
-        )
-
+        }
         verifyFindById(testJourneyId)
+      }
+    }
+  }
+
+  "retrieveJourneyData" should {
+    "return the full Journey Data" in {
+      mockGetJourneyData(testJourneyId, testInternalId)(Future.successful(Some(testFullClaimVatEnrolmentModel)))
+
+      val result = await(TestService.retrieveJourneyData(testJourneyId, testInternalId))
+
+      result mustBe testFullClaimVatEnrolmentModel
+      verifyGetJourneyData(testJourneyId, testInternalId)
+    }
+
+    "throw an Internal Server Exception" when {
+      "the journey data does not exist in the database" in {
+        mockGetJourneyData(testJourneyId, testInternalId)(Future.successful(None))
+
+        intercept[InternalServerException] {
+          await(TestService.retrieveJourneyData(testJourneyId, testInternalId))
+          verifyGetJourneyData(testJourneyId, testInternalId)
+        }
       }
     }
   }

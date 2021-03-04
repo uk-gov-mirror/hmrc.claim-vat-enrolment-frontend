@@ -16,7 +16,8 @@
 
 @import uk.gov.hmrc.claimvatenrolmentfrontend.views.html.helpers._
 @import uk.gov.hmrc.claimvatenrolmentfrontend.controllers.{routes => Routes}
-
+@import uk.gov.hmrc.claimvatenrolmentfrontend.models.ClaimVatEnrolmentModel
+@import java.time.format.DateTimeFormatter
 
 @this(layout: templates.layout,
         h1: h1,
@@ -26,7 +27,7 @@
         formWithCSRF: FormWithCSRF
 )
 
-@(formAction: Call, journeyId: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(formAction: Call, journeyId: String, claimVatEnrolmentModel: ClaimVatEnrolmentModel)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(Some(titleNoForm(messages("check-your-answers.title")))) {
 
@@ -37,7 +38,7 @@
         rows = Seq(
             SummaryListRow(
                 key = Key(content = Text(messages("check-your-answers.vat_number"))),
-                value = Value(content = Text("123456782")),
+                value = Value(content = Text(claimVatEnrolmentModel.vatNumber)),
                 actions = Some(Actions(items = Seq(
                     ActionItem(
                         href = "/", // TODO update when page is built
@@ -48,7 +49,7 @@
             ),
             SummaryListRow(
                 key = Key(content = Text(messages("check-your-answers.registration_date"))),
-                value = Value(content = Text("1 January 2021")),
+                value = Value(content = Text(claimVatEnrolmentModel.vatRegistrationDate.format(DateTimeFormatter.ofPattern("d MMMM yyyy")))),
                 actions = Some(Actions(items = Seq(
                     ActionItem(
                         href = Routes.CaptureVatRegistrationDateController.show(journeyId).url,
@@ -56,52 +57,73 @@
                         visuallyHiddenText = Some(messages("check-your-answers.registration_date"))
                     )
                 )))
-            ),
-            SummaryListRow(
-                key = Key(content = Text(messages("check-your-answers.business_postcode"))),
-                value = Value(content = Text("AA1 1AA")),
-                actions = Some(Actions(items = Seq(
-                    ActionItem(
-                        href = Routes.CaptureBusinessPostcodeController.show(journeyId).url,
-                        content = Text(messages("app.common.change")),
-                        visuallyHiddenText = Some(messages("check-your-answers.business_postcode"))
-                    )
-                )))
-            ),
-            SummaryListRow(
-                key = Key(content = Text(messages("check-your-answers.vat_returns"))),
-                value = Value(content = Text("Yes")),
-                actions = Some(Actions(items = Seq(
-                    ActionItem(
-                        href = Routes.CaptureSubmittedVatReturnController.show(journeyId).url,
-                        content = Text(messages("app.common.change")),
-                        visuallyHiddenText = Some(messages("check-your-answers.vat_returns"))
-                    )
-                )))
-            ),
-            SummaryListRow(
-                key = Key(content = Text(messages("check-your-answers.box_five"))),
-                value = Value(content = Text("1000.00")),
-                actions = Some(Actions(items = Seq(
-                    ActionItem(
-                        href = Routes.CaptureBox5FigureController.show(journeyId).url,
-                        content = Text(messages("app.common.change")),
-                        visuallyHiddenText = Some(messages("check-your-answers.box_five"))
-                    )
-                )))
-            ),
-            SummaryListRow(
-                key = Key(content = Text(messages("check-your-answers.last_return_month"))),
-                value = Value(content = Text("January")),
-                actions = Some(Actions(items = Seq(
-                    ActionItem(
-                        href = Routes.CaptureLastMonthSubmittedController.show(journeyId).url,
-                        content = Text(messages("app.common.change")),
-                        visuallyHiddenText = Some(messages("check-your-answers.last_return_month"))
-                    )
-                )))
             )
-        )
+        ) ++ claimVatEnrolmentModel.optPostcode.map {
+            postcode =>
+                SummaryListRow(
+                    key = Key(content = Text(messages("check-your-answers.business_postcode"))),
+                    value = Value(content = Text(postcode)),
+                    actions = Some(Actions(items = Seq(
+                        ActionItem(
+                            href = Routes.CaptureBusinessPostcodeController.show(journeyId).url,
+                            content = Text(messages("app.common.change")),
+                            visuallyHiddenText = Some(messages("check-your-answers.business_postcode"))
+                        )
+                    )))
+                )
+        } ++ (claimVatEnrolmentModel.optReturnsInformation match {
+            case Some(_) =>
+                Seq(SummaryListRow(
+                    key = Key(content = Text(messages("check-your-answers.vat_returns"))),
+                    value = Value(content = Text(messages("app.common.yes"))),
+                    actions = Some(Actions(items = Seq(
+                        ActionItem(
+                            href = Routes.CaptureSubmittedVatReturnController.show(journeyId).url,
+                            content = Text(messages("app.common.change")),
+                            visuallyHiddenText = Some(messages("check-your-answers.vat_returns"))
+                        )
+                    )))
+                ))
+            case None =>
+                Seq(SummaryListRow(
+                    key = Key(content = Text(messages("check-your-answers.vat_returns"))),
+                    value = Value(content = Text(messages("app.common.no"))),
+                    actions = Some(Actions(items = Seq(
+                        ActionItem(
+                            href = Routes.CaptureSubmittedVatReturnController.show(journeyId).url,
+                            content = Text(messages("app.common.change")),
+                            visuallyHiddenText = Some(messages("check-your-answers.vat_returns"))
+                        )
+                    )))
+                ))
+        }) ++ claimVatEnrolmentModel.optReturnsInformation.map {
+            returnsInformation =>
+                SummaryListRow(
+                    key = Key(content = Text(messages("check-your-answers.box_five"))),
+                    value = Value(content = Text(returnsInformation.boxFive)),
+                    actions = Some(Actions(items = Seq(
+                        ActionItem(
+                            href = Routes.CaptureBox5FigureController.show(journeyId).url,
+                            content = Text(messages("app.common.change")),
+                            visuallyHiddenText = Some(messages("check-your-answers.box_five"))
+                        )
+                    )))
+                )
+        } ++ claimVatEnrolmentModel.optReturnsInformation.map {
+            returnsInformation =>
+                SummaryListRow(
+                    key = Key(content = Text(messages("check-your-answers.last_return_month"))),
+                    value = Value(content = Text(returnsInformation.lastReturnMonth)),
+                    actions = Some(Actions(items = Seq(
+                        ActionItem(
+                            href = Routes.CaptureLastMonthSubmittedController.show(journeyId).url,
+                            content = Text(messages("app.common.change")),
+                            visuallyHiddenText = Some(messages("check-your-answers.last_return_month"))
+                        )
+                    )))
+                )
+
+        }
     ))
 
     @formWithCSRF(action = formAction) {

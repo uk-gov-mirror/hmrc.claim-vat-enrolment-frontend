@@ -20,8 +20,7 @@ import java.time.LocalDate
 
 case class ClaimVatEnrolmentModel(vatNumber: String,
                                   optPostcode: Option[String],
-                                  vatRegDate: LocalDate,
+                                  vatRegistrationDate: LocalDate,
                                   optReturnsInformation: Option[ReturnsInformationModel])
-
 
 case class ReturnsInformationModel(boxFive: String, lastReturnMonth: String)

@@ -16,14 +16,17 @@
 
 package uk.gov.hmrc.claimvatenrolmentfrontend.assets
 
+import uk.gov.hmrc.claimvatenrolmentfrontend.models.{ClaimVatEnrolmentModel, ReturnsInformationModel}
+
+import java.time.LocalDate
 import java.util.UUID
 
 
 object TestConstants {
 
   val testVatNumber: String = "123456782"
-  val testVatRegDate: String = "1 January 2021"
-  val testBusinessPostcode: String = "AA1 1AA"
+  val testVatRegDate: LocalDate = LocalDate.now()
+  val testPostcode: String = "AA1 1AA"
   val testLastReturnMonth: String = "January"
   val testBoxFive: String = "1000.00"
   val testJourneyId: String = UUID.randomUUID().toString
@@ -31,5 +34,44 @@ object TestConstants {
   val testContinueUrl: String = "/test-continue-url"
   val testGroupId: String = UUID.randomUUID().toString
   val testCredentialId: String = UUID.randomUUID().toString
+
+  val testFullClaimVatEnrolmentModel: ClaimVatEnrolmentModel =
+    ClaimVatEnrolmentModel(
+      vatNumber = testVatNumber,
+      optPostcode = Some(testPostcode),
+      vatRegistrationDate = testVatRegDate,
+      optReturnsInformation =
+        Some(ReturnsInformationModel(
+          boxFive = testBoxFive,
+          lastReturnMonth = testLastReturnMonth
+        ))
+    )
+
+  val testClaimVatEnrolmentModelNoReturns: ClaimVatEnrolmentModel =
+    ClaimVatEnrolmentModel(
+      vatNumber = testVatNumber,
+      optPostcode = Some(testPostcode),
+      vatRegistrationDate = testVatRegDate,
+      optReturnsInformation = None
+    )
+
+  val testClaimVatEnrolmentModelNoReturnsNoPostcode: ClaimVatEnrolmentModel =
+    ClaimVatEnrolmentModel(
+      vatNumber = testVatNumber,
+      optPostcode = None,
+      vatRegistrationDate = testVatRegDate,
+      optReturnsInformation = None
+    )
+
+  val testClaimVatEnrolmentModelNoPostcode: ClaimVatEnrolmentModel =
+    ClaimVatEnrolmentModel(
+      vatNumber = testVatNumber,
+      optPostcode = None,
+      vatRegistrationDate = testVatRegDate,
+      optReturnsInformation = Some(ReturnsInformationModel(
+        boxFive = testBoxFive,
+        lastReturnMonth = testLastReturnMonth
+      ))
+    )
 
 }

@@ -26,13 +26,14 @@ import uk.gov.hmrc.claimvatenrolmentfrontend.controllers.routes
 import uk.gov.hmrc.claimvatenrolmentfrontend.utils.ComponentSpecHelper
 import uk.gov.hmrc.claimvatenrolmentfrontend.utils.ViewSpecHelper._
 
+import java.time.format.DateTimeFormatter
 import scala.collection.JavaConverters._
 
 
 trait CheckYourAnswersViewTests {
   this: ComponentSpecHelper =>
 
-  def testCheckYourAnswersView(result: => WSResponse): Unit = {
+  def testCheckYourAnswersViewFull(result: => WSResponse): Unit = {
 
     lazy val doc: Document = Jsoup.parse(result.body)
 
@@ -71,7 +72,7 @@ trait CheckYourAnswersViewTests {
         val vatRegDateRow = summaryListRows(1)
 
         vatRegDateRow.getSummaryListQuestion mustBe messages.vatRegDateRow
-        vatRegDateRow.getSummaryListAnswer mustBe testVatRegDate
+        vatRegDateRow.getSummaryListAnswer mustBe testVatRegDate.format(DateTimeFormatter.ofPattern("d MMMM yyyy"))
         vatRegDateRow.getSummaryListChangeLink mustBe routes.CaptureVatRegistrationDateController.show(testJourneyId).url
         vatRegDateRow.getSummaryListChangeText mustBe s"${Base.change} ${messages.vatRegDateRow}"
       }
@@ -80,7 +81,7 @@ trait CheckYourAnswersViewTests {
         val businessPostcodeRow = summaryListRows(2)
 
         businessPostcodeRow.getSummaryListQuestion mustBe messages.businessPostcodeRow
-        businessPostcodeRow.getSummaryListAnswer mustBe testBusinessPostcode
+        businessPostcodeRow.getSummaryListAnswer mustBe testPostcode
         businessPostcodeRow.getSummaryListChangeLink mustBe routes.CaptureBusinessPostcodeController.show(testJourneyId).url
         businessPostcodeRow.getSummaryListChangeText mustBe s"${Base.change} ${messages.businessPostcodeRow}"
       }
@@ -111,6 +112,211 @@ trait CheckYourAnswersViewTests {
         lastReturnMonthRow.getSummaryListChangeLink mustBe routes.CaptureLastMonthSubmittedController.show(testJourneyId).url
         lastReturnMonthRow.getSummaryListChangeText mustBe s"${Base.change} ${messages.lastReturnMonthRow}"
       }
+    }
+
+    "have a continue and confirm button" in {
+      doc.getSubmitButton.first.text mustBe Base.continue
+    }
+  }
+
+  def testCheckYourAnswersViewNoPostcode(result: => WSResponse): Unit = {
+
+    lazy val doc: Document = Jsoup.parse(result.body)
+
+    "have a sign out link in the header" in {
+      doc.getSignOutText mustBe Header.signOut
+    }
+    "have the correct beta banner" in {
+      doc.getBanner.text mustBe BetaBanner.title
+    }
+
+    "have the correct title" in {
+      doc.title mustBe messages.title
+    }
+
+    "have the correct heading" in {
+      doc.getH1Elements.text mustBe messages.heading
+    }
+
+    "have a summary list which" should {
+      lazy val summaryListRows = doc.getSummaryListRows.iterator().asScala.toList
+
+      "have 5 rows" in {
+        summaryListRows.size mustBe 5
+      }
+
+      "have a vat number row" in {
+        val vatNumberRow = summaryListRows.head
+
+        vatNumberRow.getSummaryListQuestion mustBe messages.vatNumberRow
+        vatNumberRow.getSummaryListAnswer mustBe testVatNumber //TODO update when page is built
+        vatNumberRow.getSummaryListChangeLink mustBe "/"
+        vatNumberRow.getSummaryListChangeText mustBe s"${Base.change} ${messages.vatNumberRow}"
+      }
+
+      "have a vat registration date row" in {
+        val vatRegDateRow = summaryListRows(1)
+
+        vatRegDateRow.getSummaryListQuestion mustBe messages.vatRegDateRow
+        vatRegDateRow.getSummaryListAnswer mustBe testVatRegDate.format(DateTimeFormatter.ofPattern("d MMMM yyyy"))
+        vatRegDateRow.getSummaryListChangeLink mustBe routes.CaptureVatRegistrationDateController.show(testJourneyId).url
+        vatRegDateRow.getSummaryListChangeText mustBe s"${Base.change} ${messages.vatRegDateRow}"
+      }
+
+      "have a vat return row" in {
+        val vatReturnRow = summaryListRows(2)
+
+        vatReturnRow.getSummaryListQuestion mustBe messages.vatReturnsRow
+        vatReturnRow.getSummaryListAnswer mustBe Base.yes
+        vatReturnRow.getSummaryListChangeLink mustBe routes.CaptureSubmittedVatReturnController.show(testJourneyId).url
+        vatReturnRow.getSummaryListChangeText mustBe s"${Base.change} ${messages.vatReturnsRow}"
+      }
+
+      "have a box five row" in {
+        val boxFiveRow = summaryListRows(3)
+
+        boxFiveRow.getSummaryListQuestion mustBe messages.boxFiveRow
+        boxFiveRow.getSummaryListAnswer mustBe testBoxFive
+        boxFiveRow.getSummaryListChangeLink mustBe routes.CaptureBox5FigureController.show(testJourneyId).url
+        boxFiveRow.getSummaryListChangeText mustBe s"${Base.change} ${messages.boxFiveRow}"
+      }
+
+      "have a last return month row" in {
+        val lastReturnMonthRow = summaryListRows.last
+
+        lastReturnMonthRow.getSummaryListQuestion mustBe messages.lastReturnMonthRow
+        lastReturnMonthRow.getSummaryListAnswer mustBe testLastReturnMonth
+        lastReturnMonthRow.getSummaryListChangeLink mustBe routes.CaptureLastMonthSubmittedController.show(testJourneyId).url
+        lastReturnMonthRow.getSummaryListChangeText mustBe s"${Base.change} ${messages.lastReturnMonthRow}"
+      }
+    }
+
+    "have a continue and confirm button" in {
+      doc.getSubmitButton.first.text mustBe Base.continue
+    }
+  }
+
+  def testCheckYourAnswersViewNoReturnsInformation(result: => WSResponse): Unit = {
+
+    lazy val doc: Document = Jsoup.parse(result.body)
+
+    "have a sign out link in the header" in {
+      doc.getSignOutText mustBe Header.signOut
+    }
+    "have the correct beta banner" in {
+      doc.getBanner.text mustBe BetaBanner.title
+    }
+
+    "have the correct title" in {
+      doc.title mustBe messages.title
+    }
+
+    "have the correct heading" in {
+      doc.getH1Elements.text mustBe messages.heading
+    }
+
+    "have a summary list which" should {
+      lazy val summaryListRows = doc.getSummaryListRows.iterator().asScala.toList
+
+      "have 4 rows" in {
+        summaryListRows.size mustBe 4
+      }
+
+      "have a vat number row" in {
+        val vatNumberRow = summaryListRows.head
+
+        vatNumberRow.getSummaryListQuestion mustBe messages.vatNumberRow
+        vatNumberRow.getSummaryListAnswer mustBe testVatNumber //TODO update when page is built
+        vatNumberRow.getSummaryListChangeLink mustBe "/"
+        vatNumberRow.getSummaryListChangeText mustBe s"${Base.change} ${messages.vatNumberRow}"
+      }
+
+      "have a vat registration date row" in {
+        val vatRegDateRow = summaryListRows(1)
+
+        vatRegDateRow.getSummaryListQuestion mustBe messages.vatRegDateRow
+        vatRegDateRow.getSummaryListAnswer mustBe testVatRegDate.format(DateTimeFormatter.ofPattern("d MMMM yyyy"))
+        vatRegDateRow.getSummaryListChangeLink mustBe routes.CaptureVatRegistrationDateController.show(testJourneyId).url
+        vatRegDateRow.getSummaryListChangeText mustBe s"${Base.change} ${messages.vatRegDateRow}"
+      }
+
+      "have a business postcode row" in {
+        val businessPostcodeRow = summaryListRows(2)
+
+        businessPostcodeRow.getSummaryListQuestion mustBe messages.businessPostcodeRow
+        businessPostcodeRow.getSummaryListAnswer mustBe testPostcode
+        businessPostcodeRow.getSummaryListChangeLink mustBe routes.CaptureBusinessPostcodeController.show(testJourneyId).url
+        businessPostcodeRow.getSummaryListChangeText mustBe s"${Base.change} ${messages.businessPostcodeRow}"
+      }
+
+      "have a vat return row" in {
+        val vatReturnRow = summaryListRows(3)
+
+        vatReturnRow.getSummaryListQuestion mustBe messages.vatReturnsRow
+        vatReturnRow.getSummaryListAnswer mustBe Base.no
+        vatReturnRow.getSummaryListChangeLink mustBe routes.CaptureSubmittedVatReturnController.show(testJourneyId).url
+        vatReturnRow.getSummaryListChangeText mustBe s"${Base.change} ${messages.vatReturnsRow}"
+      }
+    }
+
+    "have a continue and confirm button" in {
+      doc.getSubmitButton.first.text mustBe Base.continue
+    }
+  }
+
+  def testCheckYourAnswersViewNoReturnsNoPostcode(result: => WSResponse): Unit = {
+
+    lazy val doc: Document = Jsoup.parse(result.body)
+
+    "have a sign out link in the header" in {
+      doc.getSignOutText mustBe Header.signOut
+    }
+    "have the correct beta banner" in {
+      doc.getBanner.text mustBe BetaBanner.title
+    }
+
+    "have the correct title" in {
+      doc.title mustBe messages.title
+    }
+
+    "have the correct heading" in {
+      doc.getH1Elements.text mustBe messages.heading
+    }
+
+    "have a summary list which" should {
+      lazy val summaryListRows = doc.getSummaryListRows.iterator().asScala.toList
+
+      "have 3 rows" in {
+        summaryListRows.size mustBe 3
+      }
+
+      "have a vat number row" in {
+        val vatNumberRow = summaryListRows.head
+
+        vatNumberRow.getSummaryListQuestion mustBe messages.vatNumberRow
+        vatNumberRow.getSummaryListAnswer mustBe testVatNumber //TODO update when page is built
+        vatNumberRow.getSummaryListChangeLink mustBe "/"
+        vatNumberRow.getSummaryListChangeText mustBe s"${Base.change} ${messages.vatNumberRow}"
+      }
+
+      "have a vat registration date row" in {
+        val vatRegDateRow = summaryListRows(1)
+
+        vatRegDateRow.getSummaryListQuestion mustBe messages.vatRegDateRow
+        vatRegDateRow.getSummaryListAnswer mustBe testVatRegDate.format(DateTimeFormatter.ofPattern("d MMMM yyyy"))
+        vatRegDateRow.getSummaryListChangeLink mustBe routes.CaptureVatRegistrationDateController.show(testJourneyId).url
+        vatRegDateRow.getSummaryListChangeText mustBe s"${Base.change} ${messages.vatRegDateRow}"
+      }
+
+      "have a vat return row" in {
+        val vatReturnRow = summaryListRows(2)
+
+        vatReturnRow.getSummaryListQuestion mustBe messages.vatReturnsRow
+        vatReturnRow.getSummaryListAnswer mustBe Base.no
+        vatReturnRow.getSummaryListChangeLink mustBe routes.CaptureSubmittedVatReturnController.show(testJourneyId).url
+        vatReturnRow.getSummaryListChangeText mustBe s"${Base.change} ${messages.vatReturnsRow}"
+      }
+
     }
 
     "have a continue and confirm button" in {
