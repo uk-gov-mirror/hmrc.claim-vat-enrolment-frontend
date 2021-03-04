@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.claimvatenrolmentfrontend.views
 
+import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.libs.ws.WSResponse
@@ -115,8 +116,10 @@ trait CaptureLastMonthSubmittedViewTests {
     }
   }
 
-  def testCaptureLastMonthSubmittedErrorViewTests(result: => WSResponse): Unit = {
+  def testCaptureLastMonthSubmittedErrorViewTests(result: => WSResponse,
+                                                  authStub: => StubMapping): Unit = {
     lazy val doc: Document = {
+      authStub
       Jsoup.parse(result.body)
     }
 

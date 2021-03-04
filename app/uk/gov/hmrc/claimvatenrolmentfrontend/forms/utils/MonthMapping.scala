@@ -21,7 +21,6 @@ import play.api.data.format.Formatter
 import uk.gov.hmrc.claimvatenrolmentfrontend.models._
 
 object MonthMapping {
-
   val option_jan: String = "January"
   val option_feb: String = "February"
   val option_mar: String = "March"

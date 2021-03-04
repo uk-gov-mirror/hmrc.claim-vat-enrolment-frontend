@@ -16,6 +16,17 @@
 
 package uk.gov.hmrc.claimvatenrolmentfrontend.models
 
+import play.api.libs.json.{JsString, JsValue, Writes}
+
+
+object Month {
+
+
+  implicit val monthWrites = new Writes[Month] {
+    def writes(month: Month): JsValue = JsString(month.toString)
+  }
+}
+
 sealed trait Month
 
 case object January extends Month
@@ -30,3 +41,4 @@ case object September extends Month
 case object October extends Month
 case object November extends Month
 case object December extends Month
+
