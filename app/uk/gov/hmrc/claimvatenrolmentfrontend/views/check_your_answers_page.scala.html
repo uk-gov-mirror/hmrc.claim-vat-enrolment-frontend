@@ -39,13 +39,7 @@
             SummaryListRow(
                 key = Key(content = Text(messages("check-your-answers.vat_number"))),
                 value = Value(content = Text(claimVatEnrolmentModel.vatNumber)),
-                actions = Some(Actions(items = Seq(
-                    ActionItem(
-                        href = "/", // TODO update when page is built
-                        content = Text(messages("app.common.change")),
-                        visuallyHiddenText = Some(messages("check-your-answers.vat_number"))
-                    )
-                )))
+                actions = None
             ),
             SummaryListRow(
                 key = Key(content = Text(messages("check-your-answers.registration_date"))),

@@ -63,9 +63,7 @@ trait CheckYourAnswersViewTests {
         val vatNumberRow = summaryListRows.head
 
         vatNumberRow.getSummaryListQuestion mustBe messages.vatNumberRow
-        vatNumberRow.getSummaryListAnswer mustBe testVatNumber //TODO update when page is built
-        vatNumberRow.getSummaryListChangeLink mustBe "/"
-        vatNumberRow.getSummaryListChangeText mustBe s"${Base.change} ${messages.vatNumberRow}"
+        vatNumberRow.getSummaryListAnswer mustBe testVatNumber
       }
 
       "have a vat registration date row" in {
@@ -149,9 +147,7 @@ trait CheckYourAnswersViewTests {
         val vatNumberRow = summaryListRows.head
 
         vatNumberRow.getSummaryListQuestion mustBe messages.vatNumberRow
-        vatNumberRow.getSummaryListAnswer mustBe testVatNumber //TODO update when page is built
-        vatNumberRow.getSummaryListChangeLink mustBe "/"
-        vatNumberRow.getSummaryListChangeText mustBe s"${Base.change} ${messages.vatNumberRow}"
+        vatNumberRow.getSummaryListAnswer mustBe testVatNumber
       }
 
       "have a vat registration date row" in {
@@ -226,9 +222,7 @@ trait CheckYourAnswersViewTests {
         val vatNumberRow = summaryListRows.head
 
         vatNumberRow.getSummaryListQuestion mustBe messages.vatNumberRow
-        vatNumberRow.getSummaryListAnswer mustBe testVatNumber //TODO update when page is built
-        vatNumberRow.getSummaryListChangeLink mustBe "/"
-        vatNumberRow.getSummaryListChangeText mustBe s"${Base.change} ${messages.vatNumberRow}"
+        vatNumberRow.getSummaryListAnswer mustBe testVatNumber
       }
 
       "have a vat registration date row" in {
@@ -294,9 +288,7 @@ trait CheckYourAnswersViewTests {
         val vatNumberRow = summaryListRows.head
 
         vatNumberRow.getSummaryListQuestion mustBe messages.vatNumberRow
-        vatNumberRow.getSummaryListAnswer mustBe testVatNumber //TODO update when page is built
-        vatNumberRow.getSummaryListChangeLink mustBe "/"
-        vatNumberRow.getSummaryListChangeText mustBe s"${Base.change} ${messages.vatNumberRow}"
+        vatNumberRow.getSummaryListAnswer mustBe testVatNumber
       }
 
       "have a vat registration date row" in {
