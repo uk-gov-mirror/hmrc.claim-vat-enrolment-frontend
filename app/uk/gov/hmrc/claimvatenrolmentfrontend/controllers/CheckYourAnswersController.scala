@@ -17,12 +17,14 @@
 package uk.gov.hmrc.claimvatenrolmentfrontend.controllers
 
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.{credentials, groupIdentifier, internalId}
+import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
 import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions}
-import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.internalId
 import uk.gov.hmrc.claimvatenrolmentfrontend.config.AppConfig
-import uk.gov.hmrc.claimvatenrolmentfrontend.services.JourneyService
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import uk.gov.hmrc.claimvatenrolmentfrontend.models.{EnrolmentFailure, EnrolmentSuccess}
+import uk.gov.hmrc.claimvatenrolmentfrontend.services.{AllocateEnrolmentService, JourneyService}
 import uk.gov.hmrc.claimvatenrolmentfrontend.views.html.check_your_answers_page
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -31,6 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class CheckYourAnswersController @Inject()(mcc: MessagesControllerComponents,
                                            view: check_your_answers_page,
                                            journeyService: JourneyService,
+                                           allocateEnrolmentService: AllocateEnrolmentService,
                                            val authConnector: AuthConnector
                                           )(implicit appConfig: AppConfig, ec: ExecutionContext) extends FrontendController(mcc) with AuthorisedFunctions {
 
@@ -48,10 +51,21 @@ class CheckYourAnswersController @Inject()(mcc: MessagesControllerComponents,
 
   def submit(journeyId: String): Action[AnyContent] = Action.async {
     implicit request =>
-      authorised() {
-        journeyService.retrieveJourneyConfig(journeyId).map {
-          journeyConfig => SeeOther(journeyConfig.continueUrl)
-        }
+      authorised().retrieve(credentials and groupIdentifier and internalId) {
+        case Some(Credentials(credentialId, "GovernmentGateway")) ~ Some(groupId) ~ Some(internalId) =>
+          journeyService.retrieveJourneyData(journeyId, internalId).flatMap {
+            journeyData =>
+              allocateEnrolmentService.allocateEnrolment(journeyData, credentialId, groupId).flatMap {
+                case EnrolmentSuccess =>
+                  journeyService.retrieveJourneyConfig(journeyId).map {
+                    journeyConfig => SeeOther(journeyConfig.continueUrl)
+                  }
+                case EnrolmentFailure(errorMessage) =>
+                  Future.successful(NotImplemented)
+              }
+          }
+        case _ =>
+          Future.successful(Unauthorized)
       }
   }
 

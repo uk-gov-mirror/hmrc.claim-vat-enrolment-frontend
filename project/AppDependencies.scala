@@ -10,7 +10,8 @@ object AppDependencies {
     "uk.gov.hmrc" %% "play-frontend-hmrc" % "0.38.0-play-27",
     "uk.gov.hmrc" %% "play-frontend-govuk" % "0.60.0-play-27",
     "uk.gov.hmrc" %% "play-language" % "4.10.0-play-27",
-    "uk.gov.hmrc" %% "simple-reactivemongo" % "7.31.0-play-27"
+    "uk.gov.hmrc" %% "simple-reactivemongo" % "7.31.0-play-27",
+    "uk.gov.hmrc" %% "auth-client" % "3.2.0-play-27"
   )
 
   val sharedTestDependencies: Seq[ModuleID] = {

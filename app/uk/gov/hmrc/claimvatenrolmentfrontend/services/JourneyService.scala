@@ -52,5 +52,4 @@ class JourneyService @Inject()(journeyConfigRepository: JourneyConfigRepository,
       case None =>
         throw new InternalServerException(s"Journey data was not found for journey ID $journeyId")
     }
-
 }
