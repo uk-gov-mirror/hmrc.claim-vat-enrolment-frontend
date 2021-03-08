@@ -135,7 +135,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecHelper with CheckYour
 
   s"POST /$testJourneyId/check-your-answers-vat" should {
     "redirect to the continue url when the allocation was successfully created" in {
-      stubAuth(OK, successfulAuthResponseEnrolmentAllocation(Some(testGroupId), Some(testInternalId)))
+      stubAuth(OK, successfulAuthResponse(Some(testGroupId), Some(testInternalId)))
       await(journeyDataRepository.collection.insert(true).one(
         Json.obj(
           "_id" -> testJourneyId,
@@ -153,8 +153,8 @@ class CheckYourAnswersControllerISpec extends ComponentSpecHelper with CheckYour
         redirectUri(testContinueUrl)
       )
     }
-    "return NOT_IMPLEMENTED when the allocation was not successfully created" in {
-      stubAuth(OK, successfulAuthResponseEnrolmentAllocation(Some(testGroupId), Some(testInternalId)))
+    "redirect to KnownFactsMismatch if the enrolment fails" in {
+      stubAuth(OK, successfulAuthResponse(Some(testGroupId), Some(testInternalId)))
       await(journeyDataRepository.collection.insert(true).one(
         Json.obj(
           "_id" -> testJourneyId,
@@ -162,11 +162,14 @@ class CheckYourAnswersControllerISpec extends ComponentSpecHelper with CheckYour
           "creationTimestamp" -> Json.obj("$date" -> Instant.now.toEpochMilli)
         ) ++ Json.toJsObject(testFullClaimVatEnrolmentModel)
       ))
-      stubAllocateEnrolment(testFullClaimVatEnrolmentModel, testCredentialId, testGroupId)(BAD_REQUEST)
-
+      await(insertJourneyConfig(testJourneyId, testContinueUrl))
       lazy val result = post(s"/$testJourneyId/check-your-answers-vat")()
 
-      result.status mustBe NOT_IMPLEMENTED
+
+      result must have(
+        httpStatus(SEE_OTHER),
+        redirectUri(routes.KnownFactsMismatchController.show(testJourneyId).url)
+      )
     }
     "return UNAUTHORISED when no credentials or groupId are retrieved from Auth" in {
       stubAuth(OK, successfulAuthResponse(Some(testInternalId)))
@@ -175,6 +178,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecHelper with CheckYour
 
       result.status mustBe UNAUTHORIZED
     }
+
   }
 
 }
