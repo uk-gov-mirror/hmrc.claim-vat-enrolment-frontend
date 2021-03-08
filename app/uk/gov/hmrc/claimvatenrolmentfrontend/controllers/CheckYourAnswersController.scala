@@ -61,7 +61,7 @@ class CheckYourAnswersController @Inject()(mcc: MessagesControllerComponents,
                     journeyConfig => SeeOther(journeyConfig.continueUrl)
                   }
                 case EnrolmentFailure(errorMessage) =>
-                  Future.successful(NotImplemented)
+                  Future.successful(Redirect(routes.KnownFactsMismatchController.show(journeyId).url))
               }
           }
         case _ =>

@@ -42,7 +42,7 @@ trait AuthStub extends WireMockMethods {
     "internalId" -> internalId
   )
 
-  def successfulAuthResponseEnrolmentAllocation(groupId: Option[String], internalId: Option[String]): JsObject = Json.obj(
+  def successfulAuthResponse(groupId: Option[String], internalId: Option[String]): JsObject = Json.obj(
     "optionalCredentials" -> Json.obj(
       "providerId" -> testCredentialId,
       "providerType" -> "GovernmentGateway"
