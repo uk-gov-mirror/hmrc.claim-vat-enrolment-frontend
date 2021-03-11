@@ -14,60 +14,61 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.claimvatenrolmentfrontend.utils.services
+package uk.gov.hmrc.claimvatenrolmentfrontend.services
 
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import reactivemongo.api.commands.UpdateWriteResult
 import reactivemongo.core.errors.GenericDriverException
-import uk.gov.hmrc.claimvatenrolmentfrontend.services.StoreBox5FigureService
+import uk.gov.hmrc.claimvatenrolmentfrontend.repositories.mocks.MockJourneyDataRepository
+import uk.gov.hmrc.claimvatenrolmentfrontend.services.StoreVatRegistrationDateService
+import uk.gov.hmrc.claimvatenrolmentfrontend.helpers.TestConstants.{testInternalId, testJourneyId, testVatRegDate}
 import uk.gov.hmrc.claimvatenrolmentfrontend.utils.UnitSpec
-import uk.gov.hmrc.claimvatenrolmentfrontend.utils.helpers.TestConstants.{testBoxFive, testInternalId, testJourneyId}
-import uk.gov.hmrc.claimvatenrolmentfrontend.utils.repositories.mocks.MockJourneyDataRepository
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class StoreBox5FigureServiceSpec extends UnitSpec with MockJourneyDataRepository {
+class StoreVatRegistrationDateServiceSpec extends UnitSpec with MockJourneyDataRepository {
 
-  object TestService extends StoreBox5FigureService(mockJourneyDataRepository)
+  object TestService extends StoreVatRegistrationDateService(mockJourneyDataRepository)
 
-  "storeBox5Figure" should {
-    "successfully update the document in the database with the box 5 figure" in {
+  "storeVatRegistrationDate" should {
+    "successfully update the document in the database with the vat reg date" in {
       mockUpdateJourneyData(
         journeyId = testJourneyId,
-        dataKey = "box5Figure",
-        data = Json.toJson(testBoxFive),
+        dataKey = "vatRegistrationDate",
+        data = Json.toJson(testVatRegDate),
         authId = testInternalId
       )(Future.successful(mock[UpdateWriteResult]))
 
-      val result: Unit = await(TestService.storeBox5Figure(testJourneyId, testBoxFive, testInternalId))
+      val result: Unit = await(TestService.storeVatRegistrationDate(testJourneyId, testVatRegDate, testInternalId))
 
-      result mustBe()
+      result mustBe ()
 
       verifyUpdateJourneyData(
         journeyId = testJourneyId,
-        dataKey = "box5Figure",
-        data = Json.toJson(testBoxFive),
+        dataKey = "vatRegistrationDate",
+        data = Json.toJson(testVatRegDate),
         authId = testInternalId
       )
     }
+
     "throw an exception" when {
       "updating the document fails" in {
         mockUpdateJourneyData(
           journeyId = testJourneyId,
-          dataKey = "box5Figure",
-          data = Json.toJson(testBoxFive),
+          dataKey = "vatRegistrationDate",
+          data = Json.toJson(testVatRegDate),
           authId = testInternalId
         )(response = Future.failed(GenericDriverException("failed to update")))
 
         intercept[GenericDriverException](
-          await(TestService.storeBox5Figure(testJourneyId, testBoxFive, testInternalId))
+          await(TestService.storeVatRegistrationDate(testJourneyId, testVatRegDate, testInternalId))
         )
         verifyUpdateJourneyData(
           journeyId = testJourneyId,
-          dataKey = "box5Figure",
-          data = Json.toJson(testBoxFive),
+          dataKey = "vatRegistrationDate",
+          data = Json.toJson(testVatRegDate),
           authId = testInternalId
         )
       }

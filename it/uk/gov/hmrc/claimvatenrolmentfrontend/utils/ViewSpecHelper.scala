@@ -20,7 +20,7 @@ import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 import org.scalatest.matchers.{HavePropertyMatchResult, HavePropertyMatcher}
 
-object ViewSpecHelper {
+trait ViewSpecHelper {
 
   implicit class ElementExtensions(element: Element) {
 

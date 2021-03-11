@@ -21,10 +21,9 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.libs.ws.WSResponse
 import uk.gov.hmrc.claimvatenrolmentfrontend.assets.MessageLookup.{Base, BetaBanner, Header, CaptureVatRegistrationDate => messages}
-import uk.gov.hmrc.claimvatenrolmentfrontend.utils.ComponentSpecHelper
-import uk.gov.hmrc.claimvatenrolmentfrontend.utils.ViewSpecHelper.ElementExtensions
+import uk.gov.hmrc.claimvatenrolmentfrontend.utils.{ComponentSpecHelper, ViewSpecHelper}
 
-trait CaptureVatRegistrationDateViewTests {
+trait CaptureVatRegistrationDateViewTests extends ViewSpecHelper {
   this: ComponentSpecHelper =>
 
   def testCaptureVatRegistrationDateViewTests(result: => WSResponse,

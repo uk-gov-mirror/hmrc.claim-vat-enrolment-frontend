@@ -20,10 +20,9 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.libs.ws.WSResponse
 import uk.gov.hmrc.claimvatenrolmentfrontend.assets.MessageLookup.{Base, BetaBanner, Header, CaptureSubmittedVATReturn => messages}
-import uk.gov.hmrc.claimvatenrolmentfrontend.utils.ComponentSpecHelper
-import uk.gov.hmrc.claimvatenrolmentfrontend.utils.ViewSpecHelper.ElementExtensions
+import uk.gov.hmrc.claimvatenrolmentfrontend.utils.{ComponentSpecHelper, ViewSpecHelper}
 
-trait CaptureSubmittedVatReturnViewTests {
+trait CaptureSubmittedVatReturnViewTests extends ViewSpecHelper {
   this: ComponentSpecHelper =>
 
   def testCaptureSubmittedVatReturnViewTests(result: => WSResponse): Unit = {

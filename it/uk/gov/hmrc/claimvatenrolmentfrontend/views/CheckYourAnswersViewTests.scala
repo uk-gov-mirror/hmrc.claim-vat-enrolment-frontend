@@ -23,14 +23,13 @@ import play.api.libs.ws.WSResponse
 import uk.gov.hmrc.claimvatenrolmentfrontend.assets.MessageLookup.{Base, BetaBanner, Header, CheckYourAnswers => messages}
 import uk.gov.hmrc.claimvatenrolmentfrontend.assets.TestConstants._
 import uk.gov.hmrc.claimvatenrolmentfrontend.controllers.routes
-import uk.gov.hmrc.claimvatenrolmentfrontend.utils.ComponentSpecHelper
-import uk.gov.hmrc.claimvatenrolmentfrontend.utils.ViewSpecHelper._
+import uk.gov.hmrc.claimvatenrolmentfrontend.utils.{ComponentSpecHelper, ViewSpecHelper}
 
 import java.time.format.DateTimeFormatter
 import scala.collection.JavaConverters._
 
 
-trait CheckYourAnswersViewTests {
+trait CheckYourAnswersViewTests extends ViewSpecHelper {
   this: ComponentSpecHelper =>
 
   def testCheckYourAnswersViewFull(result: => WSResponse): Unit = {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.claimvatenrolmentfrontend.utils.repositories.mocks
+package uk.gov.hmrc.claimvatenrolmentfrontend.repositories.mocks
 
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{reset, verify, when}

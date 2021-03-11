@@ -5,10 +5,9 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.libs.ws.WSResponse
 import uk.gov.hmrc.claimvatenrolmentfrontend.assets.MessageLookup.{Base, BetaBanner, KnownFactsMismatch => messages}
-import uk.gov.hmrc.claimvatenrolmentfrontend.utils.ComponentSpecHelper
-import uk.gov.hmrc.claimvatenrolmentfrontend.utils.ViewSpecHelper.ElementExtensions
+import uk.gov.hmrc.claimvatenrolmentfrontend.utils.{ComponentSpecHelper, ViewSpecHelper}
 
-trait KnownFactsMismatchViewTest {
+trait KnownFactsMismatchViewTest extends ViewSpecHelper {
   this: ComponentSpecHelper =>
 
   def testKnownFactsMismatchViewTest(result: => WSResponse): Unit = {

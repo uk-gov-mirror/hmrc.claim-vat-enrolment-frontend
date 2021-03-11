@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.claimvatenrolmentfrontend.utils.helpers
+package uk.gov.hmrc.claimvatenrolmentfrontend.helpers
 
 import uk.gov.hmrc.claimvatenrolmentfrontend.models.{ClaimVatEnrolmentModel, March, Month, Postcode, ReturnsInformationModel}
 

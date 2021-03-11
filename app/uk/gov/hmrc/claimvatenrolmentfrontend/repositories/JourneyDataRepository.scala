@@ -117,24 +117,46 @@ object JourneyDataRepository {
   val JourneyIdKey: String = "_id"
   val AuthInternalIdKey: String = "authInternalId"
   val VatNumberKey: String = "vatNumber"
+  val PostcodeKey: String = "vatRegPostcode"
+  val VatRegistrationDateKey: String = "vatRegistrationDate"
+  val SubmittedVatReturnKey: String = "submittedVatReturn"
+  val Box5FigureKey: String = "box5Figure"
+  val LastMonthSubmittedKey: String = "lastMonthSubmitted"
 
   implicit lazy val claimVatEnrolmentModelReads: Reads[ClaimVatEnrolmentModel] =
     (json: JsValue) => for {
-      vatNumber <- (json \ "vatNumber").validate[String]
-      optPostcode <- (json \ "vatRegPostcode").validateOpt[String].map {
+      vatNumber <- (json \ VatNumberKey).validate[String]
+      optPostcode <- (json \ PostcodeKey).validateOpt[String].map {
         optPostcodeString => optPostcodeString.map { stringValue => Postcode(stringValue) } // may be a cleaner way to do this
       }
-      vatRegistrationDate <- (json \ "vatRegistrationDate").validate[LocalDate]
-      submittedVatReturn <- (json \ "submittedVatReturn").validate[Boolean]
+      vatRegistrationDate <- (json \ VatRegistrationDateKey).validate[LocalDate]
+      submittedVatReturn <- (json \ SubmittedVatReturnKey).validate[Boolean]
       optReturnsInformation <- if (submittedVatReturn) {
         for {
-          boxFiveFigure <- (json \ "box5Figure").validate[String]
-          lastReturnMonth <- (json \ "lastMonthSubmitted").validate[String]
+          boxFiveFigure <- (json \ Box5FigureKey).validate[String]
+          lastReturnMonth <- (json \ LastMonthSubmittedKey).validate[String]
         } yield Some(ReturnsInformationModel(boxFiveFigure, lastReturnMonth))
       } else {
         JsSuccess(None)
       }
     } yield ClaimVatEnrolmentModel(vatNumber, optPostcode, vatRegistrationDate, optReturnsInformation)
+
+  implicit lazy val claimVatEnrolmentModelWrites: OWrites[ClaimVatEnrolmentModel] =
+    (claimVatEnrolmentModel: ClaimVatEnrolmentModel) => Json.obj(
+      VatNumberKey -> claimVatEnrolmentModel.vatNumber,
+      VatRegistrationDateKey -> claimVatEnrolmentModel.vatRegistrationDate,
+      PostcodeKey -> claimVatEnrolmentModel.optPostcode.map(_.sanitisedPostcode)
+    ) ++ {
+      if (claimVatEnrolmentModel.optReturnsInformation.isDefined) {
+        Json.obj(
+          SubmittedVatReturnKey -> true,
+          Box5FigureKey -> claimVatEnrolmentModel.optReturnsInformation.map(_.boxFive),
+          LastMonthSubmittedKey -> claimVatEnrolmentModel.optReturnsInformation.map(_.lastReturnMonth)
+        )
+      } else {
+        Json.obj(SubmittedVatReturnKey -> false)
+      }
+    }
 
 }
 

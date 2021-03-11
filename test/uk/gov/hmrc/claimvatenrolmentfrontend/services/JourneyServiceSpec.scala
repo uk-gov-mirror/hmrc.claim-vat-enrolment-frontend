@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.claimvatenrolmentfrontend.utils.services
+package uk.gov.hmrc.claimvatenrolmentfrontend.services
 
 import org.mockito.Mockito.when
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import reactivemongo.api.commands.WriteResult
+import uk.gov.hmrc.claimvatenrolmentfrontend.helpers.TestConstants._
 import uk.gov.hmrc.claimvatenrolmentfrontend.models.JourneyConfig
-import uk.gov.hmrc.claimvatenrolmentfrontend.services.{JourneyIdGenerationService, JourneyService}
+import uk.gov.hmrc.claimvatenrolmentfrontend.repositories.mocks.{MockJourneyConfigRepository, MockJourneyDataRepository}
 import uk.gov.hmrc.claimvatenrolmentfrontend.utils.UnitSpec
-import uk.gov.hmrc.claimvatenrolmentfrontend.utils.helpers.TestConstants._
-import uk.gov.hmrc.claimvatenrolmentfrontend.utils.repositories.mocks.{MockJourneyConfigRepository, MockJourneyDataRepository}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
 import scala.concurrent.ExecutionContext.Implicits.global

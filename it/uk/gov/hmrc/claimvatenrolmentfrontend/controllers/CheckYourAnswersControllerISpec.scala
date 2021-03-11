@@ -16,11 +16,11 @@
 
 package uk.gov.hmrc.claimvatenrolmentfrontend.controllers
 
-import play.api.libs.json.{Json, OWrites}
+import play.api.libs.json.Json
 import play.api.test.Helpers._
 import reactivemongo.play.json._
 import uk.gov.hmrc.claimvatenrolmentfrontend.assets.TestConstants._
-import uk.gov.hmrc.claimvatenrolmentfrontend.models.ClaimVatEnrolmentModel
+import uk.gov.hmrc.claimvatenrolmentfrontend.repositories.JourneyDataRepository.claimVatEnrolmentModelWrites
 import uk.gov.hmrc.claimvatenrolmentfrontend.stubs.{AllocationEnrolmentStub, AuthStub}
 import uk.gov.hmrc.claimvatenrolmentfrontend.utils.ComponentSpecHelper
 import uk.gov.hmrc.claimvatenrolmentfrontend.views.CheckYourAnswersViewTests
@@ -35,23 +35,6 @@ class CheckYourAnswersControllerISpec extends ComponentSpecHelper with CheckYour
     await(journeyDataRepository.drop)
     super.beforeEach()
   }
-
-  implicit val writes: OWrites[ClaimVatEnrolmentModel] =
-    (claimVatEnrolmentModel: ClaimVatEnrolmentModel) => Json.obj(
-      "vatNumber" -> claimVatEnrolmentModel.vatNumber,
-      "vatRegistrationDate" -> claimVatEnrolmentModel.vatRegistrationDate,
-      "vatRegPostcode" -> claimVatEnrolmentModel.optPostcode.map(_.sanitisedPostcode)
-    ) ++ {
-      if (claimVatEnrolmentModel.optReturnsInformation.isDefined) {
-        Json.obj(
-          "submittedVatReturn" -> true,
-          "box5Figure" -> claimVatEnrolmentModel.optReturnsInformation.map(_.boxFive),
-          "lastMonthSubmitted" -> claimVatEnrolmentModel.optReturnsInformation.map(_.lastReturnMonth)
-        )
-      } else {
-        Json.obj("submittedVatReturn" -> false)
-      }
-    }
 
   s"GET /$testJourneyId/check-your-answers-vat" when {
     "there is a full ClaimVatEnrolmentModel stored in the database" should {

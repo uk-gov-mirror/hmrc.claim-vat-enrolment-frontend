@@ -16,11 +16,18 @@
 
 package uk.gov.hmrc.claimvatenrolmentfrontend.controllers
 
+import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
-import uk.gov.hmrc.claimvatenrolmentfrontend.assets.TestConstants.{testInternalId, testJourneyId, testVatNumber}
+import reactivemongo.play.json._
+import uk.gov.hmrc.claimvatenrolmentfrontend.assets.TestConstants._
+import uk.gov.hmrc.claimvatenrolmentfrontend.models.ClaimVatEnrolmentModel
+import uk.gov.hmrc.claimvatenrolmentfrontend.repositories.JourneyDataRepository.{claimVatEnrolmentModelWrites, claimVatEnrolmentModelReads}
 import uk.gov.hmrc.claimvatenrolmentfrontend.stubs.AuthStub
 import uk.gov.hmrc.claimvatenrolmentfrontend.utils.ComponentSpecHelper
 import uk.gov.hmrc.claimvatenrolmentfrontend.views.CaptureBusinessPostcodeViewTests
+
+import java.time.Instant
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class CaptureBusinessPostcodeControllerISpec extends ComponentSpecHelper with CaptureBusinessPostcodeViewTests with AuthStub {
 
@@ -87,6 +94,47 @@ class CaptureBusinessPostcodeControllerISpec extends ComponentSpecHelper with Ca
         }
 
         testCaptureBusinessPostcodeInvalidErrorViewTests(result)
+      }
+    }
+  }
+
+  "clicking the skip postcode link (GET /no-business-postcode)" should {
+    "redirect to Submitted VAT Returns page" when {
+      "there is no postcode in the database" in {
+        stubAuth(OK, successfulAuthResponse(Some(testInternalId)))
+        await(journeyDataRepository.insertJourneyVatNumber(testJourneyId, testInternalId, testVatNumber))
+        lazy val result = get(s"/$testJourneyId/no-business-postcode")
+
+        result must have(
+          httpStatus(SEE_OTHER),
+          redirectUri(routes.CaptureSubmittedVatReturnController.show(testJourneyId).url)
+        )
+
+      }
+    }
+
+    "remove the postcode field and redirect to Submitted VAT Returns page" when {
+      "there is a postcode in the database" in {
+        stubAuth(OK, successfulAuthResponse(Some(testInternalId)))
+        await(journeyDataRepository.collection.insert(true).one(
+          Json.obj(
+            "_id" -> testJourneyId,
+            "authInternalId" -> testInternalId,
+            "creationTimestamp" -> Json.obj("$date" -> Instant.now.toEpochMilli)
+          ) ++ Json.toJsObject(testClaimVatEnrolmentModelNoReturns)
+        ))
+        lazy val result = get(s"/$testJourneyId/no-business-postcode")
+
+        result must have(
+          httpStatus(SEE_OTHER),
+          redirectUri(routes.CaptureSubmittedVatReturnController.show(testJourneyId).url)
+        )
+        await(
+          journeyDataRepository.collection.find[JsObject, ClaimVatEnrolmentModel](
+            Json.obj("_id" -> testJourneyId),
+            None
+          ).one[ClaimVatEnrolmentModel]
+        ) mustBe Some(testClaimVatEnrolmentModelNoReturnsNoPostcode)
       }
     }
   }
