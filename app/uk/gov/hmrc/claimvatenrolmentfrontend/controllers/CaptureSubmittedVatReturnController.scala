@@ -16,15 +16,15 @@
 
 package uk.gov.hmrc.claimvatenrolmentfrontend.controllers
 
+import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.internalId
+import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions}
 import uk.gov.hmrc.claimvatenrolmentfrontend.config.AppConfig
 import uk.gov.hmrc.claimvatenrolmentfrontend.forms.CaptureSubmittedVatReturnForm
+import uk.gov.hmrc.claimvatenrolmentfrontend.services.{JourneyService, StoreSubmittedVatReturnService}
 import uk.gov.hmrc.claimvatenrolmentfrontend.views.html.capture_submitted_vat_return_page
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions}
-import javax.inject.{Inject, Singleton}
-import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.internalId
-import uk.gov.hmrc.claimvatenrolmentfrontend.services.StoreSubmittedVatReturnService
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -32,6 +32,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class CaptureSubmittedVatReturnController @Inject()(mcc: MessagesControllerComponents,
                                                     view: capture_submitted_vat_return_page,
                                                     storeSubmittedVatService: StoreSubmittedVatReturnService,
+                                                    journeyService: JourneyService,
                                                     val authConnector: AuthConnector
                                                    )(implicit val config: AppConfig, ec: ExecutionContext) extends FrontendController(mcc) with AuthorisedFunctions {
 
@@ -62,6 +63,7 @@ class CaptureSubmittedVatReturnController @Inject()(mcc: MessagesControllerCompo
                   if (submittedReturn) {
                     Redirect(routes.CaptureBox5FigureController.show(journeyId).url)
                   } else {
+                    journeyService.removeAdditionalVatReturnFields(journeyId, authId)
                     Redirect(routes.CheckYourAnswersController.show(journeyId).url)
                   }
               }

@@ -16,13 +16,13 @@
 
 package uk.gov.hmrc.claimvatenrolmentfrontend.services
 
+import javax.inject.{Inject, Singleton}
 import reactivemongo.api.commands.UpdateWriteResult
 import uk.gov.hmrc.claimvatenrolmentfrontend.models.{ClaimVatEnrolmentModel, JourneyConfig}
+import uk.gov.hmrc.claimvatenrolmentfrontend.repositories.JourneyDataRepository.{Box5FigureKey, LastMonthSubmittedKey, PostcodeKey}
 import uk.gov.hmrc.claimvatenrolmentfrontend.repositories.{JourneyConfigRepository, JourneyDataRepository}
-import uk.gov.hmrc.claimvatenrolmentfrontend.repositories.JourneyDataRepository.PostcodeKey
 import uk.gov.hmrc.http.InternalServerException
 
-import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -58,4 +58,9 @@ class JourneyService @Inject()(journeyConfigRepository: JourneyConfigRepository,
   def removePostcodeField(journeyId: String, authInternalId: String): Future[UpdateWriteResult] = {
     journeyDataRepository.removeJourneyDataFields(journeyId, authInternalId, Seq(PostcodeKey))
   }
+
+  def removeAdditionalVatReturnFields(journeyId: String, authInternalId: String): Future[UpdateWriteResult] = {
+    journeyDataRepository.removeJourneyDataFields(journeyId, authInternalId, Seq(Box5FigureKey, LastMonthSubmittedKey))
+  }
+
 }
