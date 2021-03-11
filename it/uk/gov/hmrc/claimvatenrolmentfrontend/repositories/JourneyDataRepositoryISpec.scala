@@ -62,7 +62,7 @@ class JourneyDataRepositoryISpec extends ComponentSpecHelper {
           JourneyIdKey -> 0,
           AuthInternalIdKey -> 0,
           "creationTimestamp" -> 0
-      ))).one[JsObject]) mustBe Some(Json.obj(VatNumberKey -> testVatNumber))
+        ))).one[JsObject]) mustBe Some(Json.obj(VatNumberKey -> testVatNumber))
     }
   }
 
@@ -143,5 +143,116 @@ class JourneyDataRepositoryISpec extends ComponentSpecHelper {
 
   }
 
-}
+  "removeJourneyDataFields" should {
+    "successfully remove one field" in {
+      val testKey = "testKey"
+      val testData = "test"
+      val testSecondKey = "secondKey"
+      val testSecondData = "secondTest"
 
+      await(repo.collection.insert(ordered = false).one(
+        Json.obj(
+          JourneyIdKey -> testJourneyId,
+          AuthInternalIdKey -> testInternalId,
+          testKey -> testData,
+          testSecondKey -> testSecondData
+        )
+      ))
+
+      await(repo.removeJourneyDataFields(testJourneyId, testInternalId, Seq(testSecondKey)))
+      await(repo.collection.find[JsObject, JsObject](
+        Json.obj(JourneyIdKey -> testJourneyId),
+        None
+      ).one[JsObject]) mustBe Some(Json.obj(
+        JourneyIdKey -> testJourneyId,
+        AuthInternalIdKey -> testInternalId,
+        testKey -> testData))
+    }
+    "pass successfully when the field is not present" in {
+      val testKey = "testKey"
+      val testData = "test"
+      val testSecondKey = "secondKey"
+
+      await(repo.collection.insert(ordered = false).one(
+        Json.obj(
+          JourneyIdKey -> testJourneyId,
+          AuthInternalIdKey -> testInternalId,
+          testKey -> testData,
+        )
+      ))
+
+      await(repo.removeJourneyDataFields(testJourneyId, testInternalId, Seq(testSecondKey)))
+      await(repo.collection.find[JsObject, JsObject](
+        Json.obj(JourneyIdKey -> testJourneyId),
+        None
+      ).one[JsObject]) mustBe Some(Json.obj(
+        JourneyIdKey -> testJourneyId,
+        AuthInternalIdKey -> testInternalId,
+        testKey -> testData))
+    }
+    "successfully remove two fields" in {
+      val testKey = "testKey"
+      val testData = "test"
+      val testSecondKey = "secondKey"
+      val testSecondData = "secondTest"
+
+      await(repo.collection.insert(ordered = false).one(
+        Json.obj(
+          JourneyIdKey -> testJourneyId,
+          AuthInternalIdKey -> testInternalId,
+          testKey -> testData,
+          testSecondKey -> testSecondData
+        )
+      ))
+
+      await(repo.removeJourneyDataFields(testJourneyId, testInternalId, Seq(testKey, testSecondKey)))
+      await(repo.collection.find[JsObject, JsObject](
+        Json.obj(JourneyIdKey -> testJourneyId),
+        None
+      ).one[JsObject]) mustBe Some(Json.obj(
+        JourneyIdKey -> testJourneyId,
+        AuthInternalIdKey -> testInternalId))
+    }
+    "successfully remove one field if the second field is not present" in {
+      val testKey = "testKey"
+      val testData = "test"
+      val testSecondKey = "secondKey"
+
+      await(repo.collection.insert(ordered = false).one(
+        Json.obj(
+          JourneyIdKey -> testJourneyId,
+          AuthInternalIdKey -> testInternalId,
+          testKey -> testData,
+        )
+      ))
+
+      await(repo.removeJourneyDataFields(testJourneyId, testInternalId, Seq(testKey, testSecondKey)))
+      await(repo.collection.find[JsObject, JsObject](
+        Json.obj(JourneyIdKey -> testJourneyId),
+        None
+      ).one[JsObject]) mustBe Some(Json.obj(
+        JourneyIdKey -> testJourneyId,
+        AuthInternalIdKey -> testInternalId))
+    }
+    "pass successfully when two keys are passed in but neither field is present" in {
+      val testKey = "testKey"
+      val testSecondKey = "secondKey"
+
+      await(repo.collection.insert(ordered = false).one(
+        Json.obj(
+          JourneyIdKey -> testJourneyId,
+          AuthInternalIdKey -> testInternalId
+        )
+      ))
+
+      await(repo.removeJourneyDataFields(testJourneyId, testInternalId, Seq(testKey, testSecondKey)))
+      await(repo.collection.find[JsObject, JsObject](
+        Json.obj(JourneyIdKey -> testJourneyId),
+        None
+      ).one[JsObject]) mustBe Some(Json.obj(
+        JourneyIdKey -> testJourneyId,
+        AuthInternalIdKey -> testInternalId))
+    }
+  }
+
+}

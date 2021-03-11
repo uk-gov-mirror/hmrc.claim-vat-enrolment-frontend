@@ -76,6 +76,20 @@ class JourneyDataRepository @Inject()(reactiveMongoComponent: ReactiveMongoCompo
       multi = false
     ).filter(_.n == 1)
 
+  def removeJourneyDataFields(journeyId: String, authInternalId: String, dataKeySeq: Seq[String]): Future[UpdateWriteResult] =
+    collection.update(true).one(
+      Json.obj(
+        JourneyIdKey -> journeyId,
+        AuthInternalIdKey -> authInternalId
+      ),
+      Json.obj(
+        "$unset" ->
+          Json.toJsObject(dataKeySeq.map { dataKey => dataKey -> 1 }.toMap)
+      ),
+      upsert = false,
+      multi = false
+    ).filter(_.n == 1)
+
   private val TtlIndexName = "ClaimVatEnrolmentDataExpires"
 
   private lazy val ttlIndex = Index(
