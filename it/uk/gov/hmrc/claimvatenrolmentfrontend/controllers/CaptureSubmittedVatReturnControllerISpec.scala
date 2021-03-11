@@ -16,11 +16,19 @@
 
 package uk.gov.hmrc.claimvatenrolmentfrontend.controllers
 
+import java.time.Instant
+
+import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
-import uk.gov.hmrc.claimvatenrolmentfrontend.assets.TestConstants.{testInternalId, testJourneyId, testVatNumber}
+import reactivemongo.play.json._
+import uk.gov.hmrc.claimvatenrolmentfrontend.assets.TestConstants._
+import uk.gov.hmrc.claimvatenrolmentfrontend.models.ClaimVatEnrolmentModel
+import uk.gov.hmrc.claimvatenrolmentfrontend.repositories.JourneyDataRepository.{claimVatEnrolmentModelReads, claimVatEnrolmentModelWrites}
 import uk.gov.hmrc.claimvatenrolmentfrontend.stubs.AuthStub
 import uk.gov.hmrc.claimvatenrolmentfrontend.utils.ComponentSpecHelper
 import uk.gov.hmrc.claimvatenrolmentfrontend.views.CaptureSubmittedVatReturnViewTests
+
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class CaptureSubmittedVatReturnControllerISpec extends ComponentSpecHelper with CaptureSubmittedVatReturnViewTests with AuthStub {
 
@@ -53,31 +61,69 @@ class CaptureSubmittedVatReturnControllerISpec extends ComponentSpecHelper with 
     }
 
     "redirect to Check Your Answers Page" when {
-      "the user selects no" in {
+      "the user changes their answer to no" in {
         stubAuth(OK, successfulAuthResponse(Some(testInternalId)))
-        await(journeyDataRepository.insertJourneyVatNumber(testJourneyId, testInternalId, testVatNumber))
+        await(journeyDataRepository.collection.insert(true).one(
+          Json.obj(
+            "_id" -> testJourneyId,
+            "authInternalId" -> testInternalId,
+            "creationTimestamp" -> Json.obj("$date" -> Instant.now.toEpochMilli)
+          ) ++ Json.toJsObject(testFullClaimVatEnrolmentModel)
+        ))
         lazy val result = post(s"/$testJourneyId/submitted-vat-return")("vat_return" -> "no")
 
         result must have(
           httpStatus(SEE_OTHER),
           redirectUri(routes.CheckYourAnswersController.show(testJourneyId).url)
         )
+        await(
+          journeyDataRepository.collection.find[JsObject, ClaimVatEnrolmentModel](
+            Json.obj("_id" -> testJourneyId),
+            None
+          ).one[ClaimVatEnrolmentModel]
+        ) mustBe Some(testClaimVatEnrolmentModelNoReturns)
       }
-    }
 
-    "return a view with errors" when {
-      "the user submits an empty form" should {
-        lazy val result = {
-          stubAuth(OK, successfulAuthResponse(Some(testInternalId)))
-          post(s"/$testJourneyId/submitted-vat-return")()
-        }
+      "the user selects no" in {
+        stubAuth(OK, successfulAuthResponse(Some(testInternalId)))
+        await(journeyDataRepository.collection.insert(true).one(
+          Json.obj(
+            "_id" -> testJourneyId,
+            "authInternalId" -> testInternalId,
+            "creationTimestamp" -> Json.obj("$date" -> Instant.now.toEpochMilli)
+          ) ++ Json.obj("vatRegPostcode" -> testPostcode.stringValue, "vatRegistrationDate" -> testVatRegDate, "vatNumber" -> testVatNumber)
+        ))
+        lazy val result = post(s"/$testJourneyId/submitted-vat-return")("vat_return" -> "no")
 
-        "return a BAD_REQUEST" in {
-          result.status mustBe BAD_REQUEST
-        }
-
-        testCaptureSubmittedVatReturnErrorViewTests(result)
+        result must have(
+          httpStatus(SEE_OTHER),
+          redirectUri(routes.CheckYourAnswersController.show(testJourneyId).url)
+        )
+        await(
+          journeyDataRepository.collection.find[JsObject, ClaimVatEnrolmentModel](
+            Json.obj("_id" -> testJourneyId),
+            None
+          ).one[ClaimVatEnrolmentModel]
+        ) mustBe Some(testClaimVatEnrolmentModelNoReturns)
       }
     }
   }
+
+  "return a view with errors" when {
+    "the user submits an empty form" should {
+      lazy val result = {
+        stubAuth(OK, successfulAuthResponse(Some(testInternalId)))
+        post(s"/$testJourneyId/submitted-vat-return")()
+      }
+
+      "return a BAD_REQUEST" in {
+        result.status mustBe BAD_REQUEST
+      }
+
+      testCaptureSubmittedVatReturnErrorViewTests(result)
+    }
+  }
+
 }
+
+
