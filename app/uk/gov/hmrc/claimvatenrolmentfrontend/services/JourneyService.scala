@@ -16,8 +16,10 @@
 
 package uk.gov.hmrc.claimvatenrolmentfrontend.services
 
+import reactivemongo.api.commands.UpdateWriteResult
 import uk.gov.hmrc.claimvatenrolmentfrontend.models.{ClaimVatEnrolmentModel, JourneyConfig}
 import uk.gov.hmrc.claimvatenrolmentfrontend.repositories.{JourneyConfigRepository, JourneyDataRepository}
+import uk.gov.hmrc.claimvatenrolmentfrontend.repositories.JourneyDataRepository.PostcodeKey
 import uk.gov.hmrc.http.InternalServerException
 
 import javax.inject.{Inject, Singleton}
@@ -52,4 +54,8 @@ class JourneyService @Inject()(journeyConfigRepository: JourneyConfigRepository,
       case None =>
         throw new InternalServerException(s"Journey data was not found for journey ID $journeyId")
     }
+
+  def removePostcodeField(journeyId: String, authInternalId: String): Future[UpdateWriteResult] = {
+    journeyDataRepository.removeJourneyDataFields(journeyId, authInternalId, Seq(PostcodeKey))
+  }
 }

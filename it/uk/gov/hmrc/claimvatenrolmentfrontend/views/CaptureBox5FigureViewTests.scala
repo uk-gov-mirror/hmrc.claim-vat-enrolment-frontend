@@ -6,10 +6,9 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.libs.ws.WSResponse
 import uk.gov.hmrc.claimvatenrolmentfrontend.assets.MessageLookup.{Base, BetaBanner, Header, CaptureBox5Figure => messages}
-import uk.gov.hmrc.claimvatenrolmentfrontend.utils.ComponentSpecHelper
-import uk.gov.hmrc.claimvatenrolmentfrontend.utils.ViewSpecHelper.ElementExtensions
+import uk.gov.hmrc.claimvatenrolmentfrontend.utils.{ComponentSpecHelper, ViewSpecHelper}
 
-trait CaptureBox5FigureViewTests {
+trait CaptureBox5FigureViewTests extends ViewSpecHelper {
   this: ComponentSpecHelper =>
 
   def testCaptureBox5FigureViewTests(result: => WSResponse,

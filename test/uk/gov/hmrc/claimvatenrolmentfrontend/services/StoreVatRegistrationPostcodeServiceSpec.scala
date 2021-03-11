@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.claimvatenrolmentfrontend.utils.services
+package uk.gov.hmrc.claimvatenrolmentfrontend.services
 
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import reactivemongo.api.commands.UpdateWriteResult
 import reactivemongo.core.errors.GenericDriverException
-import uk.gov.hmrc.claimvatenrolmentfrontend.services.StoreBusinessPostcodeService
+import uk.gov.hmrc.claimvatenrolmentfrontend.helpers.TestConstants.{testInternalId, testJourneyId, testPostcode}
+import uk.gov.hmrc.claimvatenrolmentfrontend.repositories.mocks.MockJourneyDataRepository
 import uk.gov.hmrc.claimvatenrolmentfrontend.utils.UnitSpec
-import uk.gov.hmrc.claimvatenrolmentfrontend.utils.helpers.TestConstants.{testInternalId, testJourneyId, testPostcode}
-import uk.gov.hmrc.claimvatenrolmentfrontend.utils.repositories.mocks.MockJourneyDataRepository
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

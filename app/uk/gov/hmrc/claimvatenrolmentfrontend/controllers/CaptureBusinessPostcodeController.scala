@@ -22,7 +22,7 @@ import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.internalId
 import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions}
 import uk.gov.hmrc.claimvatenrolmentfrontend.config.AppConfig
 import uk.gov.hmrc.claimvatenrolmentfrontend.forms.CaptureBusinessPostcodeForm
-import uk.gov.hmrc.claimvatenrolmentfrontend.services.StoreBusinessPostcodeService
+import uk.gov.hmrc.claimvatenrolmentfrontend.services.{JourneyService, StoreBusinessPostcodeService}
 import uk.gov.hmrc.claimvatenrolmentfrontend.views.html.capture_business_postcode_page
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
@@ -33,6 +33,7 @@ import scala.concurrent.Future
 class CaptureBusinessPostcodeController @Inject()(mcc: MessagesControllerComponents,
                                                   view: capture_business_postcode_page,
                                                   storeBusinessPostcodeService: StoreBusinessPostcodeService,
+                                                  journeyService: JourneyService,
                                                   val authConnector: AuthConnector
                                                  )(implicit val config: AppConfig) extends FrontendController(mcc) with AuthorisedFunctions {
 
@@ -65,4 +66,17 @@ class CaptureBusinessPostcodeController @Inject()(mcc: MessagesControllerCompone
           Future.successful(Unauthorized)
       }
   }
+
+  def noPostcode(journeyId: String): Action[AnyContent] = Action.async {
+    implicit request =>
+      authorised().retrieve(internalId) {
+        case Some(authId) =>
+          journeyService.removePostcodeField(journeyId, authId).map {
+            _ => Redirect(routes.CaptureSubmittedVatReturnController.show(journeyId))
+          }
+        case None =>
+          Future.successful(Unauthorized)
+      }
+  }
+
 }

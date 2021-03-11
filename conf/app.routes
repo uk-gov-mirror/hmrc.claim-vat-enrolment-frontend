@@ -18,6 +18,7 @@ POST        /:journeyId/vat-registration-date         uk.gov.hmrc.claimvatenrolm
 
 #  Capture Business Postcode
 GET         /:journeyId/business-postcode             uk.gov.hmrc.claimvatenrolmentfrontend.controllers.CaptureBusinessPostcodeController.show(journeyId)
+GET         /:journeyId/no-business-postcode          uk.gov.hmrc.claimvatenrolmentfrontend.controllers.CaptureBusinessPostcodeController.noPostcode(journeyId)
 POST        /:journeyId/business-postcode             uk.gov.hmrc.claimvatenrolmentfrontend.controllers.CaptureBusinessPostcodeController.submit(journeyId)
 
 # Capture Box 5 Figure

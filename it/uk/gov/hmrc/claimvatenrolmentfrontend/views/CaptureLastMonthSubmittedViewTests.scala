@@ -21,12 +21,11 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.libs.ws.WSResponse
 import uk.gov.hmrc.claimvatenrolmentfrontend.assets.MessageLookup.{Base, BetaBanner, Header, CaptureLastMonthSubmitted => messages}
-import uk.gov.hmrc.claimvatenrolmentfrontend.utils.ComponentSpecHelper
-import uk.gov.hmrc.claimvatenrolmentfrontend.utils.ViewSpecHelper.ElementExtensions
+import uk.gov.hmrc.claimvatenrolmentfrontend.utils.{ComponentSpecHelper, ViewSpecHelper}
 
 import scala.collection.JavaConverters.asScalaIteratorConverter
 
-trait CaptureLastMonthSubmittedViewTests {
+trait CaptureLastMonthSubmittedViewTests extends ViewSpecHelper {
   this: ComponentSpecHelper =>
 
   def testCaptureLastMonthSubmittedViewTests(result: => WSResponse): Unit = {
