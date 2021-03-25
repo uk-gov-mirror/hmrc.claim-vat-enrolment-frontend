@@ -16,21 +16,25 @@
 
 package uk.gov.hmrc.claimvatenrolmentfrontend.controllers
 
-import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions}
 import uk.gov.hmrc.claimvatenrolmentfrontend.config.AppConfig
 import uk.gov.hmrc.claimvatenrolmentfrontend.views.html.known_facts_mismatch
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
-import scala.concurrent.Future
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class KnownFactsMismatchController @Inject()(mcc: MessagesControllerComponents,
-                                             view: known_facts_mismatch
-                                            )(implicit appConfig: AppConfig) extends FrontendController(mcc) {
+                                             view: known_facts_mismatch,
+                                             val authConnector: AuthConnector
+                                            )(implicit appConfig: AppConfig, ec: ExecutionContext) extends FrontendController(mcc) with AuthorisedFunctions {
 
   def show(journeyId: String): Action[AnyContent] = Action.async {
     implicit request =>
-      Future.successful(Ok(view(routes.KnownFactsMismatchController.show(journeyId))))
+      authorised() {
+        Future.successful(Ok(view(routes.KnownFactsMismatchController.show(journeyId))))
+      }
   }
 }
