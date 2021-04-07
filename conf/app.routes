@@ -37,5 +37,8 @@ POST        /:journeyId/last-vat-return-date          uk.gov.hmrc.claimvatenrolm
 GET         /:journeyId/check-your-answers-vat        uk.gov.hmrc.claimvatenrolmentfrontend.controllers.CheckYourAnswersController.show(journeyId)
 POST        /:journeyId/check-your-answers-vat        uk.gov.hmrc.claimvatenrolmentfrontend.controllers.CheckYourAnswersController.submit(journeyId)
 
-# Known Facts Mismatch
-GET         /:journeyId/can-not-confirm-business      uk.gov.hmrc.claimvatenrolmentfrontend.controllers.KnownFactsMismatchController.show(journeyId)
+# Known Facts Mismatch Error
+GET         /can-not-confirm-business                 uk.gov.hmrc.claimvatenrolmentfrontend.controllers.errorPages.KnownFactsMismatchController.show()
+
+# Invalid Account Type Error
+GET         /can-not-use-this-service                 uk.gov.hmrc.claimvatenrolmentfrontend.controllers.errorPages.InvalidAccountTypeController.show()

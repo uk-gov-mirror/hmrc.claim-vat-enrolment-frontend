@@ -1,5 +1,4 @@
-
-package uk.gov.hmrc.claimvatenrolmentfrontend.views
+package uk.gov.hmrc.claimvatenrolmentfrontend.views.errorPages
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -7,10 +6,10 @@ import play.api.libs.ws.WSResponse
 import uk.gov.hmrc.claimvatenrolmentfrontend.assets.MessageLookup.{Base, BetaBanner, KnownFactsMismatch => messages}
 import uk.gov.hmrc.claimvatenrolmentfrontend.utils.{ComponentSpecHelper, ViewSpecHelper}
 
-trait KnownFactsMismatchViewTest extends ViewSpecHelper {
+trait KnownFactsMismatchViewTests extends ViewSpecHelper {
   this: ComponentSpecHelper =>
 
-  def testKnownFactsMismatchViewTest(result: => WSResponse): Unit = {
+  def testKnownFactsMismatchView(result: => WSResponse): Unit = {
 
     lazy val doc: Document = {
       Jsoup.parse(result.body)

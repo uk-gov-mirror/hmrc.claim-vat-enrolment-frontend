@@ -14,27 +14,25 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.claimvatenrolmentfrontend.controllers
+package uk.gov.hmrc.claimvatenrolmentfrontend.controllers.errorPages
 
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions}
 import uk.gov.hmrc.claimvatenrolmentfrontend.config.AppConfig
-import uk.gov.hmrc.claimvatenrolmentfrontend.views.html.known_facts_mismatch
+import uk.gov.hmrc.claimvatenrolmentfrontend.controllers.{routes => appRoutes}
+import uk.gov.hmrc.claimvatenrolmentfrontend.views.html.errorPages.invalid_account_type
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 @Singleton
-class KnownFactsMismatchController @Inject()(mcc: MessagesControllerComponents,
-                                             view: known_facts_mismatch,
-                                             val authConnector: AuthConnector
-                                            )(implicit appConfig: AppConfig, ec: ExecutionContext) extends FrontendController(mcc) with AuthorisedFunctions {
+class InvalidAccountTypeController @Inject()(mcc: MessagesControllerComponents,
+                                             view: invalid_account_type
+                                            )(implicit appConfig: AppConfig) extends FrontendController(mcc) {
 
-  def show(journeyId: String): Action[AnyContent] = Action.async {
+  val show: Action[AnyContent] = Action.async {
     implicit request =>
-      authorised() {
-        Future.successful(Ok(view(routes.KnownFactsMismatchController.show(journeyId))))
-      }
+      Future.successful(Ok(view(appRoutes.SignInOutController.signOut())))
   }
+
 }

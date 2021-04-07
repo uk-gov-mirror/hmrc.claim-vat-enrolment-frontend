@@ -20,6 +20,7 @@ import play.api.libs.json.Json
 import play.api.test.Helpers._
 import reactivemongo.play.json._
 import uk.gov.hmrc.claimvatenrolmentfrontend.assets.TestConstants._
+import uk.gov.hmrc.claimvatenrolmentfrontend.controllers.errorPages.{routes => errorRoutes}
 import uk.gov.hmrc.claimvatenrolmentfrontend.repositories.JourneyDataRepository.claimVatEnrolmentModelWrites
 import uk.gov.hmrc.claimvatenrolmentfrontend.stubs.{AllocationEnrolmentStub, AuthStub}
 import uk.gov.hmrc.claimvatenrolmentfrontend.utils.ComponentSpecHelper
@@ -136,6 +137,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecHelper with CheckYour
         redirectUri(testContinueUrl)
       )
     }
+
     "redirect to KnownFactsMismatch if the enrolment fails" in {
       stubAuth(OK, successfulAuthResponse(Some(testGroupId), Some(testInternalId)))
       await(journeyDataRepository.collection.insert(true).one(
@@ -151,9 +153,10 @@ class CheckYourAnswersControllerISpec extends ComponentSpecHelper with CheckYour
 
       result must have(
         httpStatus(SEE_OTHER),
-        redirectUri(routes.KnownFactsMismatchController.show(testJourneyId).url)
+        redirectUri(errorRoutes.KnownFactsMismatchController.show().url)
       )
     }
+
     "return UNAUTHORISED when no credentials or groupId are retrieved from Auth" in {
       stubAuth(OK, successfulAuthResponse(Some(testInternalId)))
 

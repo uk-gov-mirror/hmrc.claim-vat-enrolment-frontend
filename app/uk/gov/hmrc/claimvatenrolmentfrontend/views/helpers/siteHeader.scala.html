@@ -18,7 +18,7 @@
 
 @this(hmrcHeader: HmrcHeader)
 
-@(showSignOut: Boolean = true)(implicit messages: Messages, appConfig: AppConfig)
+@(showSignOut: Boolean = true)(implicit messages: Messages)
 
 @hmrcHeader(uk.gov.hmrc.hmrcfrontend.views.html.components.Header(
     serviceName = Some(messages("app.title")),

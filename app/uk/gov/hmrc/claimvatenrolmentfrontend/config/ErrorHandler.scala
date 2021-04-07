@@ -22,7 +22,7 @@ import play.api.mvc.Results.NotFound
 import play.api.mvc.{Request, RequestHeader, Result}
 import play.twirl.api.Html
 import uk.gov.hmrc.auth.core.AuthorisationException
-import uk.gov.hmrc.claimvatenrolmentfrontend.views.html.ErrorTemplate
+import uk.gov.hmrc.claimvatenrolmentfrontend.views.html.templates.ErrorTemplate
 import uk.gov.hmrc.http.NotFoundException
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
