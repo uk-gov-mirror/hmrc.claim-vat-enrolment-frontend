@@ -146,4 +146,12 @@ object MessageLookup {
 
   }
 
+  object UnmatchedUserError {
+    val title = "You cannot use this service - Claim VAT Enrolment - GOV.UK"
+    val heading = "You cannot use this service"
+    val link = "manage who can access your taxes, duties and schemes"
+    val line_1 = s"Go to your business tax account to $link."
+
+  }
+
 }

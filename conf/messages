@@ -91,3 +91,9 @@ known_facts_mismatch.line_1                                 = The information yo
 invalid_account_type.title                                  = You cannot use this service
 invalid_account_type.heading                                = You cannot use this service
 invalid_account_type.line_1                                 = Contact the person who set up your account.
+
+# Unmatched User Error Page
+unmatched_user.title                                        = You cannot use this service
+unmatched_user.heading                                      = You cannot use this service
+unmatched_user.line_1                                       = Go to your business tax account to
+unmatched_user.link                                         = manage who can access your taxes, duties and schemes
