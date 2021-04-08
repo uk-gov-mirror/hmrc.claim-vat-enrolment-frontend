@@ -21,6 +21,7 @@ import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.{credentials, groupIdentifie
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
 import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions}
 import uk.gov.hmrc.claimvatenrolmentfrontend.config.AppConfig
+import uk.gov.hmrc.claimvatenrolmentfrontend.controllers.errorPages.{routes => errorRoutes}
 import uk.gov.hmrc.claimvatenrolmentfrontend.models.{EnrolmentFailure, EnrolmentSuccess}
 import uk.gov.hmrc.claimvatenrolmentfrontend.services.{AllocateEnrolmentService, JourneyService}
 import uk.gov.hmrc.claimvatenrolmentfrontend.views.html.check_your_answers_page
@@ -61,7 +62,7 @@ class CheckYourAnswersController @Inject()(mcc: MessagesControllerComponents,
                     journeyConfig => SeeOther(journeyConfig.continueUrl)
                   }
                 case EnrolmentFailure(errorMessage) =>
-                  Future.successful(Redirect(routes.KnownFactsMismatchController.show(journeyId).url))
+                  Future.successful(Redirect(errorRoutes.KnownFactsMismatchController.show().url))
               }
           }
         case _ =>

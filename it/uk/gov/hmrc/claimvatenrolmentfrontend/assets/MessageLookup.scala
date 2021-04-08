@@ -24,6 +24,7 @@ object MessageLookup {
     val yes = "Yes"
     val no = "No"
     val tryAgain = "Try Again"
+    val signOut = "Sign out"
 
     object Error {
       val title = "There is a problem"
@@ -135,6 +136,13 @@ object MessageLookup {
     val title = "We could not confirm your business - Claim VAT Enrolment - GOV.UK"
     val heading = "We could not confirm your business"
     val line_1 = "The information you provided does not match the details we have about your business."
+
+  }
+
+  object InvalidAccountType {
+    val title = "You cannot use this service - Claim VAT Enrolment - GOV.UK"
+    val heading = "You cannot use this service"
+    val line_1 = "Contact the person who set up your account."
 
   }
 
