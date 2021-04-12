@@ -27,7 +27,7 @@ import scala.concurrent.Future
 
 @Singleton
 class EnrolmentAlreadyAllocatedController @Inject()(mcc: MessagesControllerComponents,
-                                                    view: enrolment_already_allocated_error_page,
+                                                    view: enrolment_already_allocated_error_page
                                                    )(implicit appConfig: AppConfig) extends FrontendController(mcc) {
 
   def show: Action[AnyContent] = Action.async {
