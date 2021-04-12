@@ -19,11 +19,12 @@ package uk.gov.hmrc.claimvatenrolmentfrontend.controllers
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.test.Helpers.{OK, SEE_OTHER}
+import play.api.test.Helpers.{OK, SEE_OTHER, UNAUTHORIZED}
 import uk.gov.hmrc.claimvatenrolmentfrontend.assets.TestConstants.{testContinueUrl, testInternalId, testJourneyId, testVatNumber}
 import uk.gov.hmrc.claimvatenrolmentfrontend.services.JourneyIdGenerationService
 import uk.gov.hmrc.claimvatenrolmentfrontend.stubs.{AuthStub, FakeJourneyIdGenerationService}
 import uk.gov.hmrc.claimvatenrolmentfrontend.utils.ComponentSpecHelper
+import uk.gov.hmrc.claimvatenrolmentfrontend.controllers.errorPages.{routes => errorRoutes}
 
 class JourneyControllerISpec extends ComponentSpecHelper with AuthStub {
 
@@ -34,13 +35,30 @@ class JourneyControllerISpec extends ComponentSpecHelper with AuthStub {
 
   s"GET  /journey/$testVatNumber" should {
     "redirect to the Capture VAT Registration Date page" in {
-      stubAuth(OK, successfulAuthResponse(Some(testInternalId)))
+      stubAuth(OK, successfulAuthResponse(None, Some(testInternalId)))
 
       lazy val result = get(s"/journey/$testVatNumber?continueUrl=$testContinueUrl")
 
       result.status mustBe SEE_OTHER
 
       result.header("Location").getOrElse("None") mustBe routes.CaptureVatRegistrationDateController.show(testJourneyId).url
+    }
+    "redirect to Invalid Account Error page" in {
+      stubAuth(OK, successfulAuthResponse(None, Some(testInternalId), Some("Assistant")))
+
+      lazy val result = get(s"/journey/$testVatNumber?continueUrl=$testContinueUrl")
+
+      result.status mustBe SEE_OTHER
+
+      result.header("Location").getOrElse("None") mustBe errorRoutes.InvalidAccountTypeController.show().url
+    }
+    "return Unauthorized" in {
+      stubAuth(OK, successfulAuthResponse(None, None, None))
+
+      lazy val result = get(s"/journey/$testVatNumber?continueUrl=$testContinueUrl")
+
+      result.status mustBe UNAUTHORIZED
+
     }
   }
 

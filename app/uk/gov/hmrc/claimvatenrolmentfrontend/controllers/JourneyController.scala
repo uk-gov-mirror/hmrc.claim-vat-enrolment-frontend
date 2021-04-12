@@ -17,8 +17,10 @@
 package uk.gov.hmrc.claimvatenrolmentfrontend.controllers
 
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.internalId
-import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions}
+import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.{credentialRole, internalId}
+import uk.gov.hmrc.auth.core.retrieve.~
+import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions, User}
+import uk.gov.hmrc.claimvatenrolmentfrontend.controllers.errorPages.{routes => errorRoutes}
 import uk.gov.hmrc.claimvatenrolmentfrontend.models.JourneyConfig
 import uk.gov.hmrc.claimvatenrolmentfrontend.services.JourneyService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -34,12 +36,14 @@ class JourneyController @Inject()(journeyService: JourneyService,
 
   def createJourney(vatNumber: String, continueUrl: String): Action[AnyContent] = Action.async {
     implicit request =>
-      authorised().retrieve(internalId) {
-        case Some(authId) =>
+      authorised().retrieve(internalId and credentialRole) {
+        case Some(authId) ~ Some(User) =>
           journeyService.createJourney(JourneyConfig(continueUrl), vatNumber, authId).map {
             journeyId => Redirect(routes.CaptureVatRegistrationDateController.show(journeyId).url)
           }
-        case None =>
+        case Some(_) ~ _ =>
+          Future.successful(Redirect(errorRoutes.InvalidAccountTypeController.show().url))
+        case None ~ _ =>
           Future.successful(Unauthorized)
       }
 

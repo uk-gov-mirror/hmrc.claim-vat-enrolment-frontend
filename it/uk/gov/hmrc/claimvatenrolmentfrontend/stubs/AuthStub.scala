@@ -42,13 +42,14 @@ trait AuthStub extends WireMockMethods {
     "internalId" -> internalId
   )
 
-  def successfulAuthResponse(groupId: Option[String], internalId: Option[String]): JsObject = Json.obj(
+  def successfulAuthResponse(groupId: Option[String], internalId: Option[String], credentialRole: Option[String] = Some("User")): JsObject = Json.obj(
     "optionalCredentials" -> Json.obj(
       "providerId" -> testCredentialId,
       "providerType" -> "GovernmentGateway"
     ),
     "groupIdentifier" -> groupId,
-    "internalId" -> internalId
+    "internalId" -> internalId,
+    "credentialRole" -> credentialRole
   )
 
 }
