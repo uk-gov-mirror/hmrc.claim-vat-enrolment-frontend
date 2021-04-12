@@ -148,6 +148,8 @@ class CheckYourAnswersControllerISpec extends ComponentSpecHelper with CheckYour
         ) ++ Json.toJsObject(testFullClaimVatEnrolmentModel)
       ))
       await(insertJourneyConfig(testJourneyId, testContinueUrl))
+      stubAllocateEnrolment(testFullClaimVatEnrolmentModel, testCredentialId, testGroupId)(NOT_FOUND)
+
       lazy val result = post(s"/$testJourneyId/check-your-answers-vat")()
 
 

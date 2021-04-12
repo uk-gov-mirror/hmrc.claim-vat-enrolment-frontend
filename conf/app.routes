@@ -44,5 +44,5 @@ GET         /can-not-confirm-business                 uk.gov.hmrc.claimvatenrolm
 GET         /can-not-use-this-service                 uk.gov.hmrc.claimvatenrolmentfrontend.controllers.errorPages.InvalidAccountTypeController.show()
 
 # Unauthorised User Error
-GET         /can-not-use-this-service-2               uk.gov.hmrc.claimvatenrolmentfrontend.controllers.UnmatchedUserErrorController.show()
+GET         /can-not-use-this-service-2               uk.gov.hmrc.claimvatenrolmentfrontend.controllers.errorPages.UnmatchedUserErrorController.show()
 
