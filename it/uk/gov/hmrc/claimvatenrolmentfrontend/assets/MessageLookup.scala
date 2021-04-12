@@ -154,4 +154,12 @@ object MessageLookup {
 
   }
 
+  object EnrolmentAlreadyAllocatedError {
+    val title = "You cannot use this service - Claim VAT Enrolment - GOV.UK"
+    val heading = "You cannot use this service"
+    val line_1  = "Your business is set up for VAT with a different Government Gateway user ID. Try signing in with another Government Gateway user ID."
+    val line_2  = s"If you have lost your details, $link"
+    val link  = "find or recover your account."
+  }
+
 }

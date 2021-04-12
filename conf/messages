@@ -97,3 +97,12 @@ unmatched_user.title                                        = You cannot use thi
 unmatched_user.heading                                      = You cannot use this service
 unmatched_user.line_1                                       = Go to your business tax account to
 unmatched_user.link                                         = manage who can access your taxes, duties and schemes
+
+# Enrolment Already Allocated Error Page
+enrolment_already_allocated.title                           = You cannot use this service
+enrolment_already_allocated.heading                         = You cannot use this service
+enrolment_already_allocated.line1                           = Your business is set up for VAT with a different Government Gateway user ID. Try signing in with another Government Gateway user ID.
+enrolment_already_allocated.line2                           = If you have lost your details,
+enrolment_already_allocated.link                            = find or recover your account.
+
+

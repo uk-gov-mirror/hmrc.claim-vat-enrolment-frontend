@@ -46,3 +46,5 @@ GET         /can-not-use-this-service                 uk.gov.hmrc.claimvatenrolm
 # Unauthorised User Error
 GET         /can-not-use-this-service-2               uk.gov.hmrc.claimvatenrolmentfrontend.controllers.errorPages.UnmatchedUserErrorController.show()
 
+# Enrolment Already Allocated Error
+ GET         /can-not-use-this-service-3              uk.gov.hmrc.claimvatenrolmentfrontend.controllers.errorPages.EnrolmentAlreadyAllocatedController.show()
