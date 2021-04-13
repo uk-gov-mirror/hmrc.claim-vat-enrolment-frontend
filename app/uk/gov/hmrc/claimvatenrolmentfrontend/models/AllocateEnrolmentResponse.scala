@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.claimvatenrolmentfrontend.models
 
-import play.api.http.Status.CREATED
+import play.api.http.Status.{CONFLICT, CREATED}
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
 sealed trait AllocateEnrolmentResponse
@@ -25,12 +25,15 @@ case object EnrolmentSuccess extends AllocateEnrolmentResponse
 
 case class EnrolmentFailure(errorMessage: String) extends AllocateEnrolmentResponse
 
+case class MultipleEnrolmentsInvalid(errorMessage: String) extends AllocateEnrolmentResponse
+
 object AllocateEnrolmentResponseHttpParser {
 
   implicit object AllocateEnrolmentResponseReads extends HttpReads[AllocateEnrolmentResponse] {
     override def read(method: String, url: String, response: HttpResponse): AllocateEnrolmentResponse =
       response.status match {
         case CREATED => EnrolmentSuccess
+        case CONFLICT => MultipleEnrolmentsInvalid(response.body)
         case _ => EnrolmentFailure(response.body)
       }
   }

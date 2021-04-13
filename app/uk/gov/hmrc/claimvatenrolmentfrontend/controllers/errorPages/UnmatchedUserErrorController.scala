@@ -14,24 +14,24 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.claimvatenrolmentfrontend.controllers
+package uk.gov.hmrc.claimvatenrolmentfrontend.controllers.errorPages
 
+import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.claimvatenrolmentfrontend.config.AppConfig
 import uk.gov.hmrc.claimvatenrolmentfrontend.views.html.errorPages.unmatched_user_error_page
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import javax.inject.{Inject, Singleton}
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 @Singleton
 class UnmatchedUserErrorController @Inject()(mcc: MessagesControllerComponents,
                                              view: unmatched_user_error_page,
-                                            )(implicit appConfig: AppConfig, ec: ExecutionContext) extends FrontendController(mcc) {
+                                            )(implicit appConfig: AppConfig) extends FrontendController(mcc) {
 
   def show: Action[AnyContent] = Action.async {
     implicit request =>
-      Future.successful(Ok(view(routes.SignInOutController.signOut())))
+      Future.successful(Ok(view(routes.UnmatchedUserErrorController.show())))
   }
 }
 

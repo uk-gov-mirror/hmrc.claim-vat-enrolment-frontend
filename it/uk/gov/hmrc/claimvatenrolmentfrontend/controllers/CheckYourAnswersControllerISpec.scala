@@ -138,6 +138,26 @@ class CheckYourAnswersControllerISpec extends ComponentSpecHelper with CheckYour
       )
     }
 
+    "redirect to UnmatchedUser if the user group already has a matching enrolment, but the user does not " in {
+      stubAuth(OK, successfulAuthResponse(Some(testGroupId), Some(testInternalId)))
+      await(journeyDataRepository.collection.insert(true).one(
+        Json.obj(
+          "_id" -> testJourneyId,
+          "authInternalId" -> testInternalId,
+          "creationTimestamp" -> Json.obj("$date" -> Instant.now.toEpochMilli)
+        ) ++ Json.toJsObject(testFullClaimVatEnrolmentModel)
+      ))
+      await(insertJourneyConfig(testJourneyId, testContinueUrl))
+      stubAllocateEnrolment(testFullClaimVatEnrolmentModel, testCredentialId, testGroupId)(CONFLICT)
+
+      lazy val result = post(s"/$testJourneyId/check-your-answers-vat")()
+
+      result must have(
+        httpStatus(SEE_OTHER),
+        redirectUri(errorRoutes.UnmatchedUserErrorController.show().url)
+      )
+    }
+
     "redirect to KnownFactsMismatch if the enrolment fails" in {
       stubAuth(OK, successfulAuthResponse(Some(testGroupId), Some(testInternalId)))
       await(journeyDataRepository.collection.insert(true).one(
