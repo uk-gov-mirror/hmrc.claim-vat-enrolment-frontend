@@ -16,12 +16,13 @@
 
 @import uk.gov.hmrc.claimvatenrolmentfrontend.views.html.helpers._
 @import uk.gov.hmrc.claimvatenrolmentfrontend.views.html.templates.layout
+@import uk.gov.hmrc.claimvatenrolmentfrontend.controllers.{routes => Routes}
 
 @this(layout: layout,
         h1: h1,
         p: p,
         govUkHeader: GovukHeader,
-        formWithCSRF: FormWithCSRF
+        govukButton: GovukButton
 )
 
 @(formAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
@@ -30,12 +31,19 @@
 
     @h1(messages("enrolment_already_allocated.heading"))
 
-    @p {@messages("enrolment_already_allocated.line1")}
+    @p {@messages("enrolment_already_allocated.line_1")}
 
-    @p { @messages("enrolment_already_allocated.line2")
-        <a class='govuk-link' href="appConfig.businessTaxAccountUrl" id="businessTaxAccount" target="_blank">
+    @p { @messages("enrolment_already_allocated.line_2")
+        <a class='govuk-link' href="@appConfig.businessTaxAccountUrl" id="businessTaxAccount" target="_blank">
         @messages("enrolment_already_allocated.link")</a>.
         }
 
+    @govukButton(Button(
+        attributes = Map("id" -> "backToBTA"),
+        content = Text(messages("enrolment_already_allocated.go_back_to_bta")),
+        href = Some(appConfig.btaUrl)
+    ))
+
+    @p {<a class='govuk-link' href="@Routes.SignInOutController.signOut.url" id="signOutLink">@messages("app.common.signOut")</a>}
 }
 

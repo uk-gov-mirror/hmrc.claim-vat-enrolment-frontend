@@ -88,9 +88,9 @@ known_facts_mismatch.heading                                = We could not confi
 known_facts_mismatch.line_1                                 = The information you provided does not match the details we have about your business.
 
 # Invalid Account Type Page
-invalid_account_type.title                                  = You cannot use this service
-invalid_account_type.heading                                = You cannot use this service
-invalid_account_type.line_1                                 = Contact the person who set up your account.
+invalid_account_type.title                                  = You are not authorised to use this service
+invalid_account_type.heading                                = You are not authorised to use this service
+invalid_account_type.line_1                                 = Contact the person who set up the account. You need authority to enrol the business for VAT.
 
 # Unmatched User Error Page
 unmatched_user.title                                        = You cannot use this service
@@ -101,8 +101,7 @@ unmatched_user.link                                         = manage who can acc
 # Enrolment Already Allocated Error Page
 enrolment_already_allocated.title                           = You cannot use this service
 enrolment_already_allocated.heading                         = You cannot use this service
-enrolment_already_allocated.line1                           = Your business is set up for VAT with a different Government Gateway user ID. Try signing in with another Government Gateway user ID.
-enrolment_already_allocated.line2                           = If you have lost your details,
-enrolment_already_allocated.link                            = find or recover your account.
-
-
+enrolment_already_allocated.line_1                          = Your business is set up for VAT with another Government Gateway user ID. Try signing in again using a different user ID.
+enrolment_already_allocated.line_2                          = If you have lost your details,
+enrolment_already_allocated.link                            = find or recover your account
+enrolment_already_allocated.go_back_to_bta                  = Go back to your business tax account
