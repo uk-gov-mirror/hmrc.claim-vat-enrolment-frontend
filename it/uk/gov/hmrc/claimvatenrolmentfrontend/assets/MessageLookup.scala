@@ -140,9 +140,9 @@ object MessageLookup {
   }
 
   object InvalidAccountType {
-    val title = "You cannot use this service - Claim VAT Enrolment - GOV.UK"
-    val heading = "You cannot use this service"
-    val line_1 = "Contact the person who set up your account."
+    val title = "You are not authorised to use this service - Claim VAT Enrolment - GOV.UK"
+    val heading = "You are not authorised to use this service"
+    val line_1 = "Contact the person who set up the account. You need authority to enrol the business for VAT."
 
   }
 
@@ -157,9 +157,11 @@ object MessageLookup {
   object EnrolmentAlreadyAllocatedError {
     val title = "You cannot use this service - Claim VAT Enrolment - GOV.UK"
     val heading = "You cannot use this service"
-    val line_1  = "Your business is set up for VAT with a different Government Gateway user ID. Try signing in with another Government Gateway user ID."
-    val line_2  = s"If you have lost your details, $link"
-    val link  = "find or recover your account."
+    val line_1 = "Your business is set up for VAT with another Government Gateway user ID. Try signing in again using a different user ID."
+    val link = "find or recover your account"
+    val line_2 = s"If you have lost your details, $link"
+    val button_text = "Go back to your business tax account"
+    val link_url = "/tax-and-scheme-management/services"
   }
 
 }
