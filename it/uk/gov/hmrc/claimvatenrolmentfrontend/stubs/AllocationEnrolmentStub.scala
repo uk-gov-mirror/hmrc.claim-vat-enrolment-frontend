@@ -17,7 +17,7 @@
 package uk.gov.hmrc.claimvatenrolmentfrontend.stubs
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import play.api.libs.json.Json
+import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.claimvatenrolmentfrontend.models.ClaimVatEnrolmentModel
 import uk.gov.hmrc.claimvatenrolmentfrontend.utils.WireMockMethods
 
@@ -27,7 +27,7 @@ trait AllocationEnrolmentStub extends WireMockMethods {
 
   def stubAllocateEnrolment(claimVatEnrolmentInfo: ClaimVatEnrolmentModel,
                             credentialId: String,
-                            groupId: String)(status: Int): StubMapping = {
+                            groupId: String)(status: Int, jsonBody: JsObject): StubMapping = {
     val enrolmentKey = s"HMRC-MTD-VAT~VRN~${claimVatEnrolmentInfo.vatNumber}"
 
     val allocateEnrolmentJsonBody = Json.obj(
@@ -69,6 +69,6 @@ trait AllocationEnrolmentStub extends WireMockMethods {
         enrolmentKey = enrolmentKey
       ),
       body = allocateEnrolmentJsonBody
-    ).thenReturn(status)
+    ).thenReturn(status, jsonBody)
   }
 }

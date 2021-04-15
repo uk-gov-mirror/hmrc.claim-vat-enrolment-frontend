@@ -54,4 +54,10 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
 
   def allocateEnrolmentUrl(groupId: String, enrolmentKey: String): String = s"$taxEnrolmentsUrl/groups/$groupId/enrolments/$enrolmentKey"
 
+  lazy val enrolmentStoreProxyUrl: String = servicesConfig.baseUrl("enrolment-store-proxy") + "/enrolment-store-proxy/enrolment-store"
+
+  def queryUsersUrl(vatNumber: String): String =
+    s"$enrolmentStoreProxyUrl/enrolments/HMRC-MTD-VAT~VRN~$vatNumber/users"
+
+
 }

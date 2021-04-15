@@ -22,12 +22,14 @@ import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
 import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions}
 import uk.gov.hmrc.claimvatenrolmentfrontend.config.AppConfig
 import uk.gov.hmrc.claimvatenrolmentfrontend.controllers.errorPages.{routes => errorRoutes}
-import uk.gov.hmrc.claimvatenrolmentfrontend.models.{EnrolmentFailure, EnrolmentSuccess}
+import uk.gov.hmrc.claimvatenrolmentfrontend.models.{EnrolmentFailure, EnrolmentSuccess, InvalidKnownFacts}
 import uk.gov.hmrc.claimvatenrolmentfrontend.services.{AllocateEnrolmentService, JourneyService}
 import uk.gov.hmrc.claimvatenrolmentfrontend.views.html.check_your_answers_page
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-
 import javax.inject.{Inject, Singleton}
+import uk.gov.hmrc.claimvatenrolmentfrontend.httpparsers.QueryUsersHttpParser.{NoUsersFound, UsersFound}
+import uk.gov.hmrc.http.InternalServerException
+
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -61,8 +63,15 @@ class CheckYourAnswersController @Inject()(mcc: MessagesControllerComponents,
                   journeyService.retrieveJourneyConfig(journeyId).map {
                     journeyConfig => SeeOther(journeyConfig.continueUrl)
                   }
-                case EnrolmentFailure(errorMessage) =>
+                case InvalidKnownFacts =>
                   Future.successful(Redirect(errorRoutes.KnownFactsMismatchController.show().url))
+                case EnrolmentFailure(_) =>
+                  allocateEnrolmentService.getUserIds(journeyData.vatNumber).map {
+                    case UsersFound =>
+                      Redirect(errorRoutes.EnrolmentAlreadyAllocatedController.show().url)
+                    case NoUsersFound =>
+                      throw new InternalServerException("no users found with specified enrolment")
+                  }
               }
           }
         case _ =>

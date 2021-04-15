@@ -16,21 +16,22 @@
 
 package uk.gov.hmrc.claimvatenrolmentfrontend.controllers
 
+import java.time.Instant
+
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import reactivemongo.play.json._
 import uk.gov.hmrc.claimvatenrolmentfrontend.assets.TestConstants._
 import uk.gov.hmrc.claimvatenrolmentfrontend.controllers.errorPages.{routes => errorRoutes}
 import uk.gov.hmrc.claimvatenrolmentfrontend.repositories.JourneyDataRepository.claimVatEnrolmentModelWrites
-import uk.gov.hmrc.claimvatenrolmentfrontend.stubs.{AllocationEnrolmentStub, AuthStub}
+import uk.gov.hmrc.claimvatenrolmentfrontend.stubs.{AllocationEnrolmentStub, AuthStub, EnrolmentStoreProxyStub}
 import uk.gov.hmrc.claimvatenrolmentfrontend.utils.ComponentSpecHelper
 import uk.gov.hmrc.claimvatenrolmentfrontend.views.CheckYourAnswersViewTests
 
-import java.time.Instant
 import scala.concurrent.ExecutionContext.Implicits.global
 
 
-class CheckYourAnswersControllerISpec extends ComponentSpecHelper with CheckYourAnswersViewTests with AuthStub with AllocationEnrolmentStub {
+class CheckYourAnswersControllerISpec extends ComponentSpecHelper with CheckYourAnswersViewTests with AuthStub with AllocationEnrolmentStub with EnrolmentStoreProxyStub {
 
   override def beforeEach(): Unit = {
     await(journeyDataRepository.drop)
@@ -128,7 +129,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecHelper with CheckYour
         ) ++ Json.toJsObject(testFullClaimVatEnrolmentModel)
       ))
       await(insertJourneyConfig(testJourneyId, testContinueUrl))
-      stubAllocateEnrolment(testFullClaimVatEnrolmentModel, testCredentialId, testGroupId)(CREATED)
+      stubAllocateEnrolment(testFullClaimVatEnrolmentModel, testCredentialId, testGroupId)(CREATED, Json.obj())
 
       lazy val result = post(s"/$testJourneyId/check-your-answers-vat")()
 
@@ -148,7 +149,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecHelper with CheckYour
         ) ++ Json.toJsObject(testFullClaimVatEnrolmentModel)
       ))
       await(insertJourneyConfig(testJourneyId, testContinueUrl))
-      stubAllocateEnrolment(testFullClaimVatEnrolmentModel, testCredentialId, testGroupId)(NOT_FOUND)
+      stubAllocateEnrolment(testFullClaimVatEnrolmentModel, testCredentialId, testGroupId)(BAD_REQUEST, Json.obj())
 
       lazy val result = post(s"/$testJourneyId/check-your-answers-vat")()
 
@@ -158,6 +159,49 @@ class CheckYourAnswersControllerISpec extends ComponentSpecHelper with CheckYour
         redirectUri(errorRoutes.KnownFactsMismatchController.show().url)
       )
     }
+
+    "redirect to EnrolmentAlreadyAllocated error page when enrolment fails " in {
+      stubAuth(OK, successfulAuthResponse(Some(testGroupId), Some(testInternalId)))
+      await(journeyDataRepository.collection.insert(true).one(
+        Json.obj(
+          "_id" -> testJourneyId,
+          "authInternalId" -> testInternalId,
+          "creationTimestamp" -> Json.obj("$date" -> Instant.now.toEpochMilli)
+        ) ++ Json.toJsObject(testFullClaimVatEnrolmentModel)
+      ))
+      await(insertJourneyConfig(testJourneyId, testContinueUrl))
+      stubAllocateEnrolment(testFullClaimVatEnrolmentModel, testCredentialId, testGroupId)(INTERNAL_SERVER_ERROR, Json.obj())
+      stubGetUserIds(testVatNumber)(OK)
+
+
+      lazy val result = post(s"/$testJourneyId/check-your-answers-vat")()
+
+      result must have(
+        httpStatus(SEE_OTHER),
+        redirectUri(errorRoutes.EnrolmentAlreadyAllocatedController.show().url)
+      )
+    }
+
+    "throw an exception when no userIds are connected with the vatNumber" in {
+      stubAuth(OK, successfulAuthResponse(Some(testGroupId), Some(testInternalId)))
+      await(journeyDataRepository.collection.insert(true).one(
+        Json.obj(
+          "_id" -> testJourneyId,
+          "authInternalId" -> testInternalId,
+          "creationTimestamp" -> Json.obj("$date" -> Instant.now.toEpochMilli)
+        ) ++ Json.toJsObject(testFullClaimVatEnrolmentModel)
+      ))
+      await(insertJourneyConfig(testJourneyId, testContinueUrl))
+      stubAllocateEnrolment(testFullClaimVatEnrolmentModel, testCredentialId, testGroupId)(INTERNAL_SERVER_ERROR, Json.obj())
+      stubGetUserIds(testVatNumber)(NO_CONTENT)
+
+      lazy val result = post(s"/$testJourneyId/check-your-answers-vat")()
+
+      result must have(
+        httpStatus(INTERNAL_SERVER_ERROR)
+      )
+    }
+
 
     "return UNAUTHORISED when no credentials or groupId are retrieved from Auth" in {
       stubAuth(OK, successfulAuthResponse(Some(testInternalId)))

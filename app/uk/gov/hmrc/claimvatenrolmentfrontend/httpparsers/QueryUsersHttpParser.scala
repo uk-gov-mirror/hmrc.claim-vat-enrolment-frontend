@@ -14,29 +14,28 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.claimvatenrolmentfrontend.models
+package uk.gov.hmrc.claimvatenrolmentfrontend.httpparsers
 
 import play.api.http.Status._
 import uk.gov.hmrc.http.{HttpReads, HttpResponse, InternalServerException}
 
-sealed trait AllocateEnrolmentResponse
+object QueryUsersHttpParser {
 
-case object EnrolmentSuccess extends AllocateEnrolmentResponse
+  val principalUserIdKey = "principalUserIds"
 
-case class EnrolmentFailure(errorMessage: String) extends AllocateEnrolmentResponse
-
-case object InvalidKnownFacts extends AllocateEnrolmentResponse
-
-object AllocateEnrolmentResponseHttpParser {
-
-  implicit object AllocateEnrolmentResponseReads extends HttpReads[AllocateEnrolmentResponse] {
-    override def read(method: String, url: String, response: HttpResponse): AllocateEnrolmentResponse =
+  implicit object QueryUsersHttpReads extends HttpReads[QueryUsersSuccess] {
+    override def read(method: String, url: String, response: HttpResponse): QueryUsersSuccess =
       response.status match {
-        case CREATED => EnrolmentSuccess
-        case BAD_REQUEST => InvalidKnownFacts
-        case _ => EnrolmentFailure(response.body)
-
+        case OK => UsersFound
+        case NO_CONTENT => NoUsersFound
+        case status => throw new InternalServerException(s"getUserIds returned $status ${response.body}")
       }
   }
+
+  sealed trait QueryUsersSuccess
+
+  case object UsersFound extends QueryUsersSuccess
+
+  case object NoUsersFound extends QueryUsersSuccess
 
 }
