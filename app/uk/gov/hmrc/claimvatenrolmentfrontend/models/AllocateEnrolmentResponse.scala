@@ -17,7 +17,7 @@
 package uk.gov.hmrc.claimvatenrolmentfrontend.models
 
 import play.api.http.Status._
-import uk.gov.hmrc.http.{HttpReads, HttpResponse, InternalServerException}
+import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
 sealed trait AllocateEnrolmentResponse
 
@@ -25,18 +25,28 @@ case object EnrolmentSuccess extends AllocateEnrolmentResponse
 
 case class EnrolmentFailure(errorMessage: String) extends AllocateEnrolmentResponse
 
+case object MultipleEnrolmentsInvalid extends AllocateEnrolmentResponse
+
 case object InvalidKnownFacts extends AllocateEnrolmentResponse
 
 object AllocateEnrolmentResponseHttpParser {
 
+  val CodeKey = "code"
+  val MultipleEnrolmentsInvalidKey = "MULTIPLE_ENROLMENTS_INVALID"
+
   implicit object AllocateEnrolmentResponseReads extends HttpReads[AllocateEnrolmentResponse] {
-    override def read(method: String, url: String, response: HttpResponse): AllocateEnrolmentResponse =
+    override def read(method: String, url: String, response: HttpResponse): AllocateEnrolmentResponse = {
+
+      def responseCode: Option[String] = (response.json \ CodeKey).asOpt[String]
+
       response.status match {
         case CREATED => EnrolmentSuccess
+        case CONFLICT if responseCode contains MultipleEnrolmentsInvalidKey => MultipleEnrolmentsInvalid
         case BAD_REQUEST => InvalidKnownFacts
         case _ => EnrolmentFailure(response.body)
 
       }
+    }
   }
 
 }

@@ -18,7 +18,6 @@ package uk.gov.hmrc.claimvatenrolmentfrontend.controllers.errorPages
 
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.claimvatenrolmentfrontend.config.AppConfig
-import uk.gov.hmrc.claimvatenrolmentfrontend.controllers.{routes => appRoutes}
 import uk.gov.hmrc.claimvatenrolmentfrontend.views.html.errorPages.unmatched_user_error_page
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
@@ -32,7 +31,7 @@ class UnmatchedUserErrorController @Inject()(mcc: MessagesControllerComponents,
 
   def show: Action[AnyContent] = Action.async {
     implicit request =>
-      Future.successful(Ok(view(appRoutes.SignInOutController.signOut())))
+      Future.successful(Ok(view()))
   }
 }
 
