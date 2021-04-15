@@ -37,14 +37,13 @@ object AllocateEnrolmentResponseHttpParser {
   implicit object AllocateEnrolmentResponseReads extends HttpReads[AllocateEnrolmentResponse] {
     override def read(method: String, url: String, response: HttpResponse): AllocateEnrolmentResponse = {
 
-      def responseCode: Option[String] = (response.json \ CodeKey).asOpt[String]
+      def responseCode: Seq[String] = (response.json \\ CodeKey).map(_.as[String])
 
       response.status match {
         case CREATED => EnrolmentSuccess
         case CONFLICT if responseCode contains MultipleEnrolmentsInvalidKey => MultipleEnrolmentsInvalid
         case BAD_REQUEST => InvalidKnownFacts
         case _ => EnrolmentFailure(response.body)
-
       }
     }
   }
