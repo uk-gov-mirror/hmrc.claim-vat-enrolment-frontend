@@ -47,12 +47,36 @@ class AllocateEnrolmentConnectorISpec extends ComponentSpecHelper with Allocatio
       result mustBe EnrolmentSuccess
     }
 
-    "return Multiple Enrolments Invalid" in {
-      stubAllocateEnrolment(testClaimVatEnrolmentModel, testCredentialId, testGroupId)(CONFLICT, Json.obj("code" -> "MULTIPLE_ENROLMENTS_INVALID"))
+    "return Multiple Enrolments Invalid" when {
+      "tax enrolments returns a single error indicating multiple enrolments" in {
+        stubAllocateEnrolment(testClaimVatEnrolmentModel, testCredentialId, testGroupId)(CONFLICT, Json.obj("code" -> "MULTIPLE_ENROLMENTS_INVALID"))
 
-      val result = await(allocateEnrolmentConnector.allocateEnrolment(testClaimVatEnrolmentModel, testCredentialId, testGroupId))
+        val result = await(allocateEnrolmentConnector.allocateEnrolment(testClaimVatEnrolmentModel, testCredentialId, testGroupId))
 
-      result mustBe MultipleEnrolmentsInvalid
+        result mustBe MultipleEnrolmentsInvalid
+      }
+      "tax enrolments returns multiple errors including an error indicating multiple enrolments" in {
+        stubAllocateEnrolment(testClaimVatEnrolmentModel, testCredentialId, testGroupId)(
+          status = CONFLICT,
+          jsonBody = Json.obj(
+            "code" -> "MULTIPLE_ERRORS",
+            "message" -> "Multiple errors have occurred",
+            "errors" -> Json.arr(
+              Json.obj(
+                "code" -> "MULTIPLE_ENROLMENTS_INVALID",
+                "message" -> "Multiple Enrolments are not valid for this service"
+              ),
+              Json.obj(
+                "code" -> "OTHER_CODE",
+                "message" -> "Other message"
+              )
+            )
+          ))
+
+        val result = await(allocateEnrolmentConnector.allocateEnrolment(testClaimVatEnrolmentModel, testCredentialId, testGroupId))
+
+        result mustBe MultipleEnrolmentsInvalid
+      }
     }
 
     "return EnrolmentFailure" in {
