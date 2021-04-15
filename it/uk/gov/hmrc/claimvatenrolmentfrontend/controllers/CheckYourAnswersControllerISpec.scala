@@ -23,6 +23,7 @@ import play.api.test.Helpers._
 import reactivemongo.play.json._
 import uk.gov.hmrc.claimvatenrolmentfrontend.assets.TestConstants._
 import uk.gov.hmrc.claimvatenrolmentfrontend.controllers.errorPages.{routes => errorRoutes}
+import uk.gov.hmrc.claimvatenrolmentfrontend.models.AllocateEnrolmentResponseHttpParser.MultipleEnrolmentsInvalidKey
 import uk.gov.hmrc.claimvatenrolmentfrontend.repositories.JourneyDataRepository.claimVatEnrolmentModelWrites
 import uk.gov.hmrc.claimvatenrolmentfrontend.stubs.{AllocationEnrolmentStub, AuthStub, EnrolmentStoreProxyStub}
 import uk.gov.hmrc.claimvatenrolmentfrontend.utils.ComponentSpecHelper
@@ -136,6 +137,26 @@ class CheckYourAnswersControllerISpec extends ComponentSpecHelper with CheckYour
       result must have(
         httpStatus(SEE_OTHER),
         redirectUri(testContinueUrl)
+      )
+    }
+
+    "redirect to UnmatchedUser if the user group already has a matching enrolment, but the user does not" in {
+      stubAuth(OK, successfulAuthResponse(Some(testGroupId), Some(testInternalId)))
+      await(journeyDataRepository.collection.insert(true).one(
+        Json.obj(
+          "_id" -> testJourneyId,
+          "authInternalId" -> testInternalId,
+          "creationTimestamp" -> Json.obj("$date" -> Instant.now.toEpochMilli)
+        ) ++ Json.toJsObject(testFullClaimVatEnrolmentModel)
+      ))
+      await(insertJourneyConfig(testJourneyId, testContinueUrl))
+      stubAllocateEnrolment(testFullClaimVatEnrolmentModel, testCredentialId, testGroupId)(CONFLICT, Json.obj("code" -> MultipleEnrolmentsInvalidKey))
+
+      lazy val result = post(s"/$testJourneyId/check-your-answers-vat")()
+
+      result must have(
+        httpStatus(SEE_OTHER),
+        redirectUri(errorRoutes.UnmatchedUserErrorController.show().url)
       )
     }
 

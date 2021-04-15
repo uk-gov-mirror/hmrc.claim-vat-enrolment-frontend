@@ -16,19 +16,19 @@
 
 package uk.gov.hmrc.claimvatenrolmentfrontend.controllers
 
+import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.{credentials, groupIdentifier, internalId}
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
 import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions}
 import uk.gov.hmrc.claimvatenrolmentfrontend.config.AppConfig
 import uk.gov.hmrc.claimvatenrolmentfrontend.controllers.errorPages.{routes => errorRoutes}
-import uk.gov.hmrc.claimvatenrolmentfrontend.models.{EnrolmentFailure, EnrolmentSuccess, InvalidKnownFacts}
+import uk.gov.hmrc.claimvatenrolmentfrontend.httpparsers.QueryUsersHttpParser.{NoUsersFound, UsersFound}
+import uk.gov.hmrc.claimvatenrolmentfrontend.models.{EnrolmentFailure, EnrolmentSuccess, InvalidKnownFacts, MultipleEnrolmentsInvalid}
 import uk.gov.hmrc.claimvatenrolmentfrontend.services.{AllocateEnrolmentService, JourneyService}
 import uk.gov.hmrc.claimvatenrolmentfrontend.views.html.check_your_answers_page
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import javax.inject.{Inject, Singleton}
-import uk.gov.hmrc.claimvatenrolmentfrontend.httpparsers.QueryUsersHttpParser.{NoUsersFound, UsersFound}
 import uk.gov.hmrc.http.InternalServerException
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -63,6 +63,8 @@ class CheckYourAnswersController @Inject()(mcc: MessagesControllerComponents,
                   journeyService.retrieveJourneyConfig(journeyId).map {
                     journeyConfig => SeeOther(journeyConfig.continueUrl)
                   }
+                case MultipleEnrolmentsInvalid =>
+                  Future.successful(Redirect(errorRoutes.UnmatchedUserErrorController.show()))
                 case InvalidKnownFacts =>
                   Future.successful(Redirect(errorRoutes.KnownFactsMismatchController.show().url))
                 case EnrolmentFailure(_) =>

@@ -21,10 +21,13 @@ import java.time.LocalDate
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import uk.gov.hmrc.claimvatenrolmentfrontend.assets.TestConstants._
+import uk.gov.hmrc.claimvatenrolmentfrontend.models._
 import uk.gov.hmrc.claimvatenrolmentfrontend.models.{ClaimVatEnrolmentModel, EnrolmentSuccess, InvalidKnownFacts, ReturnsInformationModel}
 import uk.gov.hmrc.claimvatenrolmentfrontend.stubs.AllocationEnrolmentStub
 import uk.gov.hmrc.claimvatenrolmentfrontend.utils.ComponentSpecHelper
 import uk.gov.hmrc.http.HeaderCarrier
+
+import java.time.LocalDate
 
 class AllocateEnrolmentConnectorISpec extends ComponentSpecHelper with AllocationEnrolmentStub {
 
@@ -43,6 +46,15 @@ class AllocateEnrolmentConnectorISpec extends ComponentSpecHelper with Allocatio
 
       result mustBe EnrolmentSuccess
     }
+
+    "return Multiple Enrolments Invalid" in {
+      stubAllocateEnrolment(testClaimVatEnrolmentModel, testCredentialId, testGroupId)(CONFLICT, Json.obj("code" -> "MULTIPLE_ENROLMENTS_INVALID"))
+
+      val result = await(allocateEnrolmentConnector.allocateEnrolment(testClaimVatEnrolmentModel, testCredentialId, testGroupId))
+
+      result mustBe MultipleEnrolmentsInvalid
+    }
+
     "return EnrolmentFailure" in {
       stubAllocateEnrolment(testClaimVatEnrolmentModel, testCredentialId, testGroupId)(BAD_REQUEST, Json.obj())
 

@@ -16,11 +16,11 @@
 
 package uk.gov.hmrc.claimvatenrolmentfrontend.assets
 
-import uk.gov.hmrc.auth.core.retrieve.Credentials
-import uk.gov.hmrc.claimvatenrolmentfrontend.models.{ClaimVatEnrolmentModel, Postcode, ReturnsInformationModel}
-
 import java.time.LocalDate
 import java.util.UUID
+
+import uk.gov.hmrc.auth.core.retrieve.Credentials
+import uk.gov.hmrc.claimvatenrolmentfrontend.models.{ClaimVatEnrolmentModel, Postcode, ReturnsInformationModel}
 
 
 object TestConstants {

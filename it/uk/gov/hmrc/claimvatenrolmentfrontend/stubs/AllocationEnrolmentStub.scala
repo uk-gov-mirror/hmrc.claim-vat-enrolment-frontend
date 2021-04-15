@@ -21,6 +21,7 @@ import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.claimvatenrolmentfrontend.models.ClaimVatEnrolmentModel
 import uk.gov.hmrc.claimvatenrolmentfrontend.utils.WireMockMethods
 
+
 trait AllocationEnrolmentStub extends WireMockMethods {
 
   private def allocateEnrolmentUrl(groupId: String, enrolmentKey: String): String = s"/tax-enrolments/groups/$groupId/enrolments/$enrolmentKey"
