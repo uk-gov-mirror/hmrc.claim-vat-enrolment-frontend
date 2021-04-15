@@ -16,14 +16,15 @@
 
 package uk.gov.hmrc.claimvatenrolmentfrontend.connectors
 
+import java.time.LocalDate
+
+import play.api.libs.json.Json
 import play.api.test.Helpers._
 import uk.gov.hmrc.claimvatenrolmentfrontend.assets.TestConstants._
-import uk.gov.hmrc.claimvatenrolmentfrontend.models.{ClaimVatEnrolmentModel, EnrolmentFailure, EnrolmentSuccess, ReturnsInformationModel}
+import uk.gov.hmrc.claimvatenrolmentfrontend.models.{ClaimVatEnrolmentModel, EnrolmentSuccess, InvalidKnownFacts, ReturnsInformationModel}
 import uk.gov.hmrc.claimvatenrolmentfrontend.stubs.AllocationEnrolmentStub
 import uk.gov.hmrc.claimvatenrolmentfrontend.utils.ComponentSpecHelper
 import uk.gov.hmrc.http.HeaderCarrier
-
-import java.time.LocalDate
 
 class AllocateEnrolmentConnectorISpec extends ComponentSpecHelper with AllocationEnrolmentStub {
 
@@ -36,18 +37,18 @@ class AllocateEnrolmentConnectorISpec extends ComponentSpecHelper with Allocatio
 
   "allocateEnrolment" should {
     "return EnrolmentSuccess" in {
-      stubAllocateEnrolment(testClaimVatEnrolmentModel, testCredentialId, testGroupId)(CREATED)
+      stubAllocateEnrolment(testClaimVatEnrolmentModel, testCredentialId, testGroupId)(CREATED, Json.obj())
 
       val result = await(allocateEnrolmentConnector.allocateEnrolment(testClaimVatEnrolmentModel, testCredentialId, testGroupId))
 
       result mustBe EnrolmentSuccess
     }
     "return EnrolmentFailure" in {
-      stubAllocateEnrolment(testClaimVatEnrolmentModel, testCredentialId, testGroupId)(BAD_REQUEST)
+      stubAllocateEnrolment(testClaimVatEnrolmentModel, testCredentialId, testGroupId)(BAD_REQUEST, Json.obj())
 
       val result = await(allocateEnrolmentConnector.allocateEnrolment(testClaimVatEnrolmentModel, testCredentialId, testGroupId))
 
-      result mustBe EnrolmentFailure("")
+      result mustBe InvalidKnownFacts
     }
   }
 
