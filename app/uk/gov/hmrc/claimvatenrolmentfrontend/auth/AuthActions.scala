@@ -16,14 +16,16 @@
 
 package uk.gov.hmrc.claimvatenrolmentfrontend.auth
 
+import play.api.mvc.Results.Redirect
 import play.api.mvc._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.{credentialRole, credentials, groupIdentifier}
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
 import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions, User}
+import uk.gov.hmrc.claimvatenrolmentfrontend.controllers.errorPages
 import uk.gov.hmrc.claimvatenrolmentfrontend.models.VatKnownFacts
 import uk.gov.hmrc.claimvatenrolmentfrontend.repositories.JourneyDataRepository
-import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException, UnprocessableEntityException}
+import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import utils.LoggingUtil
 
@@ -61,21 +63,21 @@ class AuthenticatedIdentifierAction @Inject()(override val authConnector: AuthCo
 
 class JourneyDataRetrievalAction @Inject()(val journeyDataRepository: JourneyDataRepository)
                                          (implicit val executionContext: ExecutionContext)
-  extends ActionTransformer[IdentifierRequest, DataRequest] with LoggingUtil {
+  extends ActionRefiner[IdentifierRequest, DataRequest] with LoggingUtil {
 
-  override protected def transform[A](request: IdentifierRequest[A]): Future[DataRequest[A]] = {
-    journeyDataRepository.getJourneyData(request.journeyId, request.userId).map {
+  override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, DataRequest[A]]] = {
+    implicit val req: Request[A] = request.request
+    journeyDataRepository.getJourneyData(request.journeyId, request.userId).flatMap {
       case Some(journeyData) =>
-        DataRequest(request.request, request.journeyId, request.userId, request.credId, request.groupId, journeyData)
+        Future.successful(Right(DataRequest(request.request, request.journeyId, request.userId, request.credId, request.groupId, journeyData)))
       case None =>
-        implicit val req: Request[A] = request.request
         errorLog(s"[JourneyDataRetrievalAction] - Journey data was not found for journey ID ${request.journeyId}")
-        throw new UnprocessableEntityException(s"Journey data could not be retrieved for journey ID ${request.journeyId}")
-    } recover {
+        Future.successful(Left(Redirect(errorPages.routes.ServiceTimeoutController.show())))
+    }
+    .recover {
       case e: Exception =>
-        implicit val req: Request[A] = request.request
-        errorLog(s"[JourneyDataRetrievalAction] - Error retrieving journey data for journey ID ${request.journeyId}")
-        throw new UnprocessableEntityException(e.getMessage)
+        errorLog(s"[JourneyDataRetrievalAction] - Error retrieving journey data for journey ID ${request.journeyId}: ${e.getMessage}")
+        Left(Redirect(errorPages.routes.ServiceTimeoutController.show()))
     }
   }
 }
