@@ -53,3 +53,8 @@ case object KnownFactsCheckWithVanFlag extends FeatureSwitch {
   override val configName: String = "feature-switch.knownFactsCheckWithVanFlag"
   override val displayName: String = "Feature switch for including Vat Application Number with Known Facts Check and Retry"
 }
+
+case object UrBannerFlag extends FeatureSwitch {
+  override val configName: String = "feature-switch.urBannerFlag"
+  override val displayName: String = "Feature switch to show the User Research Banner"
+}

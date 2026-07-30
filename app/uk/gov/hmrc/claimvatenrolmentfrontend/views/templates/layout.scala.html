@@ -22,13 +22,15 @@
         hmrcLayout: HmrcLayout,
         hmrcTimeoutDialog: HmrcTimeoutDialog,
         hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
-        standardBetaBanner: StandardBetaBanner
+        standardBetaBanner: StandardBetaBanner,
+        hmrcUserResearchBanner: HmrcUserResearchBanner
 )
 
 @(
         pageTitle: Option[String] = None,
         showSignOut: Boolean = true,
-        showBackLink: Boolean = true
+        showBackLink: Boolean = true,
+        urBanner: Option[UserResearchBanner] = None
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @headBlock = {
@@ -56,5 +58,6 @@
     isWelshTranslationAvailable = appConfig.welshLanguageSupportEnabled,
     backLink = if (showBackLink) Some(BackLink.mimicsBrowserBackButtonViaJavaScript) else None,
     displayHmrcBanner = false,
-    phaseBanner = None
+    phaseBanner = None,
+    additionalBannersBlock = if (appConfig.urBannerEnabled) urBanner.map(hmrcUserResearchBanner(_)) else None
 )(content)
