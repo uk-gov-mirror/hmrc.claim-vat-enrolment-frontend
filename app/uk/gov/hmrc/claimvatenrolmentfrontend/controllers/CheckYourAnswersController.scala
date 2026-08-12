@@ -23,6 +23,7 @@ import uk.gov.hmrc.claimvatenrolmentfrontend.config.{AppConfig, ErrorHandler}
 import uk.gov.hmrc.claimvatenrolmentfrontend.services.ClaimVatEnrolmentService._
 import uk.gov.hmrc.claimvatenrolmentfrontend.services.{ClaimVatEnrolmentService, LockService}
 import uk.gov.hmrc.claimvatenrolmentfrontend.views.html.check_your_answers_page
+import uk.gov.hmrc.http.UnprocessableEntityException
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.LoggingUtil
 
@@ -51,7 +52,7 @@ class CheckYourAnswersController @Inject()(mcc: MessagesControllerComponents,
   }
 
   def submit(journeyId: String): Action[AnyContent] = (identify andThen getData).async { implicit request =>
-    claimVatEnrolmentService.claimVatEnrolment(request.credId, request.groupId, request.userId, journeyId) map {
+    claimVatEnrolmentService.claimVatEnrolment(request.credId, request.groupId, request.userId, journeyId).map {
       case Right(_) =>
         Redirect(routes.SignUpCompleteController.signUpComplete(journeyId))
       case Left(KnownFactsMismatchNotLocked) =>
@@ -72,6 +73,10 @@ class CheckYourAnswersController @Inject()(mcc: MessagesControllerComponents,
         errorLog(s"[CheckYourAnswersController][submit] - No users found in enrolment store after allocation failure for journey: $journeyId")
         InternalServerError(errorHandler.internalServerErrorTemplate)
     }
+    .recover {
+        case exception: UnprocessableEntityException =>
+        errorLog(s"[CheckYourAnswersController][submit] - Session timed out for journey: $journeyId. ${exception.getMessage}")
+        Redirect(errorPages.routes.ServiceTimeoutController.show())
+      }
   }
-
 }
