@@ -41,7 +41,7 @@ class JourneyDataRepository @Inject()(mongoComponent: MongoComponent,
   mongoComponent = mongoComponent,
   domainFormat = implicitly[Format[JsObject]],
   indexes = Seq(timeToLiveIndex(appConfig.timeToLiveSeconds)),
-  replaceIndexes = true
+  replaceIndexes = appConfig.replaceIndexes
 ) {
 
   def insertJourneyVatNumber(journeyId: String, authInternalId: String, vatNumber: String): Future[String] =
