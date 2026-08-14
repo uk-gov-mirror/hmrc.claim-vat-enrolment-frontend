@@ -40,6 +40,7 @@ class JourneyConfigRepository @Inject()(mongoComponent: MongoComponent,
   mongoComponent = mongoComponent,
   domainFormat = implicitly[Format[JsObject]],
   indexes = Seq(timeToLiveIndex(appConfig.timeToLiveSeconds)),
+  replaceIndexes = appConfig.replaceIndexes,
   extraCodecs = Seq(Codecs.playFormatCodec(format))
 ) {
 

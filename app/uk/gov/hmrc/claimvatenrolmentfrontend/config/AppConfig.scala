@@ -69,6 +69,7 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
 
   lazy val knownFactsCheckFlag: Boolean = servicesConfig.getBoolean("feature-switch.knownFactsCheckFlag")
   lazy val knownFactsCheckWithVanFlag: Boolean = servicesConfig.getBoolean("feature-switch.knownFactsCheckWithVanFlag")
+  lazy val replaceIndexes: Boolean = config.get[Boolean]("mongodb.replaceIndexes")
 
   def allocateEnrolmentUrl(groupId: String, enrolmentKey: String): String = {
     val baseUrl = if (isEnabled(AllocateEnrolmentStub)) s"$selfBaseUrl/claim-vat-enrolment/test-only" else taxEnrolmentsUrl
