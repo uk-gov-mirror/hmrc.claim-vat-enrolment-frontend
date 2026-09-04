@@ -16,7 +16,9 @@
 
 package uk.gov.hmrc.claimvatenrolmentfrontend.controllers
 
+import org.mockito.Mockito.mock
 import org.mongodb.scala.result.InsertOneResult
+import play.api
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
@@ -27,6 +29,7 @@ import uk.gov.hmrc.claimvatenrolmentfrontend.featureswitch.core.config.KnownFact
 import uk.gov.hmrc.claimvatenrolmentfrontend.models.AllocateEnrolmentResponseHttpParser.{IncorrectKnownFactsKey, MultipleEnrolmentsInvalidKey}
 import uk.gov.hmrc.claimvatenrolmentfrontend.models.VatKnownFacts
 import uk.gov.hmrc.claimvatenrolmentfrontend.repositories.JourneyDataRepository._
+import uk.gov.hmrc.claimvatenrolmentfrontend.services.ClaimVatEnrolmentService
 import uk.gov.hmrc.claimvatenrolmentfrontend.stubs.{AllocationEnrolmentStub, AuthStub, EnrolmentStoreProxyStub}
 import uk.gov.hmrc.claimvatenrolmentfrontend.utils.JourneyMongoHelper
 import uk.gov.hmrc.claimvatenrolmentfrontend.utils.WiremockHelper._
@@ -314,6 +317,19 @@ class CheckYourAnswersControllerISpec
         )
       }
     }
+
+      "redirect to the service timeout page" when {
+        "the journey data is not found" in {
+          stubAuth(OK, successfulAuthResponse(Some(testGroupId), Some(testInternalId)))
+
+          lazy val result = post(s"/$testJourneyId/check-your-answers-vat")()
+
+          result must have(
+            httpStatus(SEE_OTHER),
+            redirectUri(errorPages.routes.ServiceTimeoutController.show().url)
+          )
+        }
+      }
 
     "return an InternalServerError" when {
       "no credentials or groupId are retrieved from Auth" in {
