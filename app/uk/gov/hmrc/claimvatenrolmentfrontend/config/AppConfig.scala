@@ -88,6 +88,6 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
 
   val knownFactsLockAttemptLimit: Int = 3
 
-  lazy val urBannerEnabled: Boolean = isEnabled(UrBannerFlag)
+  lazy val urBannerEnabled: Boolean = servicesConfig.getBoolean("feature-switch.knownFactsCheckWithVanFlag")
   lazy val urBannerBaseUrl: String = loadConfig("urBannerBaseUrl")
 }
