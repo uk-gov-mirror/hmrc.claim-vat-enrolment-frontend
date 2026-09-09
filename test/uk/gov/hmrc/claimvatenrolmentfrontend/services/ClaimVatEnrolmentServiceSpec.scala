@@ -26,7 +26,7 @@ import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import uk.gov.hmrc.claimvatenrolmentfrontend.config.AppConfig
 import uk.gov.hmrc.claimvatenrolmentfrontend.connectors.AllocateEnrolmentConnector.etmpDateFormat
 import uk.gov.hmrc.claimvatenrolmentfrontend.connectors.mocks.MockAuditConnector
-import uk.gov.hmrc.claimvatenrolmentfrontend.featureswitch.core.config.{FeatureSwitching, KnownFactsCheckFlag}
+import uk.gov.hmrc.claimvatenrolmentfrontend.featureswitch.core.config.{FeatureSwitching, KnownFactsCheckFlag, KnownFactsCheckWithVanFlag}
 import uk.gov.hmrc.claimvatenrolmentfrontend.helpers.TestConstants._
 import uk.gov.hmrc.claimvatenrolmentfrontend.httpparsers.QueryUsersHttpParser.{NoUsersFound, UsersFound}
 import uk.gov.hmrc.claimvatenrolmentfrontend.models._
@@ -46,6 +46,8 @@ class ClaimVatEnrolmentServiceSpec extends AnyWordSpec with GuiceOneAppPerSuite 
   implicit val responseVatKnownFacts: Future[Option[VatKnownFacts]] = Future.successful(testFullVatKnownFacts)
   implicit val responseJourneyConfig: Future[Option[JourneyConfig]] = Future.successful(testJourneyConfig)
   implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
+
+  disable(KnownFactsCheckWithVanFlag)
 
   object TestService extends ClaimVatEnrolmentService(
     mockAuditConnector, mockAllocateEnrolmentService, appConfig, mockJourneyService, mockUserLockRepository, mockAuthConnector

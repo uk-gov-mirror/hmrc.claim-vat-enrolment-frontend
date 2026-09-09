@@ -23,11 +23,19 @@ import uk.gov.hmrc.claimvatenrolmentfrontend.featureswitch.core.models.FeatureSw
 import javax.inject.Singleton
 
 @Singleton
-class FeatureSwitchingModule extends Module with FeatureSwitchRegistry {
+class FeatureSwitchingModule extends Module with FeatureSwitchRegistry with FeatureSwitching {
 
   val switches: Seq[FeatureSwitch] = Seq(AllocateEnrolmentStub, QueryUserIdStub, KnownFactsCheckFlag, KnownFactsCheckWithVanFlag, UrBannerFlag)
 
   override def bindings(environment: Environment, configuration: Configuration): Seq[Binding[_]] = {
+    switches.foreach {
+      switch =>
+        if (sys.props.get(switch.configName).isEmpty) {
+          val configValue = configuration.getOptional[Boolean](switch.configName).getOrElse(false)
+          if (configValue) enable(switch) else disable(switch)
+        }
+    }
+
     Seq(
       bind[FeatureSwitchRegistry].to(this).eagerly()
     )
