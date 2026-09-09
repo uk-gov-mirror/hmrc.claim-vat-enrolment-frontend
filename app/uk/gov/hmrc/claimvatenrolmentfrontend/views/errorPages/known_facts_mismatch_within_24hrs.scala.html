@@ -16,7 +16,7 @@
 
 @import uk.gov.hmrc.claimvatenrolmentfrontend.views.html.helpers._
 @import uk.gov.hmrc.claimvatenrolmentfrontend.views.html.templates.layout
-
+@import uk.gov.hmrc.claimvatenrolmentfrontend.utils.UrBannerUtil
 
 @this(layout: layout,
         h1: h1,
@@ -27,7 +27,10 @@
 
 @()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@layout(Some(titleNoForm(messages("known_facts_mismatch_within_24hrs.heading")))) {
+@layout(
+    pageTitle = Some(titleNoForm(messages("known_facts_mismatch_within_24hrs.heading"))),
+    urBanner = Some(UrBannerUtil.getUrBanner())
+) {
 
     @h1(messages("known_facts_mismatch_within_24hrs.heading"))
 
